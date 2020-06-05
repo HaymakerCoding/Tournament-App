@@ -24,11 +24,11 @@ import { NavService } from '../services/nav.service';
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  @ViewChild('news', { static: false}) newsElement: ElementRef;
-  @ViewChild('champions', { static: false}) competitorElement: ElementRef;
-  @ViewChild('prizing', { static: false}) prizingElement: ElementRef;
-  @ViewChild('rules', { static: false}) rulesElement: ElementRef;
-  @ViewChild('contact', { static: false}) contactElement: ElementRef;
+  @ViewChild('news') newsElement: ElementRef;
+  @ViewChild('champions') competitorElement: ElementRef;
+  @ViewChild('prizing') prizingElement: ElementRef;
+  @ViewChild('rules') rulesElement: ElementRef;
+  @ViewChild('contact') contactElement: ElementRef;
 
   private dialogRef: MatDialogRef<any>;
   userLoggedIn: boolean;
