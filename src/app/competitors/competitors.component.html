@@ -1,0 +1,79 @@
+<div class="container pb-4 pt-4">
+
+  <div class="innerContainer mt-4 p-4" *ngIf="loading === false">
+
+    <h1 class="text-center">{{ divSelected.name + ' Competitors' }}</h1>
+
+    <h4>Spots Available: {{ (divSelected.spots - divSelected.qualifierSpots - matchingRegistrations.length) + ' / ' + divSelected.spots }}</h4>
+    <i>Excluding {{ divSelected.qualifierSpots }} Qualifier Spots</i>
+
+    <!--REGISTERED-->
+    <section>
+      <!-- Singles 3 columns-->
+      <div class="row" *ngIf="divSelected.type === 'singles'">
+        <div class="col-12 col-md-4 p-2" *ngFor="let reg of matchingRegistrations; let i = index">
+          <div class="mat-elevation-z2 names">
+              {{ getDisplayNames(i, reg) }}
+          </div>
+        </div>
+        <!--empty spots-->
+        <div class="col-12 col-md-4 p-2" *ngFor="let spot of getEmptySpots(matchingRegistrations.length, divSelected.spots, divSelected.qualifierSpots)">
+          <div class="mat-elevation-z2 names">
+          {{ spot + '.' }}
+          </div>
+        </div>
+        <!--Reserved Spots-->
+        <div class="col-12 col-md-4 p-2" *ngFor="let spot of getReservedSpots(divSelected.qualifierSpots)">
+          <div class="mat-elevation-z2 names">
+          {{ 'Reserved for Qualifier' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Doubles 2 columns-->
+      <div class="row" *ngIf="divSelected.type === 'doubles'">
+        <div class="col-12 col-md-6 p-2" *ngFor="let reg of matchingRegistrations; let i = index">
+          <div class="mat-elevation-z2 names">
+              {{ getDisplayNames(i, reg) }}
+          </div>
+        </div>
+        <!--empty spots-->
+        <div class="col-12 col-md-6 p-2" *ngFor="let spot of getEmptySpots(matchingRegistrations.length, divSelected.spots, divSelected.qualifierSpots)">
+          <div class="mat-elevation-z2 names">
+          {{ spot + '.' }}
+          </div>
+        </div>
+        <!--Reserved Spots-->
+        <div class="col-12 col-md-4 p-2" *ngFor="let spot of getReservedSpots(divSelected.qualifierSpots)">
+          <div class="mat-elevation-z2 names">
+          {{ 'Reserved for Qualifier' }}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--WAITING -->
+    <h2 class="mt-3">Waiting Area</h2>
+    <section>
+        <!-- Singles 3 columns-->
+        <div class="row" *ngIf="divSelected.type === 'singles'">
+          <div class="col-12 col-md-4 p-2" *ngFor="let reg of matchingWaitRegistrations; let i = index">
+            <div class="mat-elevation-z2 names">
+                {{ getDisplayNames(i, reg) }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Doubles 2 columns-->
+        <div class="row" *ngIf="divSelected.type === 'doubles'">
+          <div class="col-12 col-md-6 p-2" *ngFor="let reg of matchingWaitRegistrations; let i = index">
+            <div class="mat-elevation-z2 names">
+                {{ getDisplayNames(i, reg) }}
+            </div>
+          </div>
+        </div>
+      </section>
+
+  </div>
+
+</div>

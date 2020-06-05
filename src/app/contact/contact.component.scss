@@ -1,0 +1,43 @@
+
+.inner-contact-section{
+    color:white;
+}
+.inner-contact-container{
+    background-image: url('/common/tournament-app/assets/grass-green-golf-golf-ball-54123.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+   padding:30px 40px 30px 40px;
+}
+#commentBox{
+    overflow-y: hidden;
+}
+.form-container{
+    background-color:white;
+    border-radius: 6px;
+    padding:20px;
+    border:1px solid black;
+}
+.mat-form-field{
+    width:100%;
+}
+.mat-icon{
+    width:35px;
+    height:40px;
+    font-size:35px;
+}
+a{
+    color:white;
+}
+.icon-bar{
+    width:300px;
+}
+
+@media only screen and (max-width: 1000px) {
+    .icon-bar{
+        margin: auto;
+    }
+    .inner-contact-container{
+        padding:20px 10px 20px 10px;
+    }
+}

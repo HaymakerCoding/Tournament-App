@@ -1,0 +1,25 @@
+<div class="container pt-4 pb-4">
+
+  <div class="inner-container" *ngIf="loading === false">
+
+    <h2 class="mb-3">Tournament FAQ</h2>
+    <ol>
+      <li *ngFor="let faq of tournamentFaqs">
+        <div [innerHTML]="faq.text"></div>
+      </li>
+    </ol>
+    <i *ngIf="tournamentFaqs.length < 1">None right now, Check back soon!</i>
+
+    <hr>
+
+    <h2 class="mb-3">ClubEG FAQ</h2>
+    <ol>
+      <li *ngFor="let faq of faqs">
+        <div [innerHTML]="faq.text"></div>
+      </li>
+    </ol>
+    <i *ngIf="faqs.length < 1">None right now, Check back soon!</i>
+
+  </div>
+
+</div>

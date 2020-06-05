@@ -1,0 +1,186 @@
+#top-container{
+    border-top:4px solid #434445;
+    border-bottom:4px solid #434445;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 130px;
+}
+.feature-img-section{
+    background-position: center;
+    background-size: cover;
+    min-height: calc(80vh - 90px);
+    position:relative;
+}
+
+.sideButtons{
+    position:absolute;
+    top:calc(50% - 100px);
+    transform: translate(-50%);
+    height:205px;
+    width:180px;
+    text-align: center;
+    right:-80px;
+}
+.sideButtons button, .sideButtons a{
+    margin-top: 10px;
+    width:180px;
+    font-size:22px;
+    border:1px solid black;
+    color:white;
+    background-color:#434445;   
+}
+.section{
+    position: relative;
+    padding:30px 60px 30px 60px;
+    min-height:100vh;
+}
+
+.mat-form-field{
+    width:100%
+}
+.sponsor-logos, .course-logos{
+    width:100%;
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+}
+.course-boxes, .sponsor-boxes{
+    position: relative;
+    min-width:100px;
+    min-height:100px;
+    background-color:white;
+    
+}
+
+/*keyframe animations*/
+.first {
+ -webkit-animation: bannermove 350s linear infinite;
+    -moz-animation: bannermove 350s linear infinite;
+     -ms-animation: bannermove 350s linear infinite;
+      -o-animation: bannermove 350s linear infinite;
+         animation: bannermove 350s linear infinite;
+}
+ 
+@keyframes "bannermove" {
+ 0% {
+    margin-left: 0px;
+ }
+ 100% {
+    margin-left: -10000px; /*1800*/
+ }
+ 
+}
+ 
+/*
+@-moz-keyframes bannermove {
+ 0% {
+   margin-left: 0px;
+ }
+ 100% {
+   margin-left: -1000px;
+ }
+ 
+}
+ 
+@-webkit-keyframes "bannermove" {
+ 0% {
+   margin-left: 0px;
+ }
+ 100% {
+   margin-left: -1800px;
+ }
+ 
+}
+ 
+@-ms-keyframes "bannermove" {
+ 0% {
+   margin-left: 0px;
+ }
+ 100% {
+   margin-left: -1800px;
+    }
+}
+ 
+@-o-keyframes "bannermove" {
+ 0% {
+   margin-left: 0px;
+ }
+ 100% {
+   margin-left: -1800px;
+ }
+}
+*/
+
+
+.cards{
+    margin-top: 20px;
+    width: 400px;
+    background-color: rgba(255,255,255,0.8);
+}
+
+.finalRegBtn {
+    cursor:pointer;
+}
+.finalRegBtn:hover{
+    text-decoration: underline;
+}
+.rulesBox{
+    font-size:24px; background-color:rgba(255,255,255,0.7); height:50px; display: flex; justify-content: center; align-items: center; width:100%; text-align: center; border-top: 1px solid white; border-bottom: 1px solid white; text-decoration: underline;
+}
+.championAvatars{
+    height:70px; width:70px;
+}
+.phonePrizeRow {
+    display:none;
+}
+
+@media only screen and (max-width: 800px) {
+    .section{
+        padding:20px 10px 20px 10px;
+    }
+    .hide-on-phone {
+        display:none;
+    }
+    .rulesBox{
+        font-size:18px;
+    }
+    h1{
+        font-size:22px;
+    }
+    h2{
+        font-size:20px;
+    }
+    h3{
+        font-size:18px;
+    }
+    h4{
+        font-size:16px;
+    }
+    h5, h6{
+        font-size:14px;
+    }
+    .championAvatars{
+        height:50px; width:50px;
+    }
+    .cards{
+        width:350px;
+    }
+    .mat-card-header{
+        max-height: 60px;
+    }
+    .mat-card-title{
+        font-size: 18px;
+    }
+    .mat-card{
+        padding:4px;
+    }
+    .phonePrizeRow {
+        display:inline-block;
+    }
+    .pcPrizeRow {
+        display:none;
+    }
+
+}

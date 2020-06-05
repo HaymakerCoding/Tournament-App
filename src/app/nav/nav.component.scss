@@ -1,0 +1,53 @@
+.filler{
+    flex:1 1 auto;
+}
+.nav-link{
+    cursor: pointer;
+    color:white!important;
+    font-size:22px;
+}
+.nav-link:hover{
+    color:maroon;
+}
+.nav-link:hover{
+    color:maroon!important;
+}
+.active-link{
+    color:maroon!important;
+}
+#topNav{
+    border-top:2px solid black;
+    border-bottom:2px solid black;
+    width:100vw;
+    z-index: 2;
+}
+.sticky{
+    position: fixed;
+    top:0;
+    left:0;
+}
+.mat-icon{
+    cursor: pointer;
+}
+#headerImg{
+    min-width:100vw;
+    min-height:160px;
+    background-size: cover;
+    background-position: center;
+}
+li{
+    max-height: 40px;
+}
+
+@media only screen and (max-width: 800px) {
+
+    .nav-link{
+        cursor: pointer;
+        color:white!important;
+        font-size:16px;
+    }
+    .navLinksCentered {
+        padding-left:0px!important; 
+        width:calc(100% - 100px)!important;
+    }
+}   

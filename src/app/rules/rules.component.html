@@ -1,0 +1,21 @@
+<div class="container pt-4 pb-4">
+
+  <h2>Rules & Format</h2>
+
+  <div *ngIf="loading === false">
+    <hr>
+    <div [innerHTML]="tournament.rulesHeader"></div>
+
+    <!--tournament rule section-->
+    <h3>Tournament Rules</h3>
+    <div class="mt-3" *ngFor="let rule of tournamentRules" [innerHTML]="rule.text"></div>
+    <br>
+    <!--CLUBEG rules section-->
+    <h3>ClubEG Rules</h3>
+    <div class="mt-3" *ngFor="let rule of globalRules" [innerHTML]="rule.text"></div>
+
+    <h2><i>Good luck to all competitors!</i></h2>
+
+  </div>
+
+</div>

@@ -1,0 +1,57 @@
+.champPhotos{
+    border: 3px solid;
+}
+.runnerUpPhotos{
+    border: 3px solid;
+    width:70%;
+    margin: auto;
+    display: block;
+}
+.yearCards{
+    border:3px solid;
+    border-radius: 8px;
+    position: relative;
+    padding: 18px;
+}
+.yearLabels{
+    height:40px;
+    background-color:white;
+    position: absolute;
+    top:-20px;
+    left:50%;
+    transform: translate(-50%);
+    width:100px;
+    text-align: center;
+}
+.divSponsorImages{
+   width: 80%; 
+}
+.divSponsorLogos{
+    width:55%;
+}
+th{ 
+    border-top:2px solid; 
+    border-bottom: 2px solid!important;
+}
+.tableHeader{
+    background-image:linear-gradient(to bottom right, #313338, #5a5f73);
+    background-attachment: fixed;
+    color:white;
+}
+.div-logo-containers {
+    position: relative;
+    height:140px;
+}
+.div-logos{
+    height:100%;
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+}
+
+@media only screen and (max-width: 800px) {
+    .div-logo-containers {
+        height:110px;   
+    }
+}

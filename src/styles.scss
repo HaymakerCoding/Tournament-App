@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+#topArea{
+    background-position: center;
+    background-size: cover;
+    height: 100px;
+}
+h1, h2, h3, h4, h5, h6, p, span, div{
+    font-weight:400!important;
+}
+.fun-text{
+    font-family: 'Sriracha', cursive;
+}
+html {
+  scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+.selectors{
+    width:200px; padding:4px; padding-left:6px; margin: auto; display:block; 
+    border:1px solid lightgray; border-radius:6px; background-color: white;
+}

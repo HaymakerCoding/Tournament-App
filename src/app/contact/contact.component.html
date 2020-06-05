@@ -1,0 +1,54 @@
+<div *ngIf="loading === false" class="inner-contact-container text-center text-lg-left">
+  <section class="inner-contact-section">
+  <h2>Contact Us</h2>
+  <h3>Questions or Comments</h3>
+  <div class="row mt-4 mb-4 icon-bar">
+    <div class="col-4">
+      <a [href]="getMessengerLink()">
+        <img style="width:35px;" src="/common/tournament-app/assets/Messenger_Logo_White_RGB.png">
+      </a>
+    </div>
+    <div class="col-4">
+      <a [href]="getEmail('mailto:info@')">
+          <mat-icon [matTooltip]="getEmail('info@')" class="mr-2">email</mat-icon>
+      </a>
+    </div>
+    <div class="col-4">
+      <div style="height:40px; display:flex; align-items: center;">
+        <a href="tel:613-274-7393">
+          <mat-icon style="height:40px;" matTooltip="613-274-7393" class="mr-2">phone</mat-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+  </section>
+
+  <div class="row">
+    <div class="col-10 offset-1 col-lg-5 offset-lg-0 form-container">
+      <div *ngIf="formSent === true">
+        <p>Thank you for contacting us.</p>
+        <p>We will get back to you shortly.</p>
+        <img src="/common/tournament-app/assets/clubeg-logo.png" style="height:60px;">
+      </div>
+      <form *ngIf="formSent === false" [formGroup]="form" (ngSubmit)="sendForm(form.value)">
+        <mat-form-field>
+          <mat-label>Name</mat-label >
+          <input matInput formControlName="name">
+          <mat-error *ngIf="form.get('name').hasError('required')">Please enter a name</mat-error>
+          <mat-error *ngIf="form.get('name').hasError('maxlength')">Name can not exceed 50 characters</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Question or Comment</mat-label>
+          <textarea cdkTextareaAutosize matInput id="commentBox" formControlName="comments"></textarea>
+        </mat-form-field>
+        <button [style.backgroundColor]="tournament.buttonColor" style="width:200px;" class="mt-3 mx-auto d-block" mat-raised-button color="primary">Send</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+

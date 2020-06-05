@@ -1,0 +1,32 @@
+.yearSelector{
+    width:300px;
+    display: block;
+    margin: auto;
+}
+.mat-card-title{
+    font-size: 18px;
+}
+.mat-card-content{
+    position:relative;
+}
+.champPhotos{
+    width:85%; 
+    border:3px solid; 
+    margin: auto; 
+    display:block;
+    cursor:pointer;
+}
+
+@media only screen and (max-width: 600px) {
+    
+}
+@media only screen and (max-width: 800px) and (min-width: 600px) {
+    .mat-card-content{
+        min-height:350px!important;
+    }
+}
+@media only screen and (max-width: 1000px) and (min-width: 800px)  {
+    .mat-card-content{
+        min-height:450px!important;
+    }
+}

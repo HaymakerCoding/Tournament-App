@@ -1,0 +1,55 @@
+
+<h2 class="text-center mt-3">Champions</h2>
+
+<div class="innerContainer" *ngIf="loading === false">
+
+  <div class="yearSelector mt-4 text-center">
+      <mat-select [style.borderColor]="tournament.navColor" style="max-width:80px; height:34px; padding:4px; background-color:white; padding-left:7px; padding-bottom:7px; margin: auto; display:block; border:1px solid; border-radius:6px;"
+        [value]="selectedYear" (selectionChange)="yearChanged($event.value)">
+        <mat-option [value]="year" *ngFor="let year of years">
+          {{ year }}
+        </mat-option>
+      </mat-select>
+      <br>
+      <a rel="noopener" target="_blank" href="https://www.clubeg.golf/Tournaments/tournaments.php?name=matchplaychampionships.html">History</a>
+  </div>
+
+  <div class="row">
+
+    <div class="col-12 col-lg-4 p-md-4">
+      <mat-card *ngFor="let div of leftList" class="md-mb-2" style="box-shadow: none;">
+        <mat-card-title class="text-center">
+          {{ div.name + ': '}}
+          <div>{{ getChamp(div.id) }}</div>
+        </mat-card-title>
+        <mat-card-content>
+          <img (click)="goToDivision(div.id)" [style.borderColor]="tournament.navColor" class="img-fluid champPhotos" [src]="getChampImg(div.id)">
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-12 col-lg-4 p-md-4">
+      <mat-card *ngFor="let div of centerList" class="md-mb-2" style="box-shadow: none;">
+        <mat-card-title class="text-center">
+          {{ div.name + ': '}}
+          <div>{{ getChamp(div.id) }}</div>
+        </mat-card-title>
+        <mat-card-content>
+          <img (click)="goToDivision(div.id)" [style.borderColor]="tournament.navColor" class="img-fluid champPhotos" [src]="getChampImg(div.id)">
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-12 col-lg-4 p-md-4">
+      <mat-card *ngFor="let div of rightList" class="md-mb-2" style="box-shadow: none;">
+        <mat-card-title class="text-center">
+          {{ div.name + ': '}}
+          <div>{{ getChamp(div.id) }}</div>
+        </mat-card-title>
+        <mat-card-content>
+          <img (click)="goToDivision(div.id)" [style.borderColor]="tournament.navColor" class="img-fluid champPhotos" [src]="getChampImg(div.id)">
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,19 @@
+.champPhotos{
+    border: 3px solid;
+}
+.runnerUpPhotos{
+    border: 3px solid;
+    width:70%;
+    margin: auto;
+    display: block;
+}
+.divBtns{
+    cursor:pointer;
+    color:navy;
+    border:1px solid navy;
+}
+.divBtns:hover{
+    color:maroon;
+    transform: scale(1.1);
+    border:1px solid maroon;
+}

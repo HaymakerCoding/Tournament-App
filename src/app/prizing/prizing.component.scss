@@ -1,0 +1,13 @@
+.phonePrizeRow {
+  display:none;
+}
+
+@media only screen and (max-width: 800px) {
+  .phonePrizeRow {
+    display:inline-block;
+  }
+  .pcPrizeRow {
+      display:none;
+  }
+
+}

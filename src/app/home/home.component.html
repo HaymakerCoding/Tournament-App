@@ -1,0 +1,116 @@
+
+<div *ngIf="loading === false">
+  <div #top></div>
+  <div class="container-fluid pt-0 pl-0 pr-0 ml-0 mr-0" style="width:100%; margin-right: 0!important;">
+
+    <section class="feature-img-section"
+      [style.backgroundImage]="'url(' + (onPhone === false ? tournament.featureImage : tournament.phoneFeature) + ')'">
+      <!--Courses-->
+      <div class="photoContainer" style="width:100vw; position: relative; overflow: hidden;">
+        <div style="display:flex; justify-content: center; align-items: center; min-height:100px; background-color:white; position:relative;" #courseStrip>
+          <div class="course-boxes" [style.marginLeft]="getCourseMargins()" [style.marginRight]="getCourseMargins()"
+            [class.first]="setFirst(i, 'courses')" *ngFor="let course of courseList; let i = index">
+            <a rel="noopener" target="_blank" [href]="tournament.courseDomain + '/Courses/courses.php?id=' + course.id" >
+              <img class="course-logos img-fluid" [src]="course.pic" alt="{{ course.name }}">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!--Sponsors-->
+      <div class="photoContainer" style="width:100vw; position: absolute; top:calc(100vh - 315px); overflow: hidden;">
+        <div style="display:flex; justify-content: center; align-items: center; max-height:100px; background-color:white; position:relative;">
+          <div class="sponsor-boxes mt-3 mb-3" [class.first]="setFirst(i, 'sponsors')"
+            [style.marginLeft]="getSponsorMargins()" [style.marginRight]="getSponsorMargins()"
+              *ngFor="let sponsor of sponsorList; let i = index">
+            <a rel="noopener" target="_blank" href="{{ sponsor.link }}" >
+              <img class="sponsor-logos img-fluid" [src]="sponsor.pic" alt="{{ sponsor.name }}">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="sideButtons hide-on-phone">
+        <button mat-raised-button [style.backgroundColor]="tournament.navColor" (click)="scrollTo(news)">News</button><br>
+        <button mat-raised-button [style.backgroundColor]="tournament.navColor" (click)="scrollTo(champions)">Champions</button><br>
+        <button mat-raised-button [style.backgroundColor]="tournament.navColor" (click)="scrollTo(prizing)">Prizing</button><br>
+        <button mat-raised-button [style.backgroundColor]="tournament.navColor" (click)="scrollTo(rules)">Rules</button><br>
+        <button mat-raised-button [style.backgroundColor]="tournament.navColor" (click)="scrollTo(contact)">Contact</button>
+      </div>
+    </section>
+    <br>
+
+    <div class="mt-5 mb-5" [style.backgroundColor]="tournament.navColor" style="height:5px; width:60%; border: 1px solid; margin-right:20%; margin-left:20%; border-radius:2px;"></div>
+    <div class="container">
+      <h1 class="text-center mt-3">{{ tournament.header }}</h1>
+      <h3 class="text-center mt-4">{{ tournament.subHeader }}</h3>
+      <button mat-raised-button [style.backgroundColor]="tournament.navColor" routerLink="/subscribe" color="primary"
+        style="border:1px solid black; margin: auto; display: block; margin-top:20px;">Email Subscribe</button>
+    </div>
+    <!-- news sections-->
+    <section #news>
+      <br>
+      <div class="container mt-3">
+        <div class="mt-5 mb-5" [style.backgroundColor]="tournament.navColor" style="height:5px; width:60%; border: 1px solid; margin-right:20%; margin-left:20%; border-radius:2px;"></div>
+
+        <h2 class="text-center">News & Updates</h2>
+        <hr>
+        <div *ngFor="let news of newsItems" style="width:75%; margin: auto; text-align: center;">
+          <div style="color:navy;" [innerHTML]="news.newsDate | date"></div>
+          <div style="font-weight: bold; font-size:22px;" [innerHTML]="news.header"></div>
+          <div [innerHTML]="news.content"></div>
+          <a rel="noopener" target="_blank" [href]="news.link">Click here</a>
+          <hr>
+        </div>
+        <div style="width:100%; text-align: center">
+            <button mat-raised-button [style.backgroundColor]="tournament.navColor" routerLink="news" color="primary" style="border:1px solid black;" (click)="goToNews()">Previous News</button>
+        </div>
+      </div>
+    </section>
+    <div class="mt-5 mb-1" [style.backgroundColor]="tournament.navColor" style="height:5px; width:60%; border: 1px solid; margin-right:20%; margin-left:20%; border-radius:2px;"></div>
+
+    <!--Chapmions Section-->
+    <div style="height: 50px;" #champions></div>
+    <section class="text-center text-md-left pt-5">
+      <app-champions [tournament]="tournament"></app-champions>
+    </section>
+
+    <div class="mt-5 mb-0" [style.backgroundColor]="tournament.navColor" style="height:5px; width:60%; border: 1px solid; margin-right:20%; margin-left:20%; border-radius:2px;"></div>
+
+    <!--Prize Section-->
+    <div style="height: 40px;" #prizing></div>
+    <section class="section text-center text-md-left mt-5" style="overflow-x:  hidden;">
+      <app-prizing [tournament]="tournament"></app-prizing>
+
+      <!--Sponsors for pizing area-->
+      <div class="photoContainer mt-5" style="width:100vw; position: relative; overflow: hidden;">
+        <div style="display:flex; justify-content: center; align-items: center; max-height:100px; background-color:white; position:relative;">
+          <div class="sponsor-boxes mt-3 mb-3" [class.first]="setFirst(i, 'sponsors')"
+            [style.marginLeft]="getSponsorMargins()" [style.marginRight]="getSponsorMargins()"
+              *ngFor="let sponsor of sponsorList; let i = index">
+            <a rel="noopener" target="_blank" href="{{ sponsor.link }}" >
+              <img class="sponsor-logos img-fluid" [src]="sponsor.pic" alt="{{ sponsor.name }}">
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--Rules Section-->
+    <div style="height: 40px;" #rules></div>
+    <section class="section text-center text-md-left mt-4">
+      <app-rules [tournament]="tournament"></app-rules>
+    </section>
+
+    <!--Contact Section-->
+    <div style="height: 40px;" #contact></div>
+    <section class="section sectionContainer text-center text-md-left p-0 m-0">
+      <app-contact [tournament]="tournament"></app-contact>
+    </section>
+
+  </div>
+
+  <app-site-map [tournament]="tournament"></app-site-map>
+</div>
+
+

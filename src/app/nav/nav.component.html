@@ -1,0 +1,92 @@
+<div *ngIf="loading === false">
+  <a routerLink="home">
+    <section #headerImg id="headerImg" [style.backgroundImage]="onPhone === false ? 'url('+tournament.headerImage+')' : 'url('+tournament.phoneHeader+')'">
+    </section>
+  </a>
+  <nav [class.sticky]="checkStickyNav(topNav)" #topNav class="navbar navbar-light" id="topNav" [style.backgroundColor]="tournament.navColor">
+
+    <!--center nav always show links-->
+    <div class="navLinksCentered mx-auto" style="display: flex; justify-content: center; padding-left:65px; width:calc(100% - 65px);">
+
+      <a class="nav-link" routerLinkActive="active-link" routerLink="register">Register</a>
+      <a class="nav-link" outerLinkActive="active-link" routerLink="divisions">Divisions</a>
+      <a class="nav-link" routerLinkActive="active-link" routerLink="competitors" *ngIf="onPhone === false">Competitors</a>
+      <a class="nav-link" routerLinkActive="active-link"
+        [href]="tournament.scoringLink"
+        rel="noopener" target="_blank">Scoring
+      </a>
+      <mat-icon class="nav-link" style="margin-bottom:14px;" *ngIf="userLoggedIn === true && onPhone === false" >account_box</mat-icon>
+      <span *ngIf="userLoggedIn === true && onPhone === false"  class="ml-0 nav-link">{{ userName }}</span>
+
+    </div>
+
+
+    <button class="navbar-toggler ml-auto mr-1 mr-md-2" #hamBtn type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" #hamNav [style.backgroundColor]="tournament.navColor" id="navbarMenu">
+      <!--dropdown links on home page we scroll to section other pages we go to dedicated page for component-->
+      <ul class="navbar-nav text-center">
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="route !== 'home' && route !== '/home'" (click)="toggleNav(hamBtn)" routerLink="home">Home</a>
+        </li>
+        <li class="nav-item" *ngIf="onPhone === true">
+          <a class="nav-link" (click)="toggleNav(hamBtn)" routerLink="competitors">Competitors</a>
+        </li>
+        <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.hide">
+          <a class="nav-link" *ngIf="route === 'home' || route === '/home'" (click)="scrollToNews(); toggleNav(hamBtn)">News</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="route !== 'home' && route !== '/home'" (click)="toggleNav(hamBtn)" routerLink="news">News</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="route === 'home' || route === '/home'" (click)="scrollToCompetitor(); toggleNav(hamBtn)">Champions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="route !== 'home' && route !== '/home'" (click)="toggleNav(hamBtn)" routerLink="champions">Champions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="route === 'home' || route === '/home'" (click)="scrollToPrizing(); toggleNav(hamBtn)">Prizing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="route !== 'home' && route !== '/home'" (click)="toggleNav(hamBtn)" routerLink="prizing">Prizing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="route === 'home' || route === '/home'" (click)="scrollToRules(); toggleNav(hamBtn)">Rules</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="route !== 'home' && route !== '/home'" (click)="toggleNav(hamBtn)" routerLink="rules">Rules</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="toggleNav(hamBtn)" routerLink="faq">FAQ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="subscribe" (click)="toggleNav(hamBtn)">Email Subscribe</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="route === 'home' || route === '/home'" (click)="scrollToContact(); toggleNav(hamBtn)">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" *ngIf="route !== 'home' && route !== '/home'" (click)="toggleNav(hamBtn)" routerLink="contact">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://www.clubeg.golf/Tournaments/tournaments.php" rel="noopener" target="_blank">ClubEG Tournaments</a>
+        </li>
+        <li class="nav-item" *ngIf="userLoggedIn === false">
+          <a class="nav-link" style="cursor:pointer;" (click)="showLogin(); toggleNav(hamBtn)">Login</a>
+        </li>
+        <li class="nav-item" *ngIf="userLoggedIn === true">
+          <div class="nav-link" style="display: flex; align-items: center; margin:auto; justify-content: center;">
+            <mat-icon>account_box</mat-icon>
+            <span class="ml-1">{{ userName }}</span>
+          </div>
+        </li>
+        <li class="nav-item" *ngIf="userLoggedIn === true" data-toggle="collapse" data-target=".navbar-collapse.show">
+          <a class="nav-link" style="cursor:pointer;" (click)="logout()">Logout</a>
+        </li>
+
+      </ul>
+    </div>
+  </nav>
+</div>

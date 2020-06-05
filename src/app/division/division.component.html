@@ -1,0 +1,137 @@
+<div class="container pt-4 pb-5" style="min-height: calc(100vh - 200px);">
+  <mat-drawer-container *ngIf="loading === false">
+    <mat-drawer #container [mode]="'over'" class="drawer" position="end" autoFocus="false">
+      <button mat-raised-button color="primary" (click)="container.toggle()">Close Rules</button>
+      <app-rules [tournament]="tournament"></app-rules>
+
+    </mat-drawer>
+    <mat-drawer-content style="background-color:white; width:100%; overflow-x:hidden;">
+      <div class="innerContainer">
+
+        <h1 class="text-center">{{ divSelected.name }}</h1>
+        <div>
+          <a rel="noopener" target="_blank" [href]="getSponsorLink(divSelected.sponsorId)">
+            <img [src]="getSponsorLogo(divSelected.sponsorId)" [alt]="getSponsorName()"  class="mx-auto d-block mt-1 mb-0" style="width:100px;">
+          </a>
+        </div>
+
+        <section class="text-center text-md-left">
+          <div class="row mt-2">
+            <div class="col-12 col-md-6">
+              <h2>Eligibility Criteria</h2>
+              <h4 [innerHTML]="divSelected.eligibility"></h4>
+              <hr>
+              <h4>Tee Block:
+                <a [href]="divSelected.teeBlock !== 'ClubEG Assigned' ?
+                  'https://docs.google.com/spreadsheets/d/1eVfUieh3d03cPeAmhMY1cIp6h8vqtob3eA07z6wcZzE/edit#gid=0' :
+                  'https://www.clubeg.golf/Tournaments/tournaments.php?name=teeblockmatrix.html'"
+                  rel="noopener" target="_blank">{{ divSelected.teeBlock }}</a>
+              </h4>
+              <hr>
+              <h5>Registration Open: {{ divSelected.regOpen ? (formatDate(divSelected.regOpen) | date) : 'N/A' }}</h5>
+              <h5>Registration Closed: {{ divSelected.regClosed ? (formatDate(divSelected.regClosed) | date) : 'N/A' }}</h5>
+              <hr>
+              <h4 style="color:navy;">ClubEG Members:
+                <span *ngIf="divSelected.memberPrice > 0" style="color:black;">${{ divSelected.memberPrice | number: '1.0-0' }}</span>
+                <span *ngIf="divSelected.memberPrice <= 0" style="color:black;"><i>price not set yet</i></span>
+              </h4>
+              <h4 style="color:navy;">Non Members:
+                <span *ngIf="divSelected.price > 0"  style="color:black;">${{ divSelected.price | number: '1.0-0' }}</span>
+                <span *ngIf="divSelected.price <= 0" style="color:black;"><i>price not set yet</i></span>
+              </h4>
+              <div [innerHTML]="divSelected.priceText"></div>
+              <hr>
+              <button [style.backgroundColor]="tournament.buttonColor" mat-raised-button color="primary" (click)="goToReg()">Register</button>
+              <button class="ml-2 mr-2" mat-raised-button [style.backgroundColor]="tournament.buttonColor" color="primary" (click)="container.toggle()">Rules</button>
+              <button mat-raised-button [style.backgroundColor]="tournament.buttonColor" color="primary" (click)="goToCompetitors(divSelected.id)">Competitors</button>
+              <hr>
+              <!--Division Specific Rules-->
+              <div *ngIf="divSelected.ruleText">
+                <h3>Details</h3>
+                <div [innerHTML]="divSelected.ruleText"></div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 mt-2 text-center">
+              <a rel="noopener" target="_blank" [href]="divSelected.sponsorLink">
+                <img [src]="divSelected.sponsorPic" [alt]="getSponsorName()" class="divSponsorImages mx-auto d-block">
+              </a>
+              <br>
+              <a rel="noopener" target="_blank" [href]="getSponsorAdLink(divSelected.adSetting)">
+                <img [src]="getSponsorAd(divSelected.adSetting)" [alt]="getSponsorName()" class="divSponsorImages mx-auto d-block">
+              </a>
+            </div>
+
+          </div>
+          <hr>
+          <!--3 Sponsor or course logos-->
+          <div class="row">
+            <div class="col-4 div-logo-containers">
+              <a rel="noopener" target="_blank" [href]="divSelected.logo1link">
+                <img class="div-logos" [src]="divSelected.logo1">
+              </a>
+            </div>
+            <div class="col-4 div-logo-containers">
+              <a rel="noopener" target="_blank" [href]="divSelected.logo2link">
+                <img class="div-logos" [src]="divSelected.logo2">
+              </a>
+            </div>
+            <div class="col-4 div-logo-containers">
+              <a rel="noopener" target="_blank" [href]="divSelected.logo3link">
+                <img class="div-logos" [src]="divSelected.logo3">
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <div class="mt-5 mb-5" [style.backgroundColor]="tournament.navColor" style="height:5px; width:80%; border: 1px solid; margin-right:10%; margin-left:10%; border-radius:2px;"></div>
+
+        <!--Past champion table-->
+
+        <h2 class="text-center mb-4">Past Champions</h2>
+        <table class="table">
+          <thead class="tableHeader">
+            <tr>
+              <th>Year</th>
+              <th>Competitors</th>
+              <th>Scoring</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let year of years">
+              <td>{{ year }}</td>
+              <td>{{ getChamp(divSelected.id, year) }}</td>
+              <td>scoring</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div>
+          <a rel="noopener" target="_blank" [href]="getSponsorLink(divSelected.sponsorId)">
+            <img [src]="getSponsorLogo(divSelected.sponsorId)" [alt]="getSponsorName()"  class="mx-auto d-block mt-3 mb-3" style="width:150px;">
+          </a>
+        </div>
+
+        <!--Chapion section-->
+        <h2 *ngIf="onPhone === false" class="text-center mb-4">Champions and Runner-Ups</h2>
+        <h2 *ngIf="onPhone === true" class="text-center mb-4">Champions<br> and Runner-Ups</h2>
+        <br>
+        <section>
+          <div class="row">
+            <div class="col-12 col-md-6 mt-5" *ngFor="let year of years">
+              <div class="yearCards" [style.borderColor]="tournament.navColor" >
+                <h3 class="yearLabels" [style.color]="tournament.navColor" >{{ year }}</h3>
+                <h4 class="text-center" style="font-weight: bold;">{{ divSelected.name}}</h4>
+                <h5 style="color:navy;" class="text-center">{{ getChamp(divSelected.id, year) }}</h5>
+                <img [style.borderColor]="tournament.navColor" [alt]="getChamp(divSelected.id, year)" *ngIf="getChampPic(divSelected.id, year)" class="img-fluid champPhotos" [src]="getChampPic(divSelected.id, year)">
+                <h5 style="color:navy;" class="text-center mt-4">{{ getRunnerUp(divSelected.id, year) }}</h5>
+                <img [style.borderColor]="tournament.navColor" [alt]="getRunnerUp(divSelected.id, year)" *ngIf="getRunnerUpPic(divSelected.id, year)" class="img-fluid runnerUpPhotos" [src]="getRunnerUpPic(divSelected.id, year)">
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </mat-drawer-content>
+  </mat-drawer-container>
+
+</div>

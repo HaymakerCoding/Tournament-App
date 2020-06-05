@@ -1,0 +1,10 @@
+.divBtns{
+    cursor:pointer;
+    color:navy;
+    border:1px solid navy;
+}
+.divBtns:hover{
+    color:maroon;
+    transform: scale(1.1);
+    border:1px solid maroon;
+}

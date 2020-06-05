@@ -1,0 +1,34 @@
+<div class="container p-4" style="min-height: calc(100vh - 200px);">
+
+  <div class="innerContainer p-4 p-m-2" *ngIf="loading === false">
+
+    <h1>Competitor Divisions:</h1>
+
+    <div class="row">
+      <div class="col-12 col-md-4">
+        <mat-list>
+          <mat-list-item *ngFor="let div of leftList" routerLink="/competitors/{{ div.id}}" class="mat-elevation-z2 mt-2 divBtns">
+            {{ div.name }}
+          </mat-list-item>
+        </mat-list>
+      </div>
+      <div class="col-12 col-md-4">
+        <mat-list>
+          <mat-list-item *ngFor="let div of centerList" routerLink="/competitors/{{ div.id}}" class="mat-elevation-z2 mt-2 divBtns">
+            {{ div.name }}
+          </mat-list-item>
+        </mat-list>
+      </div>
+      <div class="col-12 col-md-4">
+        <mat-list>
+          <mat-list-item *ngFor="let div of rightList" routerLink="/competitors/{{ div.id}}" class="mat-elevation-z2 mt-2 divBtns">
+            {{ div.name }}
+          </mat-list-item>
+        </mat-list>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

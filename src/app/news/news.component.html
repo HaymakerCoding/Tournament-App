@@ -1,0 +1,16 @@
+<div class="container pt-4 pb-4">
+  <h2 class="text-center">News & Updates</h2>
+
+  <div *ngIf="loading === false" class="mt-4">
+    <section>
+      <div *ngFor="let news of newsItems" style="width:100%; text-align: center;">
+        <div style="color:navy;" [innerHTML]="news.newsDate | date"></div>
+        <div style="font-weight: bold; font-size:22px;" [innerHTML]="news.header"></div>
+        <div [innerHTML]="news.content"></div>
+        <a rel="noopener" target="_blank" [href]="news.link">Click here</a>
+        <hr>
+      </div>
+    </section>
+  </div>
+
+</div>
