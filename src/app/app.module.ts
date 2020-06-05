@@ -43,6 +43,8 @@ import { RulesPageComponent } from './rules-page/rules-page.component';
 import { PrizingComponent } from './prizing/prizing.component';
 import { SubscribeComponent } from './subscribe/subscribe.component';
 import { FaqComponent } from './faq/faq.component';
+import { LiveResultsComponent } from './live-results/live-results.component';
+import { ResultsComponent } from './results/results.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +69,9 @@ import { FaqComponent } from './faq/faq.component';
     RulesPageComponent,
     PrizingComponent,
     SubscribeComponent,
-    FaqComponent
+    FaqComponent,
+    LiveResultsComponent,
+    ResultsComponent
   ],
   imports: [
     BrowserModule,

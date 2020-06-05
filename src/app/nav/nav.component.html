@@ -11,13 +11,18 @@
       <a class="nav-link" routerLinkActive="active-link" routerLink="register">Register</a>
       <a class="nav-link" outerLinkActive="active-link" routerLink="divisions">Divisions</a>
       <a class="nav-link" routerLinkActive="active-link" routerLink="competitors" *ngIf="onPhone === false">Competitors</a>
-      <a class="nav-link" routerLinkActive="active-link"
-        [href]="tournament.scoringLink"
-        rel="noopener" target="_blank">Scoring
+      <a class="nav-link"
+        [matMenuTriggerFor]="scoringMenu">Scoring
       </a>
-      <mat-icon class="nav-link" style="margin-bottom:14px;" *ngIf="userLoggedIn === true && onPhone === false" >account_box</mat-icon>
-      <span *ngIf="userLoggedIn === true && onPhone === false"  class="ml-0 nav-link">{{ userName }}</span>
-
+      <mat-menu #scoringMenu>
+        <a rel="noopener" target="_blank" href="https://scoring.clubeg.golf" mat-menu-item>Scoring App</a>
+        <a routerLink="/results/live" mat-menu-item>Live Results</a>
+        <a routerLink="/results" mat-menu-item>Results</a>
+      </mat-menu>
+      <div class="nav-link" style="display: flex; align-items: center;">
+        <mat-icon *ngIf="userLoggedIn === true && onPhone === false">account_box</mat-icon>
+        <span *ngIf="userLoggedIn === true && onPhone === false"  class="ml-2">{{ userName }}</span>
+      </div>
     </div>
 
 

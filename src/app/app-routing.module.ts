@@ -15,6 +15,8 @@ import { RulesPageComponent } from './rules-page/rules-page.component';
 import { ContactPageComponent } from './contact-page/contact-page.component';
 import { SubscribeComponent } from './subscribe/subscribe.component';
 import { FaqComponent } from './faq/faq.component';
+import { ResultsComponent } from './results/results.component';
+import { LiveResultsComponent } from './live-results/live-results.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -31,6 +33,8 @@ const routes: Routes = [
   { path: 'contact', component: ContactPageComponent },
   { path: 'subscribe', component: SubscribeComponent },
   { path: 'faq', component: FaqComponent },
+  { path: 'results', component: ResultsComponent },
+  { path: 'results/live', component: LiveResultsComponent},
   { path: '**',
     redirectTo: 'home',
     pathMatch: 'full',
