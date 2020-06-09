@@ -1,12 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import smoothscroll from 'smoothscroll-polyfill';
-import { MatDialogRef, MatDialog, MatCheckbox } from '@angular/material';
-import { LoginComponent } from '../login/login.component';
-import { AuthService } from '../services/auth.service';
+import { MatDialogRef, MatDialog } from '@angular/material';
 import { Subscription } from 'rxjs';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { RegistrationService } from '../services/registration.service';
-import { RegistrationBasic } from '../models/RegistrationBasic';
 import { TournamentService } from '../services/tournament.service';
 import { Tournament } from '../models/Tournament';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -17,6 +12,13 @@ import { TournamentNewsService } from '../services/tournament-news.service';
 import { TournamentNewsItem } from '../models/TournamentNewsItem';
 import { NavService } from '../services/nav.service';
 
+/**
+ * Entry point for the tournament app SPA.
+ * This homepage includes many child componenet that can be scrolled to.
+ * Scroll is done using third party smoothscroll, due to browser compatibility issues with HTML smooth scroll in Safari.
+ * 
+ * @author Malcolm Roy
+ */
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -36,10 +38,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   tournament: Tournament;
   yearlyData: TournamentYearlyData;
   loading: boolean;
-  year;
+  year: number;
   sponsorList: LinkableImage[] = [];
   courseList: LinkableImage[] = [];
-  fillerBoxes;
   onPhone: boolean;
   newsItems: TournamentNewsItem[];
   courseWidth: number;

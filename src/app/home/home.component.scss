@@ -12,7 +12,9 @@
     min-height: calc(80vh - 90px);
     position:relative;
 }
-
+.spacers{
+    height:5px; width:60%; border: 1px solid; margin-right:20%; margin-left:20%; border-radius:2px;
+}
 .sideButtons{
     position:absolute;
     top:calc(50% - 100px);

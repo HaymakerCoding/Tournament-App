@@ -40,7 +40,7 @@
     </section>
     <br>
 
-    <div class="mt-5 mb-5" [style.backgroundColor]="tournament.navColor" style="height:5px; width:60%; border: 1px solid; margin-right:20%; margin-left:20%; border-radius:2px;"></div>
+    <div class="mt-5 mb-5 spacers" [style.backgroundColor]="tournament.navColor"></div>
     <div class="container">
       <h1 class="text-center mt-3">{{ tournament.header }}</h1>
       <h3 class="text-center mt-4">{{ tournament.subHeader }}</h3>
@@ -48,12 +48,12 @@
         style="border:1px solid black; margin: auto; display: block; margin-top:20px;">Email Subscribe</button>
     </div>
     <!-- news sections-->
-    <section #news>
+    <section>
       <br>
       <div class="container mt-3">
-        <div class="mt-5 mb-5" [style.backgroundColor]="tournament.navColor" style="height:5px; width:60%; border: 1px solid; margin-right:20%; margin-left:20%; border-radius:2px;"></div>
+        <div class="mt-5 mb-5 spacers" [style.backgroundColor]="tournament.navColor"></div>
 
-        <h2 class="text-center">News & Updates</h2>
+        <h2 #news class="text-center">News & Updates</h2>
         <hr>
         <div *ngFor="let news of newsItems" style="width:75%; margin: auto; text-align: center;">
           <div style="color:navy;" [innerHTML]="news.newsDate | date"></div>
@@ -67,19 +67,17 @@
         </div>
       </div>
     </section>
-    <div class="mt-5 mb-1" [style.backgroundColor]="tournament.navColor" style="height:5px; width:60%; border: 1px solid; margin-right:20%; margin-left:20%; border-radius:2px;"></div>
+    <div class="mt-5 mb-1 spacers" [style.backgroundColor]="tournament.navColor"></div>
 
     <!--Chapmions Section-->
-    <div style="height: 50px;" #champions></div>
-    <section class="text-center text-md-left pt-5">
+    <section #champions class="text-center text-md-left pt-5">
       <app-champions [tournament]="tournament"></app-champions>
     </section>
 
-    <div class="mt-5 mb-0" [style.backgroundColor]="tournament.navColor" style="height:5px; width:60%; border: 1px solid; margin-right:20%; margin-left:20%; border-radius:2px;"></div>
+    <div class="mt-5 mb-0 spacers" [style.backgroundColor]="tournament.navColor"></div>
 
     <!--Prize Section-->
-    <div style="height: 40px;" #prizing></div>
-    <section class="section text-center text-md-left mt-5" style="overflow-x:  hidden;">
+    <section #prizing class="section text-center text-md-left mt-5">
       <app-prizing [tournament]="tournament"></app-prizing>
 
       <!--Sponsors for pizing area-->
@@ -97,14 +95,12 @@
     </section>
 
     <!--Rules Section-->
-    <div style="height: 40px;" #rules></div>
-    <section class="section text-center text-md-left mt-4">
+    <section #rules class="section text-center text-md-left mt-4">
       <app-rules [tournament]="tournament"></app-rules>
     </section>
 
     <!--Contact Section-->
-    <div style="height: 40px;" #contact></div>
-    <section class="section sectionContainer text-center text-md-left p-0 m-0">
+    <section #contact class="section sectionContainer text-center text-md-left p-0 m-0">
       <app-contact [tournament]="tournament"></app-contact>
     </section>
 

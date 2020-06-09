@@ -192,7 +192,6 @@ export class CompetitorsComponent implements OnInit, OnDestroy {
         this.matchingRegistrations = this.registrations;
         this.matchingWaitRegistrations = this.waitingRegistrations;
         this.filterMembers(this.divSelected);
-        console.log(this.registrations);
       } else {
         alert('Sorry there was an error fetching registrations. Please try back later.');
         console.error(response);

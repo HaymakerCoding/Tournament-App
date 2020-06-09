@@ -1,0 +1,116 @@
+<div class="container pt-4 pb-4">
+
+    <div *ngIf="loadingPercent < 100">
+        <mat-progress-bar value="{{ loadingPercent }" color="primary" mode="determinate"></mat-progress-bar>
+        <div class="full-width text-center mt-2">Loading</div>
+    </div>
+
+    <div *ngIf="loadingPercent === 100">
+        
+        <div *ngFor="let event of events">
+            <h2 class="text-center"><i>CMPC Live</i> <span style="font-size:16px;" class="ml-2 mr-2">from </span><span [innerHTML]="event.name"></span></h2>
+            <section>
+                <div class="logo-container grey-text">
+                    <span class="text-center">{{ event.date | date }}</span>
+                    <img class="course-logo ml-4 mr-4" *ngIf="event.logo" [src]="event.logo">
+                    <span>{{ event.time }}</span>
+                </div>
+                <button (click)="refreshScores()" class="btn btn-outline-secondary mb-2" style="display: flex; align-items: center; justify-content: center;">
+                    <mat-icon class="mr-2">refresh</mat-icon><span>Refresh results</span>
+                </button>
+            </section>
+            <section>
+            <h3 class="grey-text small-text">Singles</h3>
+            <p *ngIf="CMPCsingles.length < 1">No singles CMPC matches today</p>
+            <div *ngFor="let match of CMPCsingles">
+            <h4>{{ match.division + ' - Round ' + match.round }}</h4>
+            <table class="table full-width table-sm blue-borders mb-5" style="min-width:100%;">
+                <thead>
+                <tr class="blue-headers">
+                    <th>Hole</th>
+                    <th class="text-center" *ngFor="let hole of holes">{{ hole }}</th>
+                    <th rowspan="2" class="text-center" style="vertical-align: middle;">Status after {{ getHolesComplete2players(event, match.player1id, match.player2id) }} holes</th>
+                </tr>
+                <tr style="background-color:lightgray;">
+                    <th>Par</th>
+                    <th class="text-center" *ngFor="let hole of holes">{{ getHolePar(event, hole) }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="cmpc-name-field">
+                        {{ match.player1name }}
+                    </td>
+                    <td class="text-center" *ngFor="let hole of holes">{{ getHoleScore(event, match.player1id, hole) }}</td>
+                    <td class="results-field text-center">{{ calcuteResult(event, match.player1id, match.player2id) }}</td>
+                </tr>
+                <tr>
+                    <td class="cmpc-name-field">
+                        {{  match.player2name  }}
+                    </td>
+                    <td class="text-center" *ngFor="let hole of holes">{{ getHoleScore(event, match.player2id, hole) }}</td>
+                    <td style="border-top:1px solid lightgray;" class="results-field text-center">{{ calcuteResult(event, match.player2id, match.player1id) }}</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+        </section>
+        <hr>
+
+        <!--Doubles CMPC MATCHES-->
+        <section>
+            <h3 class="grey-text small-text">Doubles</h3>
+            <p *ngIf="CMPCdoubles.length < 1">No doubles CMPC matches today</p>
+            <div *ngFor="let match of CMPCdoubles">
+            <h4>{{ match.division + ' - Round ' + match.round }}</h4>
+            <table class="table full-width table-sm blue-borders" style="min-width:100%">
+                <thead>
+                <tr class="blue-headers">
+                    <th>Hole</th>
+                    <th class="text-center" *ngFor="let hole of holes">{{ hole }}</th>
+                    <th rowspan="2" class="text-center" style="vertical-align: middle;">Status after {{ getHolesCompleteCMPCdoubles(event, match) }} holes</th>
+                </tr>
+                <tr style="background-color:lightgray;">
+                    <th>Par</th>
+                    <th class="text-center" *ngFor="let hole of holes">{{ getHolePar(event, hole) }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="cmpc-name-field">
+                    {{ match.player1name }}
+                    </td>
+                    <td class="text-center" *ngFor="let hole of holes">{{ getHoleScore(event, match.player1id, hole) }}</td>
+                    <td rowspan="2" class="results-field text-center align-middle">{{ getMatchResultCMPCdoubles(event, match, 1) }}</td>
+                </tr>
+                <tr>
+                    <td class="cmpc-name-field">
+                    {{ match.player1partnerName }}
+                    </td>
+                    <td class="text-center" *ngFor="let hole of holes">{{ getHoleScore(event, match.player1partnerId, hole) }}</td>
+                </tr>
+                <tr>
+                    <td class="versus-row text-center" colspan="20">VS</td>
+                </tr>
+                <tr>
+                    <td class="cmpc-name-field">
+                    {{ match.player2name  }}
+                    </td>
+                    <td class="text-center" *ngFor="let hole of holes">{{ getHoleScore(event, match.player2id, hole)}}</td>
+                    <td style="border-top:1px solid lightgray;" rowspan="2" class="results-field text-center align-middle">{{ getMatchResultCMPCdoubles(event, match, 2) }}</td>
+                </tr>
+                <tr>
+                    <td class="cmpc-name-field">
+                    {{ match.player2partnerName }}
+                    </td>
+                    <td class="text-center" *ngFor="let hole of holes">{{ getHoleScore(event, match.player2partnerId, hole) }}</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+        </section>
+        </div>
+
+    </div>
+
+</div>

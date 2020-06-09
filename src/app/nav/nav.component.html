@@ -16,8 +16,13 @@
       </a>
       <mat-menu #scoringMenu>
         <a rel="noopener" target="_blank" href="https://scoring.clubeg.golf" mat-menu-item>Scoring App</a>
-        <a routerLink="/results/live" mat-menu-item>Live Results</a>
+        <a routerLink="{{ +tournament.id === 2 ? '/results/cmpc-live' : '/results/live' }}" mat-menu-item>Live Results</a>
         <a routerLink="/results" mat-menu-item>Results</a>
+        <a *ngIf="tournament.id.toString() === '2'" mat-menu-item rel="noopener" target="_blank" href="https://l.messenger.com/l.php?u=https%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2F1oeDSIm2IoW2leIJhaWrSl5j58Fv-nw4k3O3JixW7Jws%2Fedit%23gid%3D1905773890&h=AT1ka-4rhYZyDGPV3rKbyG33doAQuN8DZx0f6Qi0OjKKNnXUNW5FzEQj3q6CLODqZmFaFr_Ncz6ug8yaVAPcr0h646ArwvvTC-1EvHCFRdIwjCVlKQkrWel2ve3-77nl3gQ">
+          Match-ups
+        </a>
+        <a *ngIf="tournament.id.toString() !== '2'" routerLink="/match-ups" mat-menu-item>Match-ups</a>
+        
       </mat-menu>
       <div class="nav-link" style="display: flex; align-items: center;">
         <mat-icon *ngIf="userLoggedIn === true && onPhone === false">account_box</mat-icon>

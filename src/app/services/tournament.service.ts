@@ -34,7 +34,7 @@ export class TournamentService {
     this.host = window.location.hostname;
     // IF running in dev set to city match play for testing
     if (this.host === 'localhost') {
-      this.host = 'dev.ottawasunscramble.golf';
+      this.host = 'www.citymatchplay.golf';
     }
     console.log('Loading data for host: ' + this.host);
   }
@@ -197,6 +197,18 @@ export class TournamentService {
       .pipe(map(response => {
         return response;
     }));
+  }
+
+  /**
+   * Get all matches for the City Match Play Championship that are running in any event today
+   */
+  getCMPCmatchesForToday() {
+    const URL = 'https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/cmpc/get-all-for-today/index.php';
+    return this.http.get<any>(URL)
+      .pipe(map(response => {
+          return response;
+      })
+    );
   }
 
 }

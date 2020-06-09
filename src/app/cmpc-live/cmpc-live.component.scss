@@ -1,0 +1,29 @@
+.blue-headers{
+    background-color:#0472d9; 
+    color:white;
+}
+
+.blue-borders{
+    border:1px solid #0472d9;
+}
+
+.grey-text{
+    color:rgb(113, 107, 107);
+}
+.small-text{
+    font-size:16px;
+}
+.course-logo {
+    width:140px;
+}
+.logo-container{
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.results-field{
+    background-color:#fff8dc;
+    font-weight:500;
+    border-left:1px solid #0472d9;
+}

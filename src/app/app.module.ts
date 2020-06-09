@@ -16,6 +16,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule, MatIconModule, MatInputModule, MatSelectModule, MatSliderModule, MatToolbarModule,
 MatCardModule, MatSlideToggleModule, MatListModule, MatTableModule, MatExpansionModule } from '@angular/material';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -45,6 +46,7 @@ import { SubscribeComponent } from './subscribe/subscribe.component';
 import { FaqComponent } from './faq/faq.component';
 import { LiveResultsComponent } from './live-results/live-results.component';
 import { ResultsComponent } from './results/results.component';
+import { CmpcLiveComponent } from './cmpc-live/cmpc-live.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +73,8 @@ import { ResultsComponent } from './results/results.component';
     SubscribeComponent,
     FaqComponent,
     LiveResultsComponent,
-    ResultsComponent
+    ResultsComponent,
+    CmpcLiveComponent
   ],
   imports: [
     BrowserModule,
@@ -83,7 +86,7 @@ import { ResultsComponent } from './results/results.component';
     MatDialogModule, MatTabsModule, MatSnackBarModule, MatRadioModule, MatCheckboxModule, MatSidenavModule,
     MatButtonModule, MatIconModule, MatInputModule, MatSelectModule, MatSliderModule, MatToolbarModule, MatMenuModule,
     MatCardModule, MatSlideToggleModule, MatListModule, MatTableModule, MatProgressSpinnerModule, MatExpansionModule,
-    MatDatepickerModule, MatTooltipModule
+    MatDatepickerModule, MatTooltipModule, MatProgressBarModule,
   ],
   providers: [
     AuthService

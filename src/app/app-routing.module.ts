@@ -17,6 +17,7 @@ import { SubscribeComponent } from './subscribe/subscribe.component';
 import { FaqComponent } from './faq/faq.component';
 import { ResultsComponent } from './results/results.component';
 import { LiveResultsComponent } from './live-results/live-results.component';
+import { CmpcLiveComponent } from './cmpc-live/cmpc-live.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -34,7 +35,8 @@ const routes: Routes = [
   { path: 'subscribe', component: SubscribeComponent },
   { path: 'faq', component: FaqComponent },
   { path: 'results', component: ResultsComponent },
-  { path: 'results/live', component: LiveResultsComponent},
+  { path: 'results/live', component: LiveResultsComponent },
+  { path: 'results/cmpc-live', component: CmpcLiveComponent },
   { path: '**',
     redirectTo: 'home',
     pathMatch: 'full',

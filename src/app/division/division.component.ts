@@ -150,7 +150,6 @@ export class DivisionComponent implements OnInit, OnDestroy {
       if (response.status === 200) {
         this.divisions = response.payload;
         this.divSelected = this.divisions.find(x => +x.id === +this.divisionId);
-        console.log(this.divisions);
       } else {
         alert('Sorry, there was an error getting the division list');
         console.error(response);

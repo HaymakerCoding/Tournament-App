@@ -1,1 +1,13 @@
-<p>live-results works!</p>
+<div class="container pt-4 pb-4">
+
+    <div *ngIf="loadingPercent < 100">
+        <mat-progress-bar value="{{ loadingPercent }" color="primary" mode="determinate"></mat-progress-bar>
+        <div class="full-width text-center mt-2">Loading</div>
+    </div>
+
+    <div *ngIf="loadingPercent === 100">
+        <p>Sorry no live results available for this tournament yet. Try back soon!</p>
+    </div>
+    
+
+</div>
