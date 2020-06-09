@@ -6,7 +6,7 @@ import { TournamentBase } from '../tournamentBase';
 import { TournamentService } from '../services/tournament.service';
 import { Title } from '@angular/platform-browser';
 import { PlayerScores } from '../models/PlayerScores';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 /**
  * Results specific to City Match Play Championship.
