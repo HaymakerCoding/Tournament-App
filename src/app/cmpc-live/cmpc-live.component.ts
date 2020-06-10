@@ -22,8 +22,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class CmpcLiveComponent extends TournamentBase implements OnDestroy, OnInit {
 
-  CMPCsingles: CMPCmatch[];
-  CMPCdoubles: CMPCmatch[];
+  
   events: CMPCevent[];
   holes: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 
@@ -50,20 +49,24 @@ export class CmpcLiveComponent extends TournamentBase implements OnDestroy, OnIn
 
    /**
    * Fetch all matches that are flagged as CMPC. These can be single or doubles format, organize as such.
+   * Payload contains both the events and the matches
    */
   getCMPCmatches() {
     this.subscriptions.push(this.tournamentService.getCMPCmatchesForToday().subscribe(response => {
       if (response.status === 200) {
+        console.log(response);
         if (response.payload) {
-          this.CMPCsingles = [];
-          this.CMPCdoubles = [];
           const cmpcMatches: any[] = response.payload.matches;
           this.events = response.payload.events;
+          this.events.forEach(e => {
+            e.CMPCsingles = [];
+            e.CMPCdoubles = [];
+          });
           cmpcMatches.forEach(match => {
             if (match.type === 'Singles') {
-              this.CMPCsingles.push(match);
+              this.events.find(event => +event.id === +match.eventId).CMPCsingles.push(match);
             } else {
-              this.CMPCdoubles.push(match);
+              this.events.find(event => +event.id === +match.eventId).CMPCdoubles.push(match);
             }
           });
         }
@@ -334,6 +337,8 @@ interface CMPCevent{
   time: any;
   pars: Par[];
   playerScores: PlayerScores[];
+  CMPCsingles: CMPCmatch[];
+  CMPCdoubles: CMPCmatch[];
 }
 
 interface Par{

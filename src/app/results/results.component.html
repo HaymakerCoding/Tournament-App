@@ -1,11 +1,86 @@
 <div class="container pt-4 pb-4">
 
     <div *ngIf="loadingPercent < 100">
-        <mat-progress-bar value="{{ loadingPercent }" color="primary" mode="determinate"></mat-progress-bar>
+        <mat-progress-bar value="{{ getLoadingPercent() }" color="primary" mode="determinate"></mat-progress-bar>
         <div class="full-width text-center mt-2">Loading</div>
     </div>
     <div *ngIf="loadingPercent === 100">
         <h1 class="text-center">{{ tournament.name + ' Results'}}</h1>
+        <br>
+        <div class="flex-center">
+            <mat-form-field appearance="outline">
+                <mat-label>Year</mat-label>
+                <mat-select (selectionChange)="onYearChange()" [(ngModel)]="yearSelected">
+                    <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="ml-2" appearance="outline">
+                <mat-label>Division</mat-label>
+                <mat-select (selectionChange)="setDivMatches()" [(ngModel)]="divisionSelected">
+                    <mat-option *ngFor="let div of divisions" [value]="div">{{ div.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <p *ngIf="noResults && noResults === true">Sorry results for this tournament are not in place yet, try back soon!</p>
+
+        <div *ngIf="+tournament.id === 2">
+            <!--CMPC RESULTS-->
+            <div *ngFor="let round of cmpcRounds">
+                <div class="round-heading">
+                    {{ round === '1' || round === '2' ? 'Round ' + round : round }}
+                </div>
+                <br>
+                <p *ngIf="getRoundMatches(round).length < 1">No matches found in this division</p>
+                <div *ngFor="let match of getRoundMatches(round)">
+                    
+                    <div *ngIf="match.type === 'Singles'" >
+                        <mat-expansion-panel >
+                            <mat-expansion-panel-header [collapsedHeight]="'200px'" [expandedHeight]="'200px'">
+                                <div class="match-containers">
+                                    <h4>
+                                        <span class="player-names">{{ match.player1name }}</span> &nbsp;<b>VS</b>&nbsp; <span class="player-names">{{ match.player2name }}</span>
+                                    </h4>
+                                    <h5 class="fun-text">{{ match.courseName }}</h5>
+                                    <span class="grey-text small-text">{{ match.time }}</span>
+                                    <img class="match-logos ml-3 mr-3" [src]="match.courseLogo" alt="match.courseName">
+                                    <span class="grey-text small-text">{{ match.date }}</span>
+                                </div>
+                                <hr>
+                            </mat-expansion-panel-header>
+                            <p>TODO get scores</p>
+                            <table class="table table-small full-width">
+                                <thead>
+                                    <tr class="blue-headers">
+                                        <th >Hole</th>
+                                        <th class="text-center" *ngFor="let par of match.pars">{{ par.hole }}</th>
+                                    </tr>
+                                    <tr style="background-color:lightgray;">
+                                        <th>Par</th>
+                                        <th class="text-center" *ngFor="let par of match.pars">{{ par.par }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ match.player1name }}</td>
+                                        <td class="text-center" *ngFor="let par of match.pars">{{ getHoleScore(par.hole) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ match.player2name }}</td>
+                                        <td class="text-center" *ngFor="let par of match.pars">{{ getHoleScore(par.hole) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </mat-expansion-panel>
+                    </div>
+                    <div *ngIf="match.type === 'Doubles'">
+                        {{ match.player1name + ' and ' +  match.player1partnerName }} VS {{ match.player2name + ' and  ' + match.player2partnerName }}
+                    </div>
+                </div>
+                <br>
+            </div>
+        </div>
+
     </div>
 
 </div>

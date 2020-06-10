@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Tournament } from '../models/Tournament';
 import { TournamentYearlyData } from '../models/TournamentYearlyData';
-import { Observable } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'

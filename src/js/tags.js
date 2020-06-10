@@ -16,7 +16,7 @@ switch(host) {
     break;
   }
 }
-console.log(id);
+
 // Google Tag Manager
 /*
 (w,d,s,l,i) => {
@@ -37,6 +37,7 @@ console.log('loaded: ' + URL)
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
+
 
 function getId() {
   console.log('get id called, ' + id);

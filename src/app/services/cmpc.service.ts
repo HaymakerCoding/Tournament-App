@@ -40,4 +40,18 @@ export class CmpcService {
     );
   }
 
+  /**
+   * Get all match results for the CMPC tournament, by year
+   * @param year 4 digit year, but in string format to satisfy Params
+   */
+  getResultsByYear(year: string) {
+    const params = new HttpParams().set('year', year);
+    const URL = 'https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/cmpc/get-all-by-year/index.php';
+    return this.http.get<any>(URL, { params })
+      .pipe(map(response => {
+          return response;
+      })
+    );
+  }
+
 }

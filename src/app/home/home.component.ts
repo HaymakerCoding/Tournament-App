@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import smoothscroll from 'smoothscroll-polyfill';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { TournamentService } from '../services/tournament.service';
 import { Tournament } from '../models/Tournament';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 import { TournamentYearlyData } from '../models/TournamentYearlyData';
 import { Title } from '@angular/platform-browser';
@@ -47,7 +47,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   sponsorWidth: number;
 
   constructor(
-    private dialog: MatDialog,
     private tournamentService: TournamentService,
     private breakpointOberver: BreakpointObserver,
     private router: Router,
@@ -62,7 +61,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.year = new Date().getFullYear();
     this.loading = true;
     this.userLoggedIn = false;
-    smoothscroll.polyfill();
+    // smoothscroll.polyfill();
     this.getTournament();
     this.initNavService();
   }
@@ -105,7 +104,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (!this.yearlyData) {
       this.subscriptions.push(this.tournamentService.setYearlyData().subscribe(response => {
         this.yearlyData = response.payload;
-        console.log(this.yearlyData);
         this.initCourseAndSponsors();
       }));
     } else {
@@ -261,7 +259,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   scrollTo(element) {
+    // element.scrollIntoView(true);
     element.scrollIntoView({ behavior: 'smooth', block: 'start'});
+
   }
 
 }

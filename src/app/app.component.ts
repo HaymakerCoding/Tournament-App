@@ -13,6 +13,7 @@ declare var getId;
 export class AppComponent {
   title = 'tournament-app';
 
+  /*
   constructor(router: Router) {
     const navEndEvents = router.events.pipe(
       filter(event => event instanceof NavigationEnd),
@@ -23,5 +24,6 @@ export class AppComponent {
       });
     });
   }
+  */
 
 }

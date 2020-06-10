@@ -21,9 +21,20 @@ export class CMPCmatch {
     public player2partnerName: string,
     public result: string,
     public updatedAt: any,
-    public playoffWinner: string
+    public playoffWinner: string,
+    public courseId: number,
+    public courseName: string,
+    public courseLogo: string,
+    public date: any,
+    public time: any,
+    public pars: Par[] 
   ) {}
 
+}
+
+export interface Par{
+  hole: number,
+  par: number
 }
 
 

@@ -1,0 +1,30 @@
+.flex-center{
+    display:flex; 
+    width:100%; 
+    justify-content: center;
+}
+.match-logos{
+    width:80px;
+}
+.match-containers{
+    width:100%;
+    text-align: center;
+    padding:5px;
+}
+
+.grey-text{
+    color:rgb(113, 107, 107);
+}
+.small-text{
+    font-size:16px;
+}
+.player-names{
+    color:navy;
+}
+.round-heading{
+    background-image: linear-gradient(to right, #000080, #174a96); color:white; padding:10px; font-size:22px; font-weight: 600; border-radius: 4px;
+}
+.blue-headers{
+    background-color:#0472d9; 
+    color:white;
+}
