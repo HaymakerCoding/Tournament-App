@@ -34,6 +34,10 @@ export abstract class TournamentBase implements OnInit, OnDestroy {
     this.loadingPercent = percent;
   }
 
+  getLoadingPercent() {
+    return this.loadingPercent;
+  }
+
   /**
    * Basic data pull of tournament based on host url. Gives us the tournament we are dealing with.
    */

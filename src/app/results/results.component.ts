@@ -9,6 +9,7 @@ import { CMPCmatch } from '../models/CMPCmatch';
 
 /**
  * Show the results of matches for a tournament. Selectable by year and division.
+ * Let's try and make this work as a point for all tournaments, splitting out to different functions or components as need for specific tournament needs.
  * 
  * @author Malcolm Roy
  */
@@ -67,9 +68,12 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     }));
   }
 
+  /**
+   * User changed year of tournament. Fetch results for new year selected
+   */
   onYearChange() {
     this.setLoadingPercent(70);
-    this.getCMPCresults();
+    this.getResults();
   }
 
   getLoadingPercent() {
@@ -92,6 +96,9 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     }));
   }
 
+  /**
+   * Generic get Results function. We can set different paths for different tournaments here.
+   */
   getResults() {
     if (+this.tournament.id === 2) {
       this.getCMPCresults();
@@ -109,6 +116,7 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     this.subscriptions.push(this.cmpcService.getResultsByYear(this.yearSelected.toString()).subscribe(response => {
       if (response.status === 200) {
         this.allCmpcMatches = response.payload;
+        console.log(this.allCmpcMatches);
         this.setLoadingPercent(90);
         this.setDivMatches();
       } else {
@@ -130,11 +138,21 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     return this.divisionalCmpcMatches.filter(x => x.round.toLowerCase() === round.toLowerCase());
   }
 
-  getHoleScore(hole: number) {
-    return 0;
+  /**
+   * Return the score a player got on a specific hole
+   * @param hole Hole number
+   * @param scores Array of Score objs holding score->hole combo for player
+   */
+  getHoleScore(hole: number, scores: Score[]) {
+    return scores.find(x => x.hole === hole).score;
   }
 
 
 
+}
+
+interface Score{
+  hole: number,
+  score: number
 }
 

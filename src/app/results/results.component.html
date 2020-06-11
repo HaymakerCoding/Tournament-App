@@ -33,10 +33,10 @@
                 <br>
                 <p *ngIf="getRoundMatches(round).length < 1">No matches found in this division</p>
                 <div *ngFor="let match of getRoundMatches(round)">
-                    
+                    <!--SINGLES-->
                     <div *ngIf="match.type === 'Singles'" >
                         <mat-expansion-panel >
-                            <mat-expansion-panel-header [collapsedHeight]="'200px'" [expandedHeight]="'200px'">
+                            <mat-expansion-panel-header [collapsedHeight]="'180px'" [expandedHeight]="'180px'">
                                 <div class="match-containers">
                                     <h4>
                                         <span class="player-names">{{ match.player1name }}</span> &nbsp;<b>VS</b>&nbsp; <span class="player-names">{{ match.player2name }}</span>
@@ -48,7 +48,6 @@
                                 </div>
                                 <hr>
                             </mat-expansion-panel-header>
-                            <p>TODO get scores</p>
                             <table class="table table-small full-width">
                                 <thead>
                                     <tr class="blue-headers">
@@ -62,19 +61,68 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>{{ match.player1name }}</td>
-                                        <td class="text-center" *ngFor="let par of match.pars">{{ getHoleScore(par.hole) }}</td>
+                                        <td class="player-names">{{ match.player1name }}</td>
+                                        <td class="text-center" *ngFor="let par of match.pars">{{ getHoleScore(par.hole, match.p1scores.scores) }}</td>
                                     </tr>
                                     <tr>
-                                        <td>{{ match.player2name }}</td>
-                                        <td class="text-center" *ngFor="let par of match.pars">{{ getHoleScore(par.hole) }}</td>
+                                        <td class="player-names">{{ match.player2name }}</td>
+                                        <td class="text-center" *ngFor="let par of match.pars">{{ getHoleScore(par.hole, match.p2scores.scores) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </mat-expansion-panel>
                     </div>
+                    <!--DOUBLES-->
                     <div *ngIf="match.type === 'Doubles'">
-                        {{ match.player1name + ' and ' +  match.player1partnerName }} VS {{ match.player2name + ' and  ' + match.player2partnerName }}
+                        <mat-expansion-panel >
+                            <mat-expansion-panel-header [collapsedHeight]="'180px'" [expandedHeight]="'180px'">
+                                <div class="match-containers">
+                                    <h4>
+                                        <span class="player-names">{{ match.player1name + ' and ' + match.player1partnerName }}</span>
+                                         &nbsp;<b>VS</b>&nbsp; 
+                                         <span class="player-names">{{ match.player2name + ' and ' + match.player2partnerName }}</span>
+                                    </h4>
+                                    <h5 class="fun-text">{{ match.courseName }}</h5>
+                                    <span class="grey-text small-text">{{ match.time }}</span>
+                                    <img class="match-logos ml-3 mr-3" [src]="match.courseLogo" alt="match.courseName">
+                                    <span class="grey-text small-text">{{ match.date }}</span>
+                                </div>
+                                <hr>
+                            </mat-expansion-panel-header>
+                            <table class="table table-small full-width">
+                                <thead>
+                                    <tr class="blue-headers">
+                                        <th >Hole</th>
+                                        <th class="text-center" *ngFor="let par of match.pars">{{ par.hole }}</th>
+                                    </tr>
+                                    <tr style="background-color:lightgray;">
+                                        <th>Par</th>
+                                        <th class="text-center" *ngFor="let par of match.pars">{{ par.par }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="player-names">{{ match.player1name }}</td>
+                                        <td class="text-center" *ngFor="let par of match.pars">{{ getHoleScore(par.hole, match.p1scores.scores) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="player-names">{{ match.player1partnerName }}</td>
+                                        <td class="text-center" *ngFor="let par of match.pars">{{ getHoleScore(par.hole, match.p1partnerScores.scores) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center" style="color:orange; font-weight: 600;" colspan="19">VS</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="player-names">{{ match.player2name }}</td>
+                                        <td class="text-center" *ngFor="let par of match.pars">{{ getHoleScore(par.hole, match.p2scores.scores) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="player-names">{{ match.player2partnerName }}</td>
+                                        <td class="text-center" *ngFor="let par of match.pars">{{ getHoleScore(par.hole, match.p2partnerScores.scores) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </mat-expansion-panel>
                     </div>
                 </div>
                 <br>
