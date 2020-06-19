@@ -43,14 +43,14 @@
                                     {{ match.player1name }}
                                 </td>
                                 <td class="text-center" *ngFor="let hole of holes">{{ getHoleScore(event, match.player1id, hole) }}</td>
-                                <td class="results-field text-center">{{ calcuteResult(event, match.player1id, match.player2id) }}</td>
+                                <td class="results-field text-center">{{ calcuteResult(event, match.player1id, match.player2id, match) }}</td>
                             </tr>
                             <tr>
                                 <td class="cmpc-name-field">
                                     {{  match.player2name  }}
                                 </td>
                                 <td class="text-center" *ngFor="let hole of holes">{{ getHoleScore(event, match.player2id, hole) }}</td>
-                                <td style="border-top:1px solid lightgray;" class="results-field text-center">{{ calcuteResult(event, match.player2id, match.player1id) }}</td>
+                                <td style="border-top:1px solid lightgray;" class="results-field text-center">{{ calcuteResult(event, match.player2id, match.player1id, match) }}</td>
                             </tr>
                             </tbody>
                         </table>

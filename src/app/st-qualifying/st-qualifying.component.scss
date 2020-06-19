@@ -1,0 +1,17 @@
+.spot-reg, .spot-top{
+    min-height: 30px;
+    min-width: 100%;
+    border-bottom:1px solid lightgray;
+    text-align: center;
+}
+.spot-top{
+    background-color: rgb(255, 190, 116);
+    border-bottom: 1px solid #f77c08;
+    color:navy;
+}
+.blue-gradient{
+    background-image: linear-gradient(#174a96, #000080);
+    color:white;
+    margin-bottom: 0;
+    padding:8px;
+}

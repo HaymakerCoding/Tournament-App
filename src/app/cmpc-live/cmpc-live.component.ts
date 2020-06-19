@@ -48,7 +48,7 @@ export class CmpcLiveComponent extends TournamentBase implements OnDestroy, OnIn
   }
 
    /**
-   * Fetch all matches that are flagged as CMPC. These can be single or doubles format, organize as such.
+   * Fetch all matches that are flagged as CMPC. These can be single or doubles format, organized as such.
    * Payload contains both the events and the matches
    */
   getCMPCmatches() {
@@ -243,7 +243,7 @@ export class CmpcLiveComponent extends TournamentBase implements OnDestroy, OnIn
    * @param activePlayerNumber The group number for the selected player
    * @param opponentNumber The group number for the opponent comparing with
    */
-  calcuteResult(event:CMPCevent, activePlayerNumber: number, opponentNumber: number): string {
+  calcuteResult(event:CMPCevent, activePlayerNumber: number, opponentNumber: number, match: CMPCmatch): string {
     let p1Total = 0;
     let p2Total = 0;
     let holesLeftToPlay = 18;
@@ -259,7 +259,9 @@ export class CmpcLiveComponent extends TournamentBase implements OnDestroy, OnIn
           p2Total++;
         }
         if (holesLeftToPlay === 0 && p1Total === p2Total && activePlayerNumber !== opponentNumber) {
-          return 'Draw';
+          // IF we have a playoff winner SET then that means there was a playoff and we need to show that winner, else regular 'draw' text is return
+          const activePlayerName = match.player1id === activePlayerNumber ? match.player1name : match.player2name;
+          return (match && match.playoffWinner) ? match.playoffWinner === activePlayerName ? 'Playoff Winner' : 'Playoff Loser' : 'Draw';
         } else if (holesLeftToPlay === 0 && p1Total > p2Total && (p1Total - p2Total === 2)) {
           return 'Won 2 up';
         } else if (p1Total > (p2Total + holesLeftToPlay)) {
@@ -269,6 +271,7 @@ export class CmpcLiveComponent extends TournamentBase implements OnDestroy, OnIn
         } 
       }
     }
+    // If we get to this point that means the match is not finished, so we show the status of the match as far as up or down x points vs other player
     const difference = p1Total > p2Total ? (p1Total - p2Total) : p2Total > p1Total ? (p2Total - p1Total) : 0;
     if (activePlayerNumber === opponentNumber) {
       return null;
@@ -326,6 +329,7 @@ export class CmpcLiveComponent extends TournamentBase implements OnDestroy, OnIn
       }
     }
   }
+
  
 
 }
@@ -339,6 +343,7 @@ interface CMPCevent{
   playerScores: PlayerScores[];
   CMPCsingles: CMPCmatch[];
   CMPCdoubles: CMPCmatch[];
+  playoffWinner: string;
 }
 
 interface Par{

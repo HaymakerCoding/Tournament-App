@@ -3,13 +3,19 @@
     <section #headerImg id="headerImg" [style.backgroundImage]="onPhone === false ? 'url('+tournament.headerImage+')' : 'url('+tournament.phoneHeader+')'">
     </section>
   </a>
-  <nav [class.sticky]="checkStickyNav(topNav)" #topNav class="navbar navbar-light" id="topNav" [style.backgroundColor]="tournament.navColor">
+  <nav [class.sticky]="checkStickyNav(headerImg)" #topNav class="navbar navbar-light" id="topNav" [style.backgroundColor]="tournament.navColor">
 
     <!--center nav always show links-->
     <div class="navLinksCentered mx-auto" style="display: flex; justify-content: center; padding-left:65px; width:calc(100% - 65px);">
 
-      <a class="nav-link" routerLinkActive="active-link" routerLink="register">Register</a>
-      <a class="nav-link" outerLinkActive="active-link" routerLink="divisions">Divisions</a>
+      <a class="nav-link" *ngIf="+tournament.id !== 14" routerLinkActive="active-link" routerLink="register">Register</a>
+      <a class="nav-link" *ngIf="+tournament.id === 14" routerLinkActive="active-link" [matMenuTriggerFor]="stRegMenu">Register</a>
+      <mat-menu #stRegMenu>
+        <a routerLink="commish-st-reg" mat-menu-item>ST Qualifying</a>
+        <a routerLink="commish-guest-reg" mat-menu-item>Guest Team</a>
+      </mat-menu>
+      <a class="nav-link" *ngIf="+tournament.id !== 14" routerLinkActive="active-link" routerLink="divisions">Divisions</a>
+      <a class="nav-link" *ngIf="+tournament.id === 14" routerLinkActive="active-link" routerLink="st-qualifying">ST Qualifying</a>
       <a class="nav-link" routerLinkActive="active-link" routerLink="competitors" *ngIf="onPhone === false">Competitors</a>
       <a class="nav-link"
         [matMenuTriggerFor]="scoringMenu">Scoring
@@ -18,7 +24,7 @@
         <a rel="noopener" target="_blank" href="https://scoring.clubeg.golf" mat-menu-item>Scoring App</a>
         <a routerLink="{{ +tournament.id === 2 ? '/results/cmpc-live' : '/results/live' }}" mat-menu-item>Live Results</a>
         <a routerLink="/results" mat-menu-item>Results</a>
-        <a *ngIf="tournament.id.toString() === '2'" mat-menu-item rel="noopener" target="_blank" href="https://l.messenger.com/l.php?u=https%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2F1oeDSIm2IoW2leIJhaWrSl5j58Fv-nw4k3O3JixW7Jws%2Fedit%23gid%3D1905773890&h=AT1ka-4rhYZyDGPV3rKbyG33doAQuN8DZx0f6Qi0OjKKNnXUNW5FzEQj3q6CLODqZmFaFr_Ncz6ug8yaVAPcr0h646ArwvvTC-1EvHCFRdIwjCVlKQkrWel2ve3-77nl3gQ">
+        <a *ngIf="tournament.id.toString() === '2'" mat-menu-item rel="noopener" target="_blank" href="https://drive.google.com/open?id=1oeDSIm2IoW2leIJhaWrSl5j58Fv-nw4k3O3JixW7Jws">
           Match-ups
         </a>
         <a *ngIf="tournament.id.toString() !== '2'" routerLink="/match-ups" mat-menu-item>Match-ups</a>

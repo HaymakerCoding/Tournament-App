@@ -14,109 +14,115 @@
             </div>
 
             <div *ngIf="userLoggedIn === true">
-              <h1 class="text-center text-md-left mt-3">Registration for {{ userName }}</h1>
-              <div *ngIf="userRegistered === false">
-                <!--Not Registered-->
-                <br>
-                <h3>Choose your division(s):</h3>
-                <br>
-                <div class="row">
-                  <div class="col-12 col-md-4">
-                    <div  *ngFor="let option of leftList; let i = index">
-                      <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
-                      <br>
-                      <div class="ml-4" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
-                        <b>Partner:</b> {{ getSelectedPartner(option) }}
-                        <button mat-button (click)="openMemberSearch(memberSearch, option, null)">
-                          {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
-                        </button>
+
+              <!--SPECIFIC commish cup registration in child component-->
+              <app-commish-st-reg *ngIf="+tournament.id === 14"></app-commish-st-reg>
+              
+              <div *ngIf="+tournament.id !== 14">
+                <h1 class="text-center text-md-left mt-3">Registration for {{ userName }}</h1>
+                <div *ngIf="userRegistered === false">
+                  <!--Not Registered-->
+                  <br>
+                  <h3>Choose your division(s):</h3>
+                  <br>
+                  <div class="row">
+                    <div class="col-12 col-md-4">
+                      <div  *ngFor="let option of leftList; let i = index">
+                        <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
+                        <br>
+                        <div class="ml-4" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
+                          <b>Partner:</b> {{ getSelectedPartner(option) }}
+                          <button mat-button (click)="openMemberSearch(memberSearch, option, null)">
+                            {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
+                          </button>
+                        </div>
+                        <br>
                       </div>
-                      <br>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <div  *ngFor="let option of centerList; let i = index">
+                        <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
+                        <br>
+                        <div class="ml-4" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
+                          <b>Partner:</b> {{ getSelectedPartner(option) }}
+                          <button mat-button (click)="openMemberSearch(memberSearch, option, null)">
+                            {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
+                          </button>
+                        </div>
+                        <br>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <div  *ngFor="let option of rightList; let i = index">
+                        <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
+                        <br>
+                        <div class="ml-4" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
+                          <b>Partner:</b> {{ getSelectedPartner(option) }}
+                          <button mat-button (click)="openMemberSearch(memberSearch, option, null)">
+                            {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
+                          </button>
+                        </div>
+                        <br>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-12 col-md-4">
-                    <div  *ngFor="let option of centerList; let i = index">
-                      <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
-                      <br>
-                      <div class="ml-4" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
-                        <b>Partner:</b> {{ getSelectedPartner(option) }}
-                        <button mat-button (click)="openMemberSearch(memberSearch, option, null)">
-                          {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
-                        </button>
-                      </div>
-                      <br>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-4">
-                    <div  *ngFor="let option of rightList; let i = index">
-                      <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
-                      <br>
-                      <div class="ml-4" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
-                        <b>Partner:</b> {{ getSelectedPartner(option) }}
-                        <button mat-button (click)="openMemberSearch(memberSearch, option, null)">
-                          {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
-                        </button>
-                      </div>
-                      <br>
-                    </div>
-                  </div>
+                  <button [style.backgroundColor]="tournament.buttonColor" mat-raised-button class="mt-3 mb-4" color="primary" (click)="saveMemberReg()">Submit Registration</button>
                 </div>
-                <button [style.backgroundColor]="tournament.buttonColor" mat-raised-button class="mt-3 mb-4" color="primary" (click)="saveMemberReg()">Submit Registration</button>
-              </div>
 
-              <!--Message for when user first registers. Remove all else-->
-              <div *ngIf="justRegistered === true">
-                <p>Thank you for registering!</p>
-                <p>A member of our team will be in touch shortly to confirm your registration.</p>
-              </div>
-
-              <div *ngIf="userRegistered === true && justRegistered === false" >
-                <!--Registered-->
-                <hr>
-                <h4>You are registered for the following {{ userRegistrations.length }} division(s):</h4>
-                <br>
-                <div class="row">
-                  <div class="col-12 col-md-4">
-                    <div  *ngFor="let option of leftList; let i = index">
-                      <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
-                      <br>
-                      <div class="ml-4 mb-3" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
-                        <b>Partner:</b> {{ getSelectedPartner(option) }}
-                        <button (click)="openMemberSearch(memberSearch, option, getPartner(option))" mat-button color="primary">
-                          {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-4">
-                    <div  *ngFor="let option of centerList; let i = index">
-                      <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
-                      <br>
-                      <div class="ml-4 mb-3" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
-                        <b>Partner:</b> {{ getSelectedPartner(option) }}
-                        <button (click)="openMemberSearch(memberSearch, option, getPartner(option))" mat-button color="primary">
-                          {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-4">
-                    <div  *ngFor="let option of rightList; let i = index">
-                      <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
-                      <br>
-                      <div class="ml-4 mb-3" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
-                        <b>Partner:</b> {{ getSelectedPartner(option) }}
-                        <button (click)="openMemberSearch(memberSearch, option, getPartner(option))" mat-button color="primary">
-                          {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                <!--Message for when user first registers. Remove all else-->
+                <div *ngIf="justRegistered === true">
+                  <p>Thank you for registering!</p>
+                  <p>A member of our team will be in touch shortly to confirm your registration.</p>
                 </div>
-                <br>
-                <p *ngIf="unsavedChanges === true" [style.color]="'orange'">! You have unsaved changes, don't forget to save</p>
-                <button [style.backgroundColor]="tournament.buttonColor" mat-raised-button (click)="saveMemberReg()" color="primary">Save changes</button>
 
+                <div *ngIf="userRegistered === true && justRegistered === false" >
+                  <!--Registered-->
+                  <hr>
+                  <h4>You are registered for the following {{ userRegistrations.length }} division(s):</h4>
+                  <br>
+                  <div class="row">
+                    <div class="col-12 col-md-4">
+                      <div  *ngFor="let option of leftList; let i = index">
+                        <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
+                        <br>
+                        <div class="ml-4 mb-3" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
+                          <b>Partner:</b> {{ getSelectedPartner(option) }}
+                          <button (click)="openMemberSearch(memberSearch, option, getPartner(option))" mat-button color="primary">
+                            {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <div  *ngFor="let option of centerList; let i = index">
+                        <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
+                        <br>
+                        <div class="ml-4 mb-3" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
+                          <b>Partner:</b> {{ getSelectedPartner(option) }}
+                          <button (click)="openMemberSearch(memberSearch, option, getPartner(option))" mat-button color="primary">
+                            {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <div  *ngFor="let option of rightList; let i = index">
+                        <mat-checkbox  [checked]="isDivisionChosen(option.id)" (change)="adjustDivisions($event, option)">{{ option.name }}</mat-checkbox>
+                        <br>
+                        <div class="ml-4 mb-3" *ngIf="option.type === 'doubles' && isDivisionChosen(option.id)">
+                          <b>Partner:</b> {{ getSelectedPartner(option) }}
+                          <button (click)="openMemberSearch(memberSearch, option, getPartner(option))" mat-button color="primary">
+                            {{ getSelectedPartner(option) ? 'Change' : 'Choose' }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <p *ngIf="unsavedChanges === true" [style.color]="'orange'">! You have unsaved changes, don't forget to save</p>
+                  <button [style.backgroundColor]="tournament.buttonColor" mat-raised-button (click)="saveMemberReg()" color="primary">Save changes</button>
+
+                </div>
               </div>
             </div>
           </div>

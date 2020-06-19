@@ -1,0 +1,71 @@
+<div *ngIf="loadingPercent < 100">
+    <mat-progress-bar value="{{ loadingPercent }" color="primary" mode="determinate"></mat-progress-bar>
+    <div class="full-width text-center mt-2">Loading</div>
+</div>
+
+<div *ngIf="loadingPercent === 100">
+
+    <div class="year-box">
+        <mat-form-field appearance="outline">
+            <mat-label>Year</mat-label>
+            <mat-select (selectionChange)="onYearChange()" [(ngModel)]="yearSelected">
+                <mat-option [value]="year" *ngFor="let year of years">{{ year }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <br>
+        <mat-button-toggle-group [(ngModel)]="teamShown" #group="matButtonToggleGroup">
+            <mat-button-toggle [value]="1">ST Teams</mat-button-toggle>
+            <mat-button-toggle [value]="2">Guest Teams</mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+    <br>
+
+    <div *ngIf="teamShown === 1">
+        <div *ngFor="let team of STteams">
+            <div class="centered-box">
+                <h2 class="fun-text">{{ 'Slammer Team ' + team.name }}</h2>
+                <img *ngIf="team.captainPic" class="captain-avatars" [src]="team.captainPic">
+                <mat-icon *ngIf="!team.captainPic" class="captain-avatars">account_box</mat-icon>
+                <h3 class="navy">Captain {{ team.captain ? team.captain : 'TBD' }}</h3>
+            </div>
+
+            <table class="table table-sm full-width">
+                <tr class="slammer-gradient">
+                    <th>Name</th>
+                    <th>Driving</th>
+                    <th>Tees</th>
+                    <th>ST Median</th>
+                    <th>Personal Scoring Avg</th>
+                    <th>ClubEG Scoring Avg</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div *ngIf="teamShown === 2">
+        <div *ngFor="let team of guestTeams">
+            <div class="centered-box">
+                <h2 class="fun-text">{{ team.name }}</h2>
+                <img *ngIf="team.captainPic" class="captain-avatars" [src]="team.captainPic">
+                <mat-icon *ngIf="!team.captainPic" class="captain-avatars">account_box</mat-icon>
+                <h3 class="navy">Captain {{ team.captain ? team.captain : 'TBD' }}</h3>
+            </div>
+
+            <table class="table table-sm full-width">
+                <tr class="slammer-gradient">
+                    <th>Name</th>
+                    <th>Driving</th>
+                    <th>Tees</th>
+                    <th>ST Median</th>
+                    <th>Personal Scoring Avg</th>
+                    <th>ClubEG Scoring Avg</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    
+     
+
+
+</div>

@@ -1,0 +1,28 @@
+<div class="container pt-4 pb-4" *ngIf="loadingPercent === 100">
+
+    <h1>Register a Guest Team</h1>
+    <br>
+    <div *ngIf="formSent === true">
+        <p>Thank you for your interest in registering a guest team. We will be in touch.</p>
+    </div>
+    <form *ngIf="formSent === false" [formGroup]="form" (ngSubmit)="submitForm(form.value)">
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name">
+            <mat-error>Please provide a contact name.</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Team Name</mat-label>
+            <input matInput formControlName="teamName">
+            <mat-error>Please provide a team name.</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+            <mat-error>Please provide a valid email.</mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary">Submit</button>
+    </form>
+
+</div>

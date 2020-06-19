@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -56,6 +57,11 @@ import { FaqComponent } from './faq/faq.component';
 import { LiveResultsComponent } from './live-results/live-results.component';
 import { ResultsComponent } from './results/results.component';
 import { CmpcLiveComponent } from './cmpc-live/cmpc-live.component';
+import { CommishStTeamsComponent } from './commish-st-teams/commish-st-teams.component';
+import { CommishGuestRegComponent } from './commish-guest-reg/commish-guest-reg.component';
+import { CommishStRegComponent } from './commish-st-reg/commish-st-reg.component';
+import { StQualifyingComponent } from './st-qualifying/st-qualifying.component';
+import { CommishCompetitorsComponent } from './commish-competitors/commish-competitors.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +89,12 @@ import { CmpcLiveComponent } from './cmpc-live/cmpc-live.component';
     FaqComponent,
     LiveResultsComponent,
     ResultsComponent,
-    CmpcLiveComponent
+    CmpcLiveComponent,
+    CommishStTeamsComponent,
+    CommishGuestRegComponent,
+    CommishStRegComponent,
+    StQualifyingComponent,
+    CommishCompetitorsComponent
   ],
   imports: [
     BrowserModule,
@@ -95,7 +106,7 @@ import { CmpcLiveComponent } from './cmpc-live/cmpc-live.component';
     MatDialogModule, MatTabsModule, MatSnackBarModule, MatRadioModule, MatCheckboxModule, MatSidenavModule,
     MatButtonModule, MatIconModule, MatInputModule, MatSelectModule, MatSliderModule, MatToolbarModule, MatMenuModule,
     MatCardModule, MatSlideToggleModule, MatListModule, MatTableModule, MatProgressSpinnerModule, MatExpansionModule,
-    MatDatepickerModule, MatTooltipModule, MatProgressBarModule,
+    MatDatepickerModule, MatTooltipModule, MatProgressBarModule, MatButtonToggleModule
   ],
   providers: [
     AuthService

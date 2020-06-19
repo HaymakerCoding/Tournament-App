@@ -31,10 +31,10 @@ export class TournamentService {
    * This data pulled is based on the host which is set here.
    */
   private setHost() {
-    this.host = window.location.hostname;
+    this.host = window.location.hostname.replace('www.', '');
     // IF running in dev set to city match play for testing
     if (this.host === 'localhost') {
-      this.host = 'www.citymatchplay.golf';
+      this.host = 'commishscup.golf';
     }
     console.log('Loading data for host: ' + this.host);
   }

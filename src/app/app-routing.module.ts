@@ -18,6 +18,10 @@ import { FaqComponent } from './faq/faq.component';
 import { ResultsComponent } from './results/results.component';
 import { LiveResultsComponent } from './live-results/live-results.component';
 import { CmpcLiveComponent } from './cmpc-live/cmpc-live.component';
+import { CommishStTeamsComponent } from './commish-st-teams/commish-st-teams.component';
+import { CommishStRegComponent } from './commish-st-reg/commish-st-reg.component';
+import { CommishGuestRegComponent } from './commish-guest-reg/commish-guest-reg.component';
+import { StQualifyingComponent } from './st-qualifying/st-qualifying.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -37,6 +41,9 @@ const routes: Routes = [
   { path: 'results', component: ResultsComponent },
   { path: 'results/live', component: LiveResultsComponent },
   { path: 'results/cmpc-live', component: CmpcLiveComponent },
+  { path: 'st-qualifying', component: StQualifyingComponent },
+  { path: 'commish-st-reg', component: RegisterComponent },
+  { path: 'commish-guest-reg', component: CommishGuestRegComponent },
   { path: '**',
     redirectTo: 'home',
     pathMatch: 'full',

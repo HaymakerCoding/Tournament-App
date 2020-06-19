@@ -41,43 +41,44 @@
     <br>
 
     <div class="mt-5 mb-5 spacers" [style.backgroundColor]="tournament.navColor"></div>
-    <div class="container">
+    <div class="container-fluid pl-5 pr-5">
       <h1 class="text-center mt-3">{{ tournament.header }}</h1>
-      <h3 class="text-center mt-4">{{ tournament.subHeader }}</h3>
+      <div class="text-center mt-4" [innerHTML]="tournament.subHeader"></div>
       <button mat-raised-button [style.backgroundColor]="tournament.navColor" routerLink="/subscribe" color="primary"
         style="border:1px solid black; margin: auto; display: block; margin-top:20px;">Email Subscribe</button>
     </div>
     <!-- news sections-->
-    <section>
-      <br>
-      <div class="container mt-3">
-        <div class="mt-5 mb-5 spacers" [style.backgroundColor]="tournament.navColor"></div>
+    <section class="newsSection">
+      <div class="mt-5 mb-0 spacers" [style.backgroundColor]="tournament.navColor"></div>
 
-        <h2 #news class="text-center">News & Updates</h2>
+      <div #news class="section-scroll-markers"></div>
+      <h2 class="text-center">News & Updates</h2>
+      
+      <div *ngFor="let news of newsItems" style="width:75%; margin: auto; text-align: center;">
+        <div style="color:navy;" [innerHTML]="news.newsDate | date"></div>
+        <div style="font-weight: bold; font-size:22px;" [innerHTML]="news.header"></div>
+        <div [innerHTML]="news.content"></div>
+        <a rel="noopener" target="_blank" [href]="news.link">Click here</a>
         <hr>
-        <div *ngFor="let news of newsItems" style="width:75%; margin: auto; text-align: center;">
-          <div style="color:navy;" [innerHTML]="news.newsDate | date"></div>
-          <div style="font-weight: bold; font-size:22px;" [innerHTML]="news.header"></div>
-          <div [innerHTML]="news.content"></div>
-          <a rel="noopener" target="_blank" [href]="news.link">Click here</a>
-          <hr>
-        </div>
-        <div style="width:100%; text-align: center">
-            <button mat-raised-button [style.backgroundColor]="tournament.navColor" routerLink="news" color="primary" style="border:1px solid black;" (click)="goToNews()">Previous News</button>
-        </div>
       </div>
+      <div style="width:100%; text-align: center">
+          <button mat-raised-button [style.backgroundColor]="tournament.navColor" routerLink="news" color="primary" style="border:1px solid black;" (click)="goToNews()">Previous News</button>
+      </div>
+      <div class="mt-5 mb-1 spacers" [style.backgroundColor]="tournament.navColor"></div>
     </section>
-    <div class="mt-5 mb-1 spacers" [style.backgroundColor]="tournament.navColor"></div>
+    
 
     <!--Chapmions Section-->
-    <section #champions class="text-center text-md-left pt-5">
+    <div #champions class="section-scroll-markers"></div>
+    <section class="text-center text-md-left pt-1">
       <app-champions [tournament]="tournament"></app-champions>
     </section>
 
     <div class="mt-5 mb-0 spacers" [style.backgroundColor]="tournament.navColor"></div>
 
     <!--Prize Section-->
-    <section #prizing class="section text-center text-md-left mt-5">
+    <div #prizing class="section-scroll-markers"></div>
+    <section class="section text-center text-md-left mt-0">
       <app-prizing [tournament]="tournament"></app-prizing>
 
       <!--Sponsors for pizing area-->
@@ -95,12 +96,14 @@
     </section>
 
     <!--Rules Section-->
-    <section #rules class="section text-center text-md-left mt-4">
+    <div #rules class="section-scroll-markers"></div>
+    <section class="section text-center text-md-left mt-0">
       <app-rules [tournament]="tournament"></app-rules>
     </section>
 
     <!--Contact Section-->
-    <section #contact class="section sectionContainer text-center text-md-left p-0 m-0">
+    <div #contact class="section-scroll-markers"></div>
+    <section class="section sectionContainer text-center text-md-left p-0 m-0">
       <app-contact [tournament]="tournament"></app-contact>
     </section>
 

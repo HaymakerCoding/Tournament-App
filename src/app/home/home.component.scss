@@ -37,7 +37,9 @@
     padding:30px 60px 30px 60px;
     min-height:100vh;
 }
-
+.section-scroll-markers {
+    min-height:140px;
+}
 .mat-form-field{
     width:100%
 }
@@ -137,8 +139,14 @@
 .phonePrizeRow {
     display:none;
 }
+.newsSection{
+    width:80%; margin: auto;
+}
 
 @media only screen and (max-width: 800px) {
+    .newsSection{
+        width:100%!important;
+    }
     .section{
         padding:20px 10px 20px 10px;
     }

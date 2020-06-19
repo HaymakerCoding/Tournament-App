@@ -15,7 +15,7 @@ import { NavService } from '../services/nav.service';
 /**
  * Entry point for the tournament app SPA.
  * This homepage includes many child componenet that can be scrolled to.
- * Scroll is done using third party smoothscroll, due to browser compatibility issues with HTML smooth scroll in Safari.
+ * Scroll is done using third party smoothscroll, due to browser compatibility issues with HTML smooth scroll in Safari. The smoothscroll polyfill will only work if it detects default doesn't.
  * 
  * @author Malcolm Roy
  */
@@ -61,7 +61,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.year = new Date().getFullYear();
     this.loading = true;
     this.userLoggedIn = false;
-    // smoothscroll.polyfill();
+    smoothscroll.polyfill();
     this.getTournament();
     this.initNavService();
   }
@@ -261,7 +261,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   scrollTo(element) {
     // element.scrollIntoView(true);
     element.scrollIntoView({ behavior: 'smooth', block: 'start'});
-
   }
 
 }

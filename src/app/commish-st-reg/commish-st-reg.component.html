@@ -1,0 +1,28 @@
+
+<div *ngIf="loadingPercent < 100">
+    <mat-progress-bar value="{{ loadingPercent }" color="primary" mode="determinate"></mat-progress-bar>
+    <div class="full-width text-center mt-2">Loading</div>
+</div>
+
+<div *ngIf="loadingPercent === 100">
+    <h1>ST Qualifying Registration</h1>
+    <br>
+    <p *ngIf="userRegistered === true">You are registered for this years qualifying.</p>
+
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Team</mat-label>
+        <mat-select [(ngModel)]="userReg.team">
+            <mat-option [value]="team" *ngFor="let team of teams">{{ team.name }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Division</mat-label>
+        <mat-select [(ngModel)]="userReg.division">
+            <mat-option [value]="div" *ngFor="let div of divisions">{{ div }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" *ngIf="userRegistered === false" (click)="register()">Register</button>
+    <button mat-raised-button color="primary" *ngIf="userRegistered === true" (click)="update()">Save Changes</button>
+    <button class="ml-4" mat-raised-button color="primary" *ngIf="userRegistered === true" (click)="delete()">Withdraw</button>
+
+</div>

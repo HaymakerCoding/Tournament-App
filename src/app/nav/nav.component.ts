@@ -17,7 +17,6 @@ import { NavService, ScrollState } from '../services/nav.service';
 })
 export class NavComponent implements OnInit, OnDestroy {
 
-  private host;
   userLoggedIn: boolean;
   subscriptions: Subscription[] = [];
   private dialogRef: MatDialogRef<any>;
@@ -28,20 +27,14 @@ export class NavComponent implements OnInit, OnDestroy {
   pageYOffset;
   route: string;
 
-  @HostListener('window:scroll', ['$event']) // for window scroll events
-  onScroll(event) {
-    this.pageYOffset = window.pageYOffset;
-  }
-
   constructor(
-    private router: Router,
-    private location: Location,
     private dialog: MatDialog,
     private authService: AuthService,
     private tournamentService: TournamentService,
     private breakpointOberver: BreakpointObserver,
     private navService: NavService
   ) {
+    /*
     router.events.subscribe(() => {
       if (location.path() !== '') {
         this.route = location.path();
@@ -49,6 +42,14 @@ export class NavComponent implements OnInit, OnDestroy {
         this.route = 'home';
       }
     });
+    */
+  }
+
+  // Listen for window scroll. used to set the nav as sticky.
+  // IMPORTANT: noticed that  body/html NEEDS to be min-height NOT height in main style file. For some reason using height:100% instead of min-height:100% broke listener for scroll
+  @HostListener('window:scroll', ['$event']) // for window scroll events
+  onWindowScroll(event) {
+    this.pageYOffset = window.pageYOffset;
   }
 
   scrollToNews() {
@@ -99,7 +100,7 @@ export class NavComponent implements OnInit, OnDestroy {
    * @param headerImg Header Image element
    */
   checkStickyNav(headerImg) {
-    if (this.pageYOffset >= headerImg.offsetTop && this.pageYOffset > 160)  {
+    if (this.pageYOffset > headerImg.offsetTop && this.pageYOffset > 170)  {
       return true;
     } else  {
       return false;
