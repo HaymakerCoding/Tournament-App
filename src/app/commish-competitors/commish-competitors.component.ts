@@ -4,7 +4,13 @@ import { CommishService } from '../services/commish.service';
 import { Subscription } from 'rxjs';
 import { TournamentService } from '../services/tournament.service';
 import { Team } from '../models/Team';
+import { TournamentYearlyData } from '../models/TournamentYearlyData';
 
+/**
+ * Specific competitor page for Commish Cup. There will be some generic team usage but also Commish has a very specific 5 team roster of Slammers that gets populated by a qualifying.
+ * 
+ * @author Malcolm Roy
+ */
 @Component({
   selector: 'app-commish-competitors',
   templateUrl: './commish-competitors.component.html',
@@ -20,6 +26,7 @@ export class CommishCompetitorsComponent implements OnInit, OnDestroy {
   STteams: Team[];
   guestTeams: Team[];
   teamShown: number;
+  yearlyData: TournamentYearlyData;
 
   constructor(
     private commishService: CommishService,
@@ -43,19 +50,40 @@ export class CommishCompetitorsComponent implements OnInit, OnDestroy {
     this.loadingPercent = percent;
   }
 
+  /**
+   * Get a list of all years the tournament has data for. Just 4 digit years in array
+   */
   getYears() {
     this.subscriptions.push(this.tournamentService.getYears(this.tournament.id.toString()).subscribe(response => {
       if (response.status === 200) {
         this.years = response.payload;
         this.yearSelected = this.years[0];
         this.setLoadingPercent(20);
-        this.getSTteams();
+        this.getYearlyData();
       } else {
         console.error(response);
       }
     }));
   }
 
+  /**
+   * Get the specific year record for the tournament selected
+   */
+  getYearlyData() {
+    this.subscriptions.push(this.tournamentService.getYearlyDataAny(this.yearSelected.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.yearlyData = response.payload;
+        this.setLoadingPercent(30);
+        this.getSTteams();
+      } else {
+        console.error(response);
+      }
+    }))
+  }
+
+  /**
+   * Get the ST Teams. These are specific to commish and don't change each year. 5 standard teams.
+   */
   getSTteams() {
     this.subscriptions.push(this.commishService.getSTteams(this.yearSelected.toString()).subscribe(response => {
       if (response.status === 200) {
@@ -68,14 +96,26 @@ export class CommishCompetitorsComponent implements OnInit, OnDestroy {
     }));
   }
 
+  /**
+   * Get the Guest teams for this year. Guest Teams can change year to year with a max of 5. Players to these teams are added by admin or captains.
+   */
   getGuestTeams() {
-    this.guestTeams = [];
+    this.subscriptions.push(this.tournamentService.getAllTeams(this.yearlyData.id.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.guestTeams = response.payload;
+      } else {
+        console.error(response);
+      }
+    }));
     this.setLoadingPercent(100);
   }
 
+  /**
+   * On user changing year selected. Adjust yearly data and fetch teams for that year.
+   */
   onYearChange() {
     this.setLoadingPercent(20);
-    this.getSTteams();
+    this.getYearlyData();
   }
 
 }

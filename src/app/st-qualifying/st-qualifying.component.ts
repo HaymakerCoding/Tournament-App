@@ -66,16 +66,12 @@ export class StQualifyingComponent extends TournamentBase implements OnInit {
   }
 
   /**
-   * Get the ST Teams to over as qualifying options, 5 teams each year
+   * Get the ST Teams 
    */
   getSTteams() {
     this.subscriptions.push(this.commishService.getSTteams(this.tournamentYearlyData.year.toString()).subscribe(response => {
       if (response.status === 200) {
-        const teams = response.payload;
-        this.teams = [];
-        for (let team of teams) {
-          this.teams.push(new Team(+team.id, team.name));
-        }
+        this.teams = response.payload;
         this.setLoadingPercent(60);
         this.getRanks();
       } else {

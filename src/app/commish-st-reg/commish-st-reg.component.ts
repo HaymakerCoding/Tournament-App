@@ -68,17 +68,12 @@ export class CommishStRegComponent extends TournamentBase {
   }
 
   /**
-   * Get the ST Teams to over as qualifying options, 5 teams each year
+   * Get the ST Teams to offer as qualifying options, 5 teams each year
    */
   getSTteams() {
     this.subscriptions.push(this.commishService.getSTteams(this.tournamentYearlyData.year.toString()).subscribe(response => {
       if (response.status === 200) {
-        const teams = response.payload;
-        this.teams = [];
-        for (let team of teams) {
-          this.teams.push(new Team(+team.id, team.name));
-        }
-        console.log(this.teams);
+        this.teams = response.payload;
         this.setLoadingPercent(60);
         this.getUserRegistration();
       } else {
@@ -97,7 +92,7 @@ export class CommishStRegComponent extends TournamentBase {
         console.log(this.userReg);
         if (!this.userReg.id) {
           // initialize empty reg, this is just so we can use the object in creating the reg
-          const team = new Team(null, null);
+          const team = new Team(null, null, null, null, null);
           this.userReg = new UserReg(null, team, null, this.tournamentYearlyData.id, null, null, null, null, null, null);
           this.userRegistered = false;
         } else {
@@ -159,7 +154,7 @@ export class CommishStRegComponent extends TournamentBase {
         if (response.status === 200) {
           this.userRegistered = false;
           this.userReg = null;
-          const team = new Team(null, null);
+          const team = new Team(null, null, null, null, null);
           this.userReg = new UserReg(null, team, null, this.tournamentYearlyData.id, null, null, null, null, null, null);
         } else {
           console.error(response);

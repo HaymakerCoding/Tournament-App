@@ -56,8 +56,27 @@ export class TournamentService {
     }));
   }
 
+  /**
+   * Set the yearly data for the CURRENT year
+   */
   setYearlyData() {
     const year = new Date().getFullYear().toString();
+    const params = new HttpParams().set('tournamentId', this.tournament.id.toString()).set('year', year);
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/get-year-data/index.php', {
+      params }).pipe(map(response => {
+      if (response.status === 200) {
+        this.yearlyData = response.payload;
+      } else {
+        console.error(response);
+      }
+      return response;
+    }));
+  }
+
+  /**
+   * Get yearly data for ANY year supplied
+   */
+  getYearlyDataAny(year: string) {
     const params = new HttpParams().set('tournamentId', this.tournament.id.toString()).set('year', year);
     return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/get-year-data/index.php', {
       params }).pipe(map(response => {
@@ -209,6 +228,18 @@ export class TournamentService {
           return response;
       })
     );
+  }
+
+  /**
+   * Get all teams for a tournament year
+   * @param yearId Tournament Year PK
+   */
+  getAllTeams(yearId: string) {
+    const params = new HttpParams().set('yearId', yearId);
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/teams/get-by-year/index.php', { params })
+      .pipe(map(response => {
+        return response;
+    }));
   }
 
 }
