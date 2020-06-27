@@ -19,7 +19,7 @@
         </mat-button-toggle-group>
     </div>
     <br>
-
+    <!--ST TEAMS-->
     <div *ngIf="teamShown === 1">
         <div *ngFor="let team of STteams">
             <div class="centered-box">
@@ -30,18 +30,30 @@
             </div>
 
             <table class="table table-sm full-width">
-                <tr class="slammer-gradient">
-                    <th>Name</th>
-                    <th>Driving</th>
-                    <th>Tees</th>
-                    <th>ST Median</th>
-                    <th>Personal Scoring Avg</th>
-                    <th>ClubEG Scoring Avg</th>
-                </tr>
+                <thead>
+                    <tr class="slammer-gradient">
+                        <th>Name</th>
+                        <th class="text-center">Driving</th>
+                        <th class="text-center">Tees</th>
+                        <th class="text-center">ST Median</th>
+                        <th class="text-center">Personal Scoring Avg</th>
+                        <th class="text-center">ClubEG Scoring Avg</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let member of team.members">
+                        <td>{{ member.nickname ? member.fullName + ' (' + member.nickname + ')' : member.fullName }}</td>
+                        <td class="text-center">{{ member.driving }}</td>
+                        <td class="text-center">{{ member.teeBlock }}</td>
+                        <td class="text-center"></td>
+                        <td class="text-center">{{ member.averageScore }}</td>
+                        <td class="text-center">{{ member.clubegScoringAvg }}</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
-
+    <!--GUEST TEAMS-->
     <div *ngIf="teamShown === 2">
         <div *ngFor="let team of guestTeams">
             <div class="centered-box">
@@ -52,14 +64,26 @@
             </div>
 
             <table class="table table-sm full-width">
-                <tr class="slammer-gradient">
-                    <th>Name</th>
-                    <th>Driving</th>
-                    <th>Tees</th>
-                    <th>ST Median</th>
-                    <th>Personal Scoring Avg</th>
-                    <th>ClubEG Scoring Avg</th>
-                </tr>
+                <thead>
+                    <tr class="slammer-gradient">
+                        <th>Name</th>
+                        <th class="text-center">Driving</th>
+                        <th class="text-center">Tees</th>
+                        <th class="text-center">ST Median</th>
+                        <th class="text-center">Personal Scoring Avg</th>
+                        <th class="text-center">ClubEG Scoring Avg</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let member of team.members">
+                        <td>{{ member.nickname ? member.fullName + ' (' + member.nickname + ')' : member.fullName }}</td>
+                        <td class="text-center">{{ member.driving }}</td>
+                        <td class="text-center">{{ member.teeBlock }}</td>
+                        <td class="text-center"></td>
+                        <td class="text-center">{{ member.averageScore }}</td>
+                        <td class="text-center">{{ member.clubegScoringAvg }}</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>

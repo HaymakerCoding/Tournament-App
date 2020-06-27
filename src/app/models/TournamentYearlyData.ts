@@ -14,7 +14,13 @@ export class TournamentYearlyData {
     public date: any,
     public time: any,
     public sponsors: TournamentSponsor[],
-    public courses: TournamentCourse[]
+    public courses: TournamentCourse[],
+    public qualifying: QualifyingStatus
   ) { }
 
+}
+
+enum QualifyingStatus {
+  OPEN = 'open',
+  CLOSED = 'closed'
 }

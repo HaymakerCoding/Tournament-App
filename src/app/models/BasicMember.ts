@@ -9,7 +9,11 @@ export class BasicMember {
       public memberId: number,
       public fullName: string,
       public nickname: string,
-      public pic: string
+      public pic: string,
+      public driving: number,
+      public clubegScoringAvg: number,
+      public averageScore: number,
+      public teeBlock: string
   ) {}
 
 }

@@ -103,6 +103,7 @@ export class CommishCompetitorsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.tournamentService.getAllTeams(this.yearlyData.id.toString()).subscribe(response => {
       if (response.status === 200) {
         this.guestTeams = response.payload;
+        console.log(this.guestTeams);
       } else {
         console.error(response);
       }

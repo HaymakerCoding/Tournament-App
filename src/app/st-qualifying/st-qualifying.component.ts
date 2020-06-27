@@ -148,7 +148,7 @@ export class StQualifyingComponent extends TournamentBase implements OnInit {
       allReg.push(x);
     })
     for (let x = 1; x <= needed; x++) {
-      const emptyReg = new UserReg(null, team, null, this.tournamentYearlyData.id, null, null, null, null, null, null);
+      const emptyReg = new UserReg(null, team, null, this.tournamentYearlyData.id, null, null, null, null, null, null, null);
       allReg.push(emptyReg);
     }
     return allReg;

@@ -1,3 +1,4 @@
+import { BasicMember } from './BasicMember';
 
 /**
  * Represent an tournament team
@@ -10,7 +11,8 @@ export class Team {
     public name: string,
     public captain: string,
     public captainMemberId: number,
-    public captainPic: string
+    public captainPic: string,
+    public members: BasicMember[]
   ) {}
 
 }
