@@ -103,9 +103,17 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     if (+this.tournament.id === 2) {
       this.getCMPCresults();
     } else {
-      this.noResults === true;
-      this.setLoadingPercent(100);
+      this.getTournamentResults(this.tournament.id);
     }
+  }
+
+  /**
+   * Get results for a tournament
+   * @param tournamentId 
+   */
+  getTournamentResults(tournamentId: number) {
+    this.subscriptions.push()
+    this.setLoadingPercent(100);
   }
 
   /**
@@ -116,7 +124,6 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     this.subscriptions.push(this.cmpcService.getResultsByYear(this.yearSelected.toString()).subscribe(response => {
       if (response.status === 200) {
         this.allCmpcMatches = response.payload;
-        console.log(this.allCmpcMatches);
         this.setLoadingPercent(90);
         this.setDivMatches();
       } else {

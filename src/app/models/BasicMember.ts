@@ -13,7 +13,8 @@ export class BasicMember {
       public driving: number,
       public clubegScoringAvg: number,
       public averageScore: number,
-      public teeBlock: string
+      public teeBlock: string,
+      public stMedian: number
   ) {}
 
 }

@@ -71,7 +71,7 @@ export class CommishStRegComponent extends TournamentBase {
    * Get the ST Teams to offer as qualifying options, 5 teams each year
    */
   getSTteams() {
-    this.subscriptions.push(this.commishService.getSTteams(this.tournamentYearlyData.year.toString()).subscribe(response => {
+    this.subscriptions.push(this.commishService.getSTteams(this.tournamentYearlyData.year.toString(), this.tournamentYearlyData.id).subscribe(response => {
       if (response.status === 200) {
         this.teams = response.payload;
         this.setLoadingPercent(60);

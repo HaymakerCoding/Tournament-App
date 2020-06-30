@@ -69,7 +69,7 @@ export class StQualifyingComponent extends TournamentBase implements OnInit {
    * Get the ST Teams 
    */
   getSTteams() {
-    this.subscriptions.push(this.commishService.getSTteams(this.tournamentYearlyData.year.toString()).subscribe(response => {
+    this.subscriptions.push(this.commishService.getSTteams(this.tournamentYearlyData.year.toString(), this.tournamentYearlyData.id.toString()).subscribe(response => {
       if (response.status === 200) {
         this.teams = response.payload;
         this.setLoadingPercent(60);
@@ -91,7 +91,6 @@ export class StQualifyingComponent extends TournamentBase implements OnInit {
     this.subscriptions.push(this.commishService.getRanks(mysqlDate, '1').subscribe(response => {
       if (response.status === 200) {
         this.ranks = response.payload;
-        console.log(this.ranks);
         this.setLoadingPercent(100);
       } else {
         console.error(response);

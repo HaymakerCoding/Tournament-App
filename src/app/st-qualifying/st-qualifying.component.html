@@ -8,6 +8,7 @@
 
     <div *ngIf="loadingPercent === 100">
         <h5 class="text-center"><i>{{ tournamentYearlyData.qualifying }}</i></h5>
+        <h4 class="text-center" *ngIf="tournamentYearlyData.qualifying === 'closed'">Final Results</h4>
         <div class="row">
             <div class="col-12 col-md-4 offset-md-4">
                 <mat-form-field appearance="outline" class="full-width">
@@ -18,7 +19,6 @@
                 </mat-form-field>
             </div>
         </div>
-
         <div class="row" *ngIf="teamSelected">
             <div *ngFor="let div of divisions" class="col-12 col-md-4">
                 <h2 class="mt-3 text-center blue-gradient">{{ div + ' Division' }}</h2>

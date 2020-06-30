@@ -85,7 +85,7 @@ export class CommishCompetitorsComponent implements OnInit, OnDestroy {
    * Get the ST Teams. These are specific to commish and don't change each year. 5 standard teams.
    */
   getSTteams() {
-    this.subscriptions.push(this.commishService.getSTteams(this.yearSelected.toString()).subscribe(response => {
+    this.subscriptions.push(this.commishService.getSTteams(this.yearSelected.toString(), this.yearlyData.id).subscribe(response => {
       if (response.status === 200) {
         this.STteams = response.payload;
         this.setLoadingPercent(40);
@@ -103,7 +103,6 @@ export class CommishCompetitorsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.tournamentService.getAllTeams(this.yearlyData.id.toString()).subscribe(response => {
       if (response.status === 200) {
         this.guestTeams = response.payload;
-        console.log(this.guestTeams);
       } else {
         console.error(response);
       }

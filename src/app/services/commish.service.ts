@@ -16,8 +16,8 @@ export class CommishService {
     private authService: AuthService
   ) { }
 
-  getSTteams(year: string) {
-    const params = new HttpParams().set('year', year);
+  getSTteams(year: string, yearId) {
+    const params = new HttpParams().set('year', year).set('yearId', yearId);
     return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/commish/get-st-teams/index.php', { params })
       .pipe(map(response => {
         return response;
