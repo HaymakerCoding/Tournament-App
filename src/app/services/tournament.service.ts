@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Tournament } from '../models/Tournament';
 import { TournamentYearlyData } from '../models/TournamentYearlyData';
+import { Season } from '../models/Season';
 
 
 @Injectable({
@@ -239,6 +240,47 @@ export class TournamentService {
     return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/teams/get-by-year/index.php', { params })
       .pipe(map(response => {
         return response;
+    }));
+  }
+
+  /**
+   * Get all tournament events by a tournament year record id
+   * @param yearId Tournament Year ID
+   */
+  getAllEvents(season: Season) {
+    const params = new HttpParams().set('seasonId', season.id.toString())
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/event/get-all/index.php',
+    { params }).pipe(map(response => {
+      return response;
+    }));
+  }
+
+  getEvent(id: string) {
+    const params = new HttpParams().set('id', id)
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/event/get/index.php',
+    { params }).pipe(map(response => {
+      return response;
+    }));
+  }
+
+  /**
+   * Get a current tournament season.
+   * @param tournamentId 
+   * @param year 
+   */
+  getSeason(tournamentId: string, year: string) {
+    const params = new HttpParams().set('tournamentId', tournamentId).set('year', year);
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/season/get/index.php',
+    { params }).pipe(map(response => {
+      return response;
+    }));
+  }
+
+  getGroups(eventId: string) {
+    const params = new HttpParams().set('eventId', eventId);
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/event/group/get-all/index.php',
+    { params }).pipe(map(response => {
+      return response;
     }));
   }
 

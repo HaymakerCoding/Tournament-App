@@ -6,7 +6,8 @@
     </div>
 
     <div *ngIf="loadingPercent === 100">
-        
+
+        <p *ngIf="noMatches === true">Sorry, no events today. Try back soon!</p>
         <div *ngFor="let event of events">
             <div *ngIf="event.CMPCsingles.length > 0 || event.CMPCdoubles.length > 0">
                 <h2 class="text-center"><i>CMPC Live</i> <span style="font-size:16px;" class="ml-2 mr-2">from </span><span [innerHTML]="event.name"></span></h2>

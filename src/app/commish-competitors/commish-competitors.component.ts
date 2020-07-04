@@ -103,11 +103,15 @@ export class CommishCompetitorsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.tournamentService.getAllTeams(this.yearlyData.id.toString()).subscribe(response => {
       if (response.status === 200) {
         this.guestTeams = response.payload;
+        //sort both guest and house team members by their clubeg avg
+        this.sortByAvg(this.STteams);
+        this.sortByAvg(this.guestTeams);
+        this.setLoadingPercent(100);
       } else {
         console.error(response);
       }
     }));
-    this.setLoadingPercent(100);
+    
   }
 
   /**
@@ -116,6 +120,26 @@ export class CommishCompetitorsComponent implements OnInit, OnDestroy {
   onYearChange() {
     this.setLoadingPercent(20);
     this.getYearlyData();
+  }
+
+  sortByAvg(teams: Team[]) {
+    teams.forEach(team => {
+      team.members.sort((a, b) => (
+        a.clubegScoringAvg - b.clubegScoringAvg
+      ));
+    });
+  }
+
+  /**
+   * Return the clubeg scoring avg for the whole team.
+   * @param team Team to sort
+   */
+  getTeamAvg(team: Team) {
+    let total: number = 0;
+    team.members.forEach(x => {
+      total += x.clubegScoringAvg;
+    });
+    return Math.round(total / team.members.length);
   }
 
 }

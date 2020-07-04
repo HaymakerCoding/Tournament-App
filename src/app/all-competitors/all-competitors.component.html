@@ -1,6 +1,6 @@
-<div class="container p-4" style="min-height: calc(100vh - 200px);">
+<div class="container pt-4 pb-4" style="min-height: calc(100vh - 200px);">
 
-  <div class="innerContainer p-4 p-m-2" *ngIf="loading === false">
+  <div class="innerContainer p-m-2" *ngIf="loading === false">
 
     <!--Commish Competitor Screen-->
     <app-commish-competitors [tournament]="tournament" *ngIf="+tournament.id === 14"></app-commish-competitors>

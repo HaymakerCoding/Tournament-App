@@ -8,15 +8,19 @@
 }
 .slammer-gradient{
     background-image:linear-gradient(to right, #ff8c00, #ffd351);
+    background-origin: border-box;
 }
 .grey-text{
     color:rgb(113, 107, 107);
 }
 .centered-box{
-    width:400px;
+    width:75vw;
     margin: auto;
     text-align: center;
 }
 .navy{
     color:navy;
+}
+.bordered-table{
+    border-left: 1px solid lightgray; border-right:1px solid lightgray;
 }

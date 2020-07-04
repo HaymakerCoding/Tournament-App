@@ -22,6 +22,8 @@ import { CommishStTeamsComponent } from './commish-st-teams/commish-st-teams.com
 import { CommishStRegComponent } from './commish-st-reg/commish-st-reg.component';
 import { CommishGuestRegComponent } from './commish-guest-reg/commish-guest-reg.component';
 import { StQualifyingComponent } from './st-qualifying/st-qualifying.component';
+import { MatchesComponent } from './matches/matches.component';
+import { DrawComponent } from './draw/draw.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -44,6 +46,8 @@ const routes: Routes = [
   { path: 'st-qualifying', component: StQualifyingComponent },
   { path: 'commish-st-reg', component: RegisterComponent },
   { path: 'commish-guest-reg', component: CommishGuestRegComponent },
+  { path: 'matches', component: MatchesComponent },
+  { path: 'matches/:eventId', component: DrawComponent },
   { path: '**',
     redirectTo: 'home',
     pathMatch: 'full',

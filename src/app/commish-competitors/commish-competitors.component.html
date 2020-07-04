@@ -1,5 +1,5 @@
 <div *ngIf="loadingPercent < 100">
-    <mat-progress-bar value="{{ loadingPercent }" color="primary" mode="determinate"></mat-progress-bar>
+    <mat-progress-bar [value]="loadingPercent" color="primary" mode="determinate"></mat-progress-bar>
     <div class="full-width text-center mt-2">Loading</div>
 </div>
 
@@ -22,22 +22,22 @@
     <!--ST TEAMS-->
     <div *ngIf="teamShown === 1">
         <div *ngFor="let team of STteams">
+            <br>
             <div class="centered-box">
                 <h2 class="fun-text">{{ 'Slammer Team ' + team.name }}</h2>
                 <img *ngIf="team.captainPic" class="captain-avatars" [src]="team.captainPic">
                 <mat-icon *ngIf="!team.captainPic" class="captain-avatars">account_box</mat-icon>
                 <h3 class="navy">Captain {{ team.captain ? team.captain : 'TBD' }}</h3>
             </div>
-
-            <table class="table table-sm full-width">
+            <table class="table table-sm table-responsive-md full-width mt-2 bordered-table">
                 <thead>
                     <tr class="slammer-gradient">
                         <th>Name</th>
                         <th class="text-center">Driving</th>
                         <th class="text-center">Tees</th>
                         <th class="text-center">ST Median</th>
-                        <th class="text-center">Personal Scoring Avg</th>
-                        <th class="text-center">ClubEG Scoring Avg</th>
+                        <th class="text-center">Personal<br>Avg</th>
+                        <th class="text-center">ClubEG<br>Avg</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,6 +48,10 @@
                         <td class="text-center">{{ member.stMedian }}</td>
                         <td class="text-center">{{ member.averageScore }}</td>
                         <td class="text-center">{{ member.clubegScoringAvg }}</td>
+                    </tr>
+                    <tr class="slammer-gradient">
+                        <td colspan="5"><b>Team Scoring Avg</b></td>
+                        <td class="text-center"><b>{{ getTeamAvg(team) }}</b></td>
                     </tr>
                 </tbody>
             </table>
@@ -56,6 +60,7 @@
     <!--GUEST TEAMS-->
     <div *ngIf="teamShown === 2">
         <div *ngFor="let team of guestTeams">
+            <br>
             <div class="centered-box">
                 <h2 class="fun-text">{{ team.name }}</h2>
                 <img *ngIf="team.captainPic" class="captain-avatars" [src]="team.captainPic">
@@ -63,15 +68,15 @@
                 <h3 class="navy">Captain {{ team.captain ? team.captain : 'TBD' }}</h3>
             </div>
 
-            <table class="table table-sm full-width">
+            <table class="table table-sm table-responsive-md full-width mt-2 bordered-table">
                 <thead>
                     <tr class="slammer-gradient">
                         <th>Name</th>
                         <th class="text-center">Driving</th>
                         <th class="text-center">Tees</th>
                         <th class="text-center">ST Median</th>
-                        <th class="text-center">Personal Scoring Avg</th>
-                        <th class="text-center">ClubEG Scoring Avg</th>
+                        <th class="text-center">Personal<br>Avg</th>
+                        <th class="text-center">ClubEG<br>Avg</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,6 +87,10 @@
                         <td class="text-center">{{ member.stMedian }}</td>
                         <td class="text-center">{{ member.averageScore }}</td>
                         <td class="text-center">{{ member.clubegScoringAvg }}</td>
+                    </tr>
+                    <tr class="slammer-gradient">
+                        <td colspan="5"><b>Team Scoring Avg</b></td>
+                        <td class="text-center"><b>{{ getTeamAvg(team) }}</b></td>
                     </tr>
                 </tbody>
             </table>

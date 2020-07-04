@@ -22,7 +22,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class CmpcLiveComponent extends TournamentBase implements OnDestroy, OnInit {
 
-  
+  noMatches: boolean;
   events: CMPCevent[];
   holes: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 
@@ -54,9 +54,9 @@ export class CmpcLiveComponent extends TournamentBase implements OnDestroy, OnIn
   getCMPCmatches() {
     this.subscriptions.push(this.tournamentService.getCMPCmatchesForToday().subscribe(response => {
       if (response.status === 200) {
-        console.log(response);
         if (response.payload) {
           const cmpcMatches: any[] = response.payload.matches;
+          this.noMatches = response.payload.matches.length > 1 ? false : true;
           this.events = response.payload.events;
           this.events.forEach(e => {
             e.CMPCsingles = [];
@@ -71,9 +71,14 @@ export class CmpcLiveComponent extends TournamentBase implements OnDestroy, OnIn
           });
         }
         this.setLoadingPercent(50);
-        this.events.forEach(event => {
-          this.setPars(event);
-        });
+        if (this.events.length > 0) {
+          this.events.forEach(event => {
+            this.setPars(event);
+          });
+        } else {
+          // no events
+          this.setLoadingPercent(100);
+        }
       } else {
         console.error(response);
       }
