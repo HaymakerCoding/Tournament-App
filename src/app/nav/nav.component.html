@@ -27,7 +27,8 @@
         <a *ngIf="tournament.id.toString() === '2'" mat-menu-item rel="noopener" target="_blank" href="https://drive.google.com/open?id=1oeDSIm2IoW2leIJhaWrSl5j58Fv-nw4k3O3JixW7Jws">
           Match-ups
         </a>
-        <a *ngIf="tournament.id.toString() !== '2'" routerLink="/matches" mat-menu-item>Match-ups</a>
+        <!--<a *ngIf="tournament.id.toString() !== '2'" routerLink="/matches" mat-menu-item>Tee Times</a>-->
+        <a *ngIf="tournament.id.toString() !== '2'" target="_blank" rel="noopener" mat-menu-item href="https://docs.google.com/spreadsheets/d/1Wu4_LFtH89awW9DkzwA6gqICXbWMoEPJBfZvorcbFoY/edit#gid=1785879799">Tee Times</a>
         
       </mat-menu>
       <div class="nav-link" style="display: flex; align-items: center;">
@@ -46,6 +47,7 @@
       <ul class="navbar-nav text-center">
         <li class="nav-item">
           <a class="nav-link" *ngIf="route !== 'home' && route !== '/home'" (click)="toggleNav(hamBtn)" routerLink="home">Home</a>
+          <a class="nav-link" *ngIf="route === 'home' || route === '/home'" (click)="scrollToTop(); toggleNav(hamBtn)">Home</a>
         </li>
         <li class="nav-item" *ngIf="onPhone === true">
           <a class="nav-link" (click)="toggleNav(hamBtn)" routerLink="competitors">Competitors</a>

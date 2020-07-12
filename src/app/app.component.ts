@@ -13,17 +13,5 @@ declare var getId;
 export class AppComponent {
   title = 'tournament-app';
 
-  /*
-  constructor(router: Router) {
-    const navEndEvents = router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-    );
-    navEndEvents.subscribe((event: NavigationEnd) => {
-      gtag('config', getId(), {
-        page_path: event.urlAfterRedirects
-      });
-    });
-  }
-  */
 
 }

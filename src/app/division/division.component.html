@@ -28,8 +28,8 @@
                   rel="noopener" target="_blank">{{ divSelected.teeBlock }}</a>
               </h4>
               <hr>
-              <h5>Registration Open: {{ divSelected.regOpen ? (formatDate(divSelected.regOpen) | date) : 'N/A' }}</h5>
-              <h5>Registration Closed: {{ divSelected.regClosed ? (formatDate(divSelected.regClosed) | date) : 'N/A' }}</h5>
+              <h5>Registration Opens: {{ divSelected.regOpen ? (formatDate(divSelected.regOpen) | date) : 'N/A' }}</h5>
+              <h5>Registration Closes: {{ divSelected.regClosed ? (formatDate(divSelected.regClosed) | date) : 'N/A' }}</h5>
               <hr>
               <h4 style="color:navy;">ClubEG Members:
                 <span *ngIf="divSelected.memberPrice > 0" style="color:black;">${{ divSelected.memberPrice | number: '1.0-0' }}</span>

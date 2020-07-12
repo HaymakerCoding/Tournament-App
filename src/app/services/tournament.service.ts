@@ -35,7 +35,7 @@ export class TournamentService {
     this.host = window.location.hostname.replace('www.', '');
     // IF running in dev set to city match play for testing
     if (this.host === 'localhost') {
-      this.host = 'commishscup.golf';
+      this.host = 'ottawacitizenchampionship.golf';
     }
     console.log('Loading data for host: ' + this.host);
   }

@@ -31,6 +31,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('prizing') prizingElement: ElementRef;
   @ViewChild('rules') rulesElement: ElementRef;
   @ViewChild('contact') contactElement: ElementRef;
+  @ViewChild('top') topElement: ElementRef;
 
   private dialogRef: MatDialogRef<any>;
   userLoggedIn: boolean;
@@ -77,7 +78,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         case 3 : this.scrollTo(this.prizingElement.nativeElement); break;
         case 4 : this.scrollTo(this.rulesElement.nativeElement); break;
         case 5 : this.scrollTo(this.contactElement.nativeElement); break;
-        default: console.log('no scroll route found');
+        case 6 : this.scrollTo(this.topElement.nativeElement); break;
+        default: console.error('no scroll route found');
       }
     }));
   }

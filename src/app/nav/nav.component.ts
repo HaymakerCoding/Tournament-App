@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener, Output, ElementRef } from '@angular/core';
 import { Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
 import { AuthService } from '../services/auth.service';
@@ -10,6 +10,12 @@ import { Tournament } from '../models/Tournament';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { NavService, ScrollState } from '../services/nav.service';
 
+/**
+ * Navigation for the app.
+ * Track the route currently on and provide navigation to other routes.
+ * 
+ * @author Malcolm Roy
+ */
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
@@ -32,17 +38,17 @@ export class NavComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private tournamentService: TournamentService,
     private breakpointOberver: BreakpointObserver,
-    private navService: NavService
+    private navService: NavService,
+    private router: Router
   ) {
-    /*
-    router.events.subscribe(() => {
-      if (location.path() !== '') {
-        this.route = location.path();
-      } else {
-        this.route = 'home';
-      }
+    
+    // subscribe to route changes. Use these to track which route we are on for different nav button operations
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.route = router.url;
+      } 
     });
-    */
+    
   }
 
   // Listen for window scroll. used to set the nav as sticky.
@@ -66,6 +72,9 @@ export class NavComponent implements OnInit, OnDestroy {
   }
   scrollToContact() {
     this.navService.setState(ScrollState.CONTACT);
+  }
+  scrollToTop() {
+    this.navService.setState(ScrollState.TOP);
   }
 
   ngOnInit() {

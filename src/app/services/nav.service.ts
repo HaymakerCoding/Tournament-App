@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
+/**
+ * Navigation Service, allows a link between Home component and Nav component.
+ * Home component subscribes to this service and listens to changes, which triggers scrolling on home page.
+ * Nav component can send changes to this service.
+ * 
+ * @author Malcolm Roy
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -26,5 +33,6 @@ export enum ScrollState {
   COMPETITOR,
   PRIZING,
   RULES,
-  CONTACT
+  CONTACT,
+  TOP
 }

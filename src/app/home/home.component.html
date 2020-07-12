@@ -1,9 +1,9 @@
 
 <div *ngIf="loading === false">
-  <div #top></div>
+  
   <div class="container-fluid pt-0 pl-0 pr-0 ml-0 mr-0" style="width:100%; margin-right: 0!important;">
 
-    <section class="feature-img-section"
+    <section #top class="feature-img-section"
       [style.backgroundImage]="'url(' + (onPhone === false ? tournament.featureImage : tournament.phoneFeature) + ')'">
       <!--Courses-->
       <div class="photoContainer" style="width:100vw; position: relative; overflow: hidden;">

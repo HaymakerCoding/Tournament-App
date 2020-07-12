@@ -272,10 +272,23 @@ export class RegisterComponent implements OnInit, OnDestroy {
     return reg.partnerFullName;
   }
 
-
+  /**
+   * Adjust the players selected divisions. This sets the in memory selection and highlights the ui check boxes. Changes still need to be saved by user.
+   * @param checkBox Check box element represting state of division reg
+   * @param division Division to adjust reg for
+   */
   adjustDivisions(checkBox: MatCheckbox, division: Division) {
     if (checkBox.checked) {
-      this.addNewTempReg(division.id, null, null);
+      // client side check of today being a valid registrations day for this divivision. Each div has an open and close date/time
+      const regOpen = this.getJavaDateFromMySQL(division.regOpen);
+      const regClosed = this.getJavaDateFromMySQL(division.regClosed);
+      const now = new Date();
+      if (now >= regOpen && now < regClosed) {
+        this.addNewTempReg(division.id, null, null);
+      } else {
+        const msg = now < regOpen ? 'Sorry registrations are not open yet.' : 'Sorry registrations are closed.';
+        this.snackbar.open(msg, 'dismiss');
+      }
     } else {
       this.removeRegByDivisionId(division.id);
     }
@@ -284,6 +297,17 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   goToEditProfile() {
     window.location.href = 'https://clubeg.golf/clubeg-app/#/profile/edit';
+  }
+
+  /**
+   * Return a Date Obj from a mysql string date time.
+   * @param mysqlDateTime Date time
+   */
+  getJavaDateFromMySQL(mysqlDateTime: string) {
+    let bits: any = mysqlDateTime.split(/[- :]/);
+    bits[1]--;
+    const dateOjb = new Date(bits[0], bits[1], bits[2], bits[3], bits[4], bits[5]);
+    return dateOjb;
   }
 
   goToCompetitors() {
