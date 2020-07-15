@@ -4,6 +4,9 @@ import { Subscription } from 'rxjs';
 import { TournamentService } from '../services/tournament.service';
 import { Event } from '../models/Event';
 import { Group } from '../models/Group';
+import { Tournament } from '../models/Tournament';
+import { Title } from '@angular/platform-browser';
+import { Season } from '../models/Season';
 
 @Component({
   selector: 'app-draw',
@@ -12,41 +15,98 @@ import { Group } from '../models/Group';
 })
 export class DrawComponent implements OnInit, OnDestroy {
 
-  susbscriptions: Subscription[] = [];
-  event: Event;
-  loadingPercent: number;
+  eventSelected: Event;
+  eventSelectedId: number;
   groups: Group[];
+  tournament: Tournament;
+  season: Season;
+  events: Event[];
+  loadingPercent: number;
+  subscriptions: Subscription[] = [];
 
   constructor(
-    private activeRoute: ActivatedRoute,
-    private tournamentService: TournamentService
+    private tournamentService: TournamentService,
+    private titleService: Title,
+    private activeRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.getEventId();
+    this.getTournament();
   }
 
   ngOnDestroy() {
-    this.susbscriptions.forEach(x => x.unsubscribe());
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  setloadingPercent(percent: number) {
+  setLoadingPercent(percent: number) {
     this.loadingPercent = percent;
+  }
+
+  /**
+   * Basic data pull of tournament based on host url. Gives us the tournament we are dealing with.
+   */
+  getTournament() {
+    this.tournament = this.tournamentService.getTournament();
+    if (!this.tournament) {
+      this.subscriptions.push(this.tournamentService.setTournament().subscribe(response => {
+        this.tournament = response.payload;
+        this.tournament.id = +this.tournament.id;
+        this.titleService.setTitle(this.tournament.name);
+        this.setLoadingPercent(10);
+        this.getCurrentSeason();
+      }));
+    } else {
+      this.setLoadingPercent(10);
+      this.getCurrentSeason();
+    }
+  }
+
+  /**
+   * Get the tournaments Current Season by year
+   */
+  getCurrentSeason() {
+    const year = new Date().getFullYear();
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.id.toString(), year.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.season = response.payload;
+        this.setLoadingPercent(20);
+        this.getEvents();
+      } else {
+        console.error(response);
+      }
+    }));
+  }
+
+  getEvents() {
+    this.subscriptions.push(this.tournamentService.getAllEvents(this.season).subscribe(response => {
+      if (response.status === 200) {
+        this.events = response.payload;
+        this.setLoadingPercent(30);
+        this.getEventId();
+      } else {
+        console.error(response);
+      }
+    }));
   }
 
   getEventId() {
     this.activeRoute.params.subscribe((params: { eventId: string }) => {
       const eventId = params.eventId;
-      this.getEvent(eventId);
-      this.setloadingPercent(20);
+      if (eventId) {
+        this.getEvent(eventId);
+        this.eventSelectedId = +eventId;
+      } else {
+        this.getEvent(this.events[0].id.toString());
+        this.eventSelectedId = +this.events[0].id;
+      }
     });
   }
 
   getEvent(eventId: string) {
-    this.susbscriptions.push(this.tournamentService.getEvent(eventId).subscribe(response => {
+    this.subscriptions.push(this.tournamentService.getEvent(eventId).subscribe(response => {
       if (response.status === 200) {
-        this.event = response.payload;
-        this.setloadingPercent(40);
+        this.eventSelected = response.payload;
+        this.setLoadingPercent(40);
         this.getGroups();
       } else {
         console.error(response);
@@ -55,15 +115,21 @@ export class DrawComponent implements OnInit, OnDestroy {
   }
 
   getGroups() {
-    this.susbscriptions.push(this.tournamentService.getGroups(this.event.id.toString()).subscribe(response => {
+    this.subscriptions.push(this.tournamentService.getGroups(this.eventSelected.id.toString(), this.tournament.id.toString()).subscribe(response => {
       if (response.status === 200) {
         this.groups = response.payload;
-        this.setloadingPercent(100);
+        this.setLoadingPercent(100);
       } else {
         console.error(response);
         this.groups[0]
       }
     }));
+  }
+
+  onEventChange(eventId: number) {
+    this.setLoadingPercent(20);
+    this.getEvent(eventId.toString());
+    this.getGroups();
   }
 
 

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { RulesComponent } from './rules/rules.component';
 import { ScoresComponent } from './scores/scores.component';
 import { RegisterComponent } from './register/register.component';
 import { CompetitorsComponent } from './competitors/competitors.component';
@@ -18,8 +17,6 @@ import { FaqComponent } from './faq/faq.component';
 import { ResultsComponent } from './results/results.component';
 import { LiveResultsComponent } from './live-results/live-results.component';
 import { CmpcLiveComponent } from './cmpc-live/cmpc-live.component';
-import { CommishStTeamsComponent } from './commish-st-teams/commish-st-teams.component';
-import { CommishStRegComponent } from './commish-st-reg/commish-st-reg.component';
 import { CommishGuestRegComponent } from './commish-guest-reg/commish-guest-reg.component';
 import { StQualifyingComponent } from './st-qualifying/st-qualifying.component';
 import { MatchesComponent } from './matches/matches.component';
@@ -46,8 +43,7 @@ const routes: Routes = [
   { path: 'st-qualifying', component: StQualifyingComponent },
   { path: 'commish-st-reg', component: RegisterComponent },
   { path: 'commish-guest-reg', component: CommishGuestRegComponent },
-  { path: 'matches', component: MatchesComponent },
-  { path: 'matches/:eventId', component: DrawComponent },
+  { path: 'matches', component: DrawComponent },
   { path: '**',
     redirectTo: 'home',
     pathMatch: 'full',

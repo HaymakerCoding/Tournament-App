@@ -54,7 +54,6 @@ export class MatchesComponent extends TournamentBase implements OnInit {
   }
 
   getEvents() {
-    console.log(this.season);
     this.subscriptions.push(this.tournamentService.getAllEvents(this.season).subscribe(response => {
       if (response.status === 200) {
         this.events = response.payload;

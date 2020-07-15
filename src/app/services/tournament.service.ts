@@ -276,8 +276,8 @@ export class TournamentService {
     }));
   }
 
-  getGroups(eventId: string) {
-    const params = new HttpParams().set('eventId', eventId);
+  getGroups(eventId: string, tournamentId: string) {
+    const params = new HttpParams().set('eventId', eventId).set('tournamentId', tournamentId);
     return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/event/group/get-all/index.php',
     { params }).pipe(map(response => {
       return response;
