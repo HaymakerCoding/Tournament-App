@@ -19,7 +19,6 @@ import { LiveResultsComponent } from './live-results/live-results.component';
 import { CmpcLiveComponent } from './cmpc-live/cmpc-live.component';
 import { CommishGuestRegComponent } from './commish-guest-reg/commish-guest-reg.component';
 import { StQualifyingComponent } from './st-qualifying/st-qualifying.component';
-import { MatchesComponent } from './matches/matches.component';
 import { DrawComponent } from './draw/draw.component';
 
 const routes: Routes = [

@@ -62,7 +62,6 @@ import { CommishGuestRegComponent } from './commish-guest-reg/commish-guest-reg.
 import { CommishStRegComponent } from './commish-st-reg/commish-st-reg.component';
 import { StQualifyingComponent } from './st-qualifying/st-qualifying.component';
 import { CommishCompetitorsComponent } from './commish-competitors/commish-competitors.component';
-import { MatchesComponent } from './matches/matches.component';
 import { DrawComponent } from './draw/draw.component';
 
 @NgModule({
@@ -97,7 +96,6 @@ import { DrawComponent } from './draw/draw.component';
     CommishStRegComponent,
     StQualifyingComponent,
     CommishCompetitorsComponent,
-    MatchesComponent,
     DrawComponent
   ],
   imports: [
