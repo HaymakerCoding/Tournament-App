@@ -1,7 +1,7 @@
 <div class="container pt-4 pb-4">
 
     <div *ngIf="loadingPercent < 100">
-        <mat-progress-bar value="{{ getLoadingPercent() }" color="primary" mode="determinate"></mat-progress-bar>
+        <mat-progress-bar [value]="loadingPercent" color="primary" mode="determinate"></mat-progress-bar>
         <div class="full-width text-center mt-2">Loading</div>
     </div>
     <div *ngIf="loadingPercent === 100">
@@ -22,8 +22,44 @@
             </mat-form-field>
         </div>
 
-        <p *ngIf="noResults && noResults === true">Sorry results for this tournament are not in place yet, try back soon!</p>
+        <p *ngIf="noResults === true">Sorry there were no results found for the current selections.</p>
+        <p *ngIf="!divisionSelected">Please choose a division to see live results.</p>
 
+        <!--ALL RESULTS EXECPT CMPC-->
+        <div *ngIf="+tournament.id !== 2">
+            <mat-tab-group>
+                <mat-tab *ngFor="let event of events" [label]="event.qualifyingRound ? event.qualifyingRound : event.courseName">
+
+                    <div *ngIf="divisionSelected">
+                        <div class="row mt-1 full-width">
+                            <div class="col-6">
+                                <h3 class="headings">Competitor</h3>
+                            </div>
+                            <div class="col-3 text-center">
+                                <h3 class="headings">Holes Complete</h3>
+                            </div>
+                            <div class="col-3 text-center">
+                                <h3 class="headings">Score</h3>
+                            </div>
+                        </div>
+                        <div *ngFor="let participant of getDivisionParticipants(event); let i = index" class="row full-width">
+                            <div class="col-6">
+                                <div>{{ (i+1) + '. ' + participant.fullName }}</div>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div>{{ getHoleComplete(participant) }}</div>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div>{{ participant.score > 0 ? '+' + participant.score : participant.score === 0 ? 'Even' : participant.score }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+
+
+        <!--CMPC ONLY-->
         <div *ngIf="+tournament.id === 2">
             <!--CMPC RESULTS-->
             <div *ngFor="let round of cmpcRounds">

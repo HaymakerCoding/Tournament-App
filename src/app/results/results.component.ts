@@ -6,6 +6,10 @@ import { Division } from '../models/Division';
 import { CmpcService } from '../services/cmpc.service';
 import { ResultsService } from '../services/results.service';
 import { CMPCmatch } from '../models/CMPCmatch';
+import { Season } from '../models/Season';
+import { Event } from '../models/Event';
+import { GroupParticipant } from '../models/GroupParticipant';
+import { Scorecard } from '../models/Scorecard';
 
 /**
  * Show the results of matches for a tournament. Selectable by year and division.
@@ -28,6 +32,10 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
   allCmpcMatches: CMPCmatch[];
   divisionalCmpcMatches: CMPCmatch[];
   cmpcRounds = ['Final', 'Semi-Final', 'Quarter-Final', '2', '1'];
+  events: Event[];
+  season: Season;
+  groupsFetched = 0;
+  scorecardsFetched = 0;
 
   constructor(
     tournamentService: TournamentService,
@@ -48,7 +56,7 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
   }
 
   next() {
-    this.setLoadingPercent(25);
+    this.setLoadingPercent(20);
     this.getYears();
   }
 
@@ -60,7 +68,7 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
       if (response.status === 200) {
         this.years = response.payload;
         this.yearSelected = this.years[0];
-        this.setLoadingPercent(50);
+        this.setLoadingPercent(40);
         this.getDivisions();
       } else {
         console.error(response);
@@ -69,10 +77,14 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
   }
 
   /**
-   * User changed year of tournament. Fetch results for new year selected
+   * User changed year of tournament. Reset data and fetch results for new year selected
    */
   onYearChange() {
-    this.setLoadingPercent(70);
+    this.events = [];
+    this.season = null;
+    this.groupsFetched = 0;
+    this.scorecardsFetched = 0;
+    this.setLoadingPercent(20);
     this.getResults();
   }
 
@@ -87,8 +99,6 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     this.subscriptions.push(this.tournamentService.getAllDivisions(this.tournament.id.toString()).subscribe(response => {
       if (response.status === 200) {
         this.divisions = response.payload;
-        this.divisionSelected = this.divisions[0];
-        this.setLoadingPercent(70);
         this.getResults();
       } else {
         console.error(response);
@@ -103,17 +113,85 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     if (+this.tournament.id === 2) {
       this.getCMPCresults();
     } else {
-      this.getTournamentResults(this.tournament.id);
+      this.getSeason();
     }
   }
 
   /**
-   * Get results for a tournament
-   * @param tournamentId 
+   * Get the season for the tournament, from a year value provided
    */
-  getTournamentResults(tournamentId: number) {
-    this.subscriptions.push()
-    this.setLoadingPercent(100);
+  getSeason() {
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.id.toString(), this.yearSelected.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.season = response.payload;
+        if (this.season) {
+          this.setLoadingPercent(60);
+          this.getEvents();
+        } else {
+          this.noResults = true;
+          this.setLoadingPercent(100);
+        }
+      } else {
+        console.error(response);
+      }
+    }));
+  }
+
+  getEvents() {
+    this.subscriptions.push(this.tournamentService.getAllEvents(this.season).subscribe(response => {
+      if (response.status === 200) {
+        this.events = response.payload;
+        if (this.events.length > 0) {
+          this.setLoadingPercent(70);
+          this.events.forEach(event => {
+            this.getAllGroups(event)
+          });
+        } else {
+          this.noResults = true;
+          this.setLoadingPercent(100);
+        }
+      } else {
+        console.error(response);
+      }
+    }));
+  }
+
+  getAllGroups(event: Event) {
+    this.subscriptions.push(this.tournamentService.getGroups(event.id.toString(), this.tournament.id.toString()).subscribe(response => {
+      if (response.status === 200) {
+        event.groups = response.payload;
+        this.groupsFetched++;
+        if (this.groupsFetched === this.events.length) {
+          this.setLoadingPercent(80);
+          this.getScorecards();
+        }
+      } else {
+        console.error(response);
+      }
+    }));
+  }
+
+  getScorecards() {
+    this.events.forEach(event => {
+      this.getScorecard(event);
+    });
+  }
+
+  /**
+   * Get the scorecard for the event
+   */
+  getScorecard(event: Event) {
+    this.subscriptions.push(this.tournamentService.getScorecard(event.scorecardId.toString()).subscribe(response => {
+      if (response.status === 200) {
+        event.scorecard = response.payload;
+        this.scorecardsFetched++;
+        if (this.scorecardsFetched === this.events.length) {
+          this.setLoadingPercent(100);
+        }
+      } else {
+        console.error(response);
+      }
+    }));
   }
 
   /**
@@ -136,9 +214,10 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
    * Filter out the matches for the division selected by user
    */
   setDivMatches() {
-    this.divisionalCmpcMatches = this.allCmpcMatches.filter(x => x.division === this.divisionSelected.name);
-    this.setLoadingPercent(100);
-    console.log(this.divisionalCmpcMatches);
+    if (this.tournament.id === 2) {
+      this.divisionalCmpcMatches = this.allCmpcMatches.filter(x => x.division === this.divisionSelected.name);
+      this.setLoadingPercent(100);
+    }
   }
 
   getRoundMatches(round: string):CMPCmatch[] {
@@ -152,6 +231,60 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
    */
   getHoleScore(hole: number, scores: Score[]) {
     return scores.find(x => x.hole === hole).score;
+  }
+
+  getDivisionParticipants(event: Event) {
+    const participants: GroupParticipant[] = [];
+    event.groups.forEach(group => {
+      group.groupParticipants.forEach(participant => {
+        if (+participant.divisions[0].id === +this.divisionSelected.id) {
+          participant.score = this.getScore(participant, this.getHoleComplete(participant), event.scorecard);
+          participants.push(participant);
+        }
+      });
+    });
+    participants.sort((a, b) => {
+      return a.score - b.score;
+    });
+    return participants;
+  }
+
+  /**
+   * Return the participants current score.
+   * Compare their hole scores total to toal pars.
+   * @param participant Grooup Participant
+   * @param maxHoleComplete The Max hole the participant has played up to
+   */
+  getScore(participant: GroupParticipant, maxHoleComplete: number, scorecard: Scorecard): number {
+    let targetPar = 0;
+    let usersScore = 0;
+    scorecard.scorecardHoles.forEach(hole => {
+      if (+hole.no <= +maxHoleComplete) {
+        targetPar += +hole.par;
+      }
+    });
+    participant.holeScores.forEach(holeScore => {
+      if (+holeScore.hole <= +maxHoleComplete) {
+        usersScore += +holeScore.score;
+      }
+    });
+    return usersScore - targetPar;
+  }
+
+  /**
+   * Get the max hole completed by a participant
+   */
+  getHoleComplete(participant: GroupParticipant): number {
+    let max = 0;
+    const holeScores = participant.holeScores;
+    if (holeScores) {
+      participant.holeScores.forEach(holeScore => {
+        if (+holeScore.hole > max) {
+          max = holeScore.hole;
+        }
+      });
+    }
+    return max;
   }
 
 

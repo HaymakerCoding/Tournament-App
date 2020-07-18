@@ -6,7 +6,47 @@
     </div>
 
     <div *ngIf="loadingPercent === 100">
-        <p>Sorry no live results available for this tournament yet. Try back soon!</p>
+
+        <p *ngIf="validTournaments.includes(+tournament.id) === false">Sorry no live results available for this tournament yet. Try back soon!</p>
+
+        <div *ngIf="validTournaments.includes(+tournament.id) === true">
+            <h1 class="text-center">Leaderboard</h1>
+            <mat-form-field class="mx-auto d-block" style="width:200px" appearance="outline">
+                <mat-label>Division</mat-label>
+                <mat-select (selectionChange)="onDivisionSelected()" [(ngModel)]="divisionSelected">
+                    <mat-option [value]="division" *ngFor="let division of divisions">
+                        {{ division.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <p class="mt-2" *ngIf="!divisionSelected">Please choose a division to see live results.</p>
+
+            <div *ngIf="divisionSelected">
+                <div class="row mt-1">
+                    <div class="col-6">
+                        <h3 class="headings">Competitor</h3>
+                    </div>
+                    <div class="col-3 text-center">
+                        <h3 class="headings">Holes Complete</h3>
+                    </div>
+                    <div class="col-3 text-center">
+                        <h3 class="headings">Score</h3>
+                    </div>
+                </div>
+                <div *ngFor="let participant of displayParticipants; let i = index" class="row">
+                    <div class="col-6">
+                        <div>{{ (i+1) + '. ' + participant.fullName }}</div>
+                    </div>
+                    <div class="col-3 text-center">
+                        <div>{{ getHoleComplete(participant) }}</div>
+                    </div>
+                    <div class="col-3 text-center">
+                        <div>{{ participant.totalScore > 0 ? '+' + participant.totalScore : participant.totalScore === 0 ? 'Even' : participant.totalScore }}</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
     
 

@@ -89,9 +89,9 @@ export class CompetitorsComponent implements OnInit, OnDestroy {
 
   getDisplayNames(i, reg: RegistrationBasic ) {
     if (reg.partnerId) {
-      return ( i + 1 ) + '. ' + reg.fullName + ' (ClubEG) & ' + reg.partnerFullName + ' (ClubEG)';
+      return ( i + 1 ) + '. ' + reg.fullName + ' & ' + reg.partnerFullName;
     } else {
-      return ( i + 1 ) + '. ' + reg.fullName + ' (ClubEG)';
+      return ( i + 1 ) + '. ' + reg.fullName;
     }
   }
 

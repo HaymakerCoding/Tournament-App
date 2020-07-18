@@ -284,4 +284,17 @@ export class TournamentService {
     }));
   }
 
+  /**
+   * Get the scorecard for the event
+   * @param id Scorecard ID
+   */
+  getScorecard(id: string) {
+    const params = new HttpParams().set('id', id);
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/courses/scorecard/get/index.php',
+    { params }).pipe(map(response => {
+      return response;
+    }));
+  }
+
+
 }

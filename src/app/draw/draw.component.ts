@@ -8,6 +8,11 @@ import { Tournament } from '../models/Tournament';
 import { Title } from '@angular/platform-browser';
 import { Season } from '../models/Season';
 
+/**
+ * Display the groups/tee times schedule for an event
+ * 
+ * @author Malcolm Roy
+ */
 @Component({
   selector: 'app-draw',
   templateUrl: './draw.component.html',
@@ -126,10 +131,16 @@ export class DrawComponent implements OnInit, OnDestroy {
     }));
   }
 
+  /**
+   * On User changing the event selected.
+   * Clear data for event and groups and refetch from db
+   * @param eventId ID of Event selected
+   */
   onEventChange(eventId: number) {
+    this.eventSelected = null;
+    this.groups = [];
     this.setLoadingPercent(20);
     this.getEvent(eventId.toString());
-    this.getGroups();
   }
 
 
