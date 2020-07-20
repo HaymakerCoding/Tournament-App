@@ -31,7 +31,6 @@
 .player-names{
     color:navy;
 }
-
 .headings{
     font-size:16px;
     font-weight:bold;
@@ -42,6 +41,42 @@
     display: flex;
     justify-content: center;
     align-items: flex-end;
+}
+
+.cut-line{
+    position: relative;
+    font-size: 20px;
+    z-index: 1;
+    overflow: hidden;
+    text-align: center;
+    background-color:#70cf71;
+    color:white;
+    border-radius:4px;
+}
+.cut-line:before, .cut-line:after {
+    position: absolute;
+    top: 51%;
+    overflow: hidden;
+    width: 50%;
+    height: 2px;
+    content: '\a0';
+    background-color: white;
+}
+
+.cut-line:before {
+    margin-left: -55%;
+    text-align: center;
+}
+.cut-line:after{
+    margin-left: 5%;
+}
+.clickable-rows:hover{
+    cursor: pointer;
+    border:2px solid #70cf71;
+    border-radius:4px;
+}
+.clickable-rows:hover > div > div{
+    font-weight:600!important;
 }
 
 @media only screen and (max-width:800px) {

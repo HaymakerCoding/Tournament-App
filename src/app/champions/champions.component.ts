@@ -78,7 +78,7 @@ export class ChampionsComponent implements OnInit, OnDestroy {
         if (this.years[0]) {
           const date = new Date();
           const month = date.getMonth();
-          if (month <= 6 && this.years[1]) { // Show the previous year up until July, note Javascript month starts at 0 for Jan
+          if (month <= 5 && this.years[1]) { // Show the previous year up until July, note Javascript month starts at 0 for Jan
             this.selectedYear = this.years[1];
           } else {
             this.selectedYear = this.years[0];

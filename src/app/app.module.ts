@@ -63,6 +63,7 @@ import { CommishStRegComponent } from './commish-st-reg/commish-st-reg.component
 import { StQualifyingComponent } from './st-qualifying/st-qualifying.component';
 import { CommishCompetitorsComponent } from './commish-competitors/commish-competitors.component';
 import { DrawComponent } from './draw/draw.component';
+import { HoleByHoleScoresComponent } from './hole-by-hole-scores/hole-by-hole-scores.component';
 
 @NgModule({
   declarations: [
@@ -96,7 +97,8 @@ import { DrawComponent } from './draw/draw.component';
     CommishStRegComponent,
     StQualifyingComponent,
     CommishCompetitorsComponent,
-    DrawComponent
+    DrawComponent,
+    HoleByHoleScoresComponent
   ],
   imports: [
     BrowserModule,
@@ -113,7 +115,7 @@ import { DrawComponent } from './draw/draw.component';
   providers: [
     AuthService
   ],
-  entryComponents: [LoginComponent],
+  entryComponents: [LoginComponent, HoleByHoleScoresComponent ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

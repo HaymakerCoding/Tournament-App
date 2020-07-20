@@ -1,17 +1,73 @@
 .headings{
-    font-size:16px;
-    font-weight:bold;
-    border-bottom:1px solid;
-    padding-bottom: 5px;
     color:#107896;
-    height:50px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
+    background-color: #f2f4f7;
+}
+.cut-line{
+    position: relative;
+    font-size: 20px;
+    z-index: 1;
+    overflow: hidden;
+    text-align: center;
+    background-color:#70cf71;
+    color:white;
+    border-radius:4px;
+    width:96%;
+}
+.cut-line:before, .cut-line:after {
+    position: absolute;
+    top: 51%;
+    overflow: hidden;
+    width: 50%;
+    height: 2px;
+    content: '\a0';
+    background-color: white;
+}
+.cut-line:before {
+    margin-left: -55%;
+    text-align: center;
+}
+.cut-line:after{
+    margin-left: 5%;
+}
+.clickable-rows:hover{
+    cursor: pointer;
+    border:2px solid #70cf71;
+    border-radius:4px;
+}
+.clickable-rows:hover > div > div{
+    font-weight:600!important;
+}
+.made-cut{
+    background-color:rgba(112, 207, 114, 0.3);
+}
+.table-container {
+    width: 100%;
+    overflow: auto;
+  }
+table {
+  width: 96%;
+}
+td.mat-column-star {
+  width: 25px;
+  padding-right: 8px;
 }
 
-@media only screen and (max-width:800px) {
-    .headings{
-        font-size:12px!important;
+th.mat-column-position, td.mat-column-position {
+  padding-left: 8px;
+}
+
+.mat-table-sticky:first-child {
+  border-right: 1px solid #e0e0e0;
+  min-width: 120px;
+  padding-left: 7px;
+}
+
+.mat-table-sticky:last-child {
+  border-left: 1px solid #e0e0e0;
+}
+
+@media only screen and (max-width:1000px) {
+    table {
+        width:800px;
     }
 }

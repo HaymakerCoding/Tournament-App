@@ -18,7 +18,8 @@ export class GroupParticipant {
     public teeBlock1id: number,
     public score: number,
     public totalScore: number, // all rounds combined as total
-    public roundTotalScores: number[] //each round seperated total
+    public roundTotalScores: number[], //each round seperated total
+    public finalScore: number
   ) {}
 
 }

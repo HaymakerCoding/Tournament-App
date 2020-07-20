@@ -10,6 +10,8 @@ import { Season } from '../models/Season';
 import { Event } from '../models/Event';
 import { GroupParticipant } from '../models/GroupParticipant';
 import { Scorecard } from '../models/Scorecard';
+import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 /**
  * Show the results of matches for a tournament. Selectable by year and division.
@@ -36,12 +38,14 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
   season: Season;
   groupsFetched = 0;
   scorecardsFetched = 0;
+  columns = ['competitor', 'holes', 'round1', 'round2', 'round3', 'total'];
 
   constructor(
     tournamentService: TournamentService,
     titleService: Title,
     private cmpcService: CmpcService,
-    private resultsService: ResultsService
+    private resultsService: ResultsService,
+    private router: Router
     
   ) {
     super(tournamentService, titleService);
@@ -113,7 +117,8 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     if (+this.tournament.id === 2) {
       this.getCMPCresults();
     } else {
-      this.getSeason();
+      this.router.navigate(['/results/live'])
+      //this.getSeason();
     }
   }
 
@@ -287,6 +292,10 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     return max;
   }
 
+  getDatasource() {
+
+    return new MatTableDataSource();
+  }
 
 
 }
