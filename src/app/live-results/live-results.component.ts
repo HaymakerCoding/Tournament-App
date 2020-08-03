@@ -68,11 +68,13 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     this.getYears();
   }
 
+  /**
+   * Get all members set to participate in the tournament.
+   */
   getAllParticipants() {
     this.subscriptions.push(this.resultsService.getAllParticipants(this.tournament.id.toString()).subscribe(response => {
       if (response.status === 200) {
         this.allParticipants = response.payload;
-        console.log(this.allParticipants);
       } else {
         console.error(response);
       }

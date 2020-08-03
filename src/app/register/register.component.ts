@@ -1,15 +1,13 @@
-import { Component, OnInit, OnDestroy, HostListener, ViewChild, ElementRef, ViewChildren } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RegistrationService } from '../services/registration.service';
 import { Tournament } from '../models/Tournament';
 import { TournamentService } from '../services/tournament.service';
-import { RegistrationBasic } from '../models/RegistrationBasic';
 import { AuthService } from '../services/auth.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatInput } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoginComponent } from '../login/login.component';
 import { Registration } from '../models/Registration';
@@ -51,7 +49,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   rightList: Division[] = [];
   unsavedChanges: boolean;
   searchOpen: boolean;
-
+  season: Season
   memberSearchBtn: HTMLButtonElement;
 
   @HostListener('window:keydown', ['$event'])
@@ -70,8 +68,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private router: Router,
     private snackbar: MatSnackBar,
-    private titleService: Title,
-    private season: Season
+    private titleService: Title
   ) { }
 
   ngOnInit() {
@@ -83,18 +80,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.userRegistered = false;
     this.loading = true;
     this.getTournament();
-  }
-
-  getSeason() {
-    const year = new Date().getFullYear();
-    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.season = response.payload;
-        this.getYearlyData();
-      } else {
-        console.error(response);
-      }
-    }));
   }
 
   /**
@@ -111,6 +96,18 @@ export class RegisterComponent implements OnInit, OnDestroy {
     } else {
       this.getSeason();
     }
+  }
+
+  getSeason() {
+    const year = new Date().getFullYear();
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.season = response.payload;
+        this.getYearlyData();
+      } else {
+        console.error(response);
+      }
+    }));
   }
 
   /**

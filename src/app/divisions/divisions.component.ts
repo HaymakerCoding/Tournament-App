@@ -46,7 +46,6 @@ export class DivisionsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.tournamentService.setTournament().subscribe(response => {
       this.tournament = response.payload;
       this.titleService.setTitle(this.tournament.name + ' Divisions');
-      console.log(response);
       this.getSeason();
     }));
   }
@@ -57,7 +56,6 @@ export class DivisionsComponent implements OnInit, OnDestroy {
       if (response.status === 200) {
         this.season = response.payload;
         this.getDivisions();
-        console.log(response);
       } else {
         console.error(response);
       }
