@@ -5,6 +5,7 @@ import { Tournament } from '../models/Tournament';
 import { TournamentService } from '../services/tournament.service';
 import { Title } from '@angular/platform-browser';
 import { Division } from '../models/Division';
+import { Season } from '../models/Season';
 
 @Component({
   selector: 'app-all-competitors',
@@ -20,6 +21,7 @@ export class AllCompetitorsComponent implements OnInit, OnDestroy {
   leftList: Division[] = [];
   centerList: Division[] = [];
   rightList: Division[] = [];
+  season: Season;
 
   constructor(
     private regService: RegistrationService,
@@ -46,11 +48,23 @@ export class AllCompetitorsComponent implements OnInit, OnDestroy {
       this.subscriptions.push(this.tournamentService.setTournament().subscribe(response => {
         this.tournament = response.payload;
         this.titleService.setTitle(this.tournament.name + ' Divisions');
-        this.getDivisions();
+        this.getSeason()
       }));
     } else {
-      this.getDivisions();
+      this.getSeason();
     }
+  }
+
+  getSeason() {
+    const year = new Date().getFullYear();
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.season = response.payload;
+        this.getDivisions();
+      } else {
+        console.error(response);
+      }
+    }));
   }
 
 
@@ -60,7 +74,7 @@ export class AllCompetitorsComponent implements OnInit, OnDestroy {
    * chosen boolean starts false and true if selected by user
    */
   getDivisions() {
-    this.subscriptions.push(this.regService.getDivisions(this.tournament.id).subscribe(response => {
+    this.subscriptions.push(this.tournamentService.getAllDivisions(this.season).subscribe(response => {
       if (response.status === 200) {
         this.divisions = response.payload;
       } else {

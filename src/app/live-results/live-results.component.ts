@@ -10,7 +10,7 @@ import { Scorecard } from '../models/Scorecard';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HoleByHoleScoresComponent } from '../hole-by-hole-scores/hole-by-hole-scores.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatTab } from '@angular/material/tabs';
+import { ResultsService } from '../services/results.service';
 
 /**
  * Show a leaderboard view of all players.
@@ -40,10 +40,15 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   columns = ['competitor', 'holes', 'round1', 'round2', 'round3', 'total'];
   dataSource: MatTableDataSource<any>;
   cutDataSource: MatTableDataSource<any>;
+  searchDataSource: MatTableDataSource<any>;
+  searchedParticipants: TournamentParticipant[];
+  allParticipants: TournamentParticipant[];
+  searchColumns = ['name', 'year', 'division'];
 
   constructor(
     tournamentService: TournamentService,
     titleService: Title,
+    private resultsService: ResultsService,
     private dialog: MatDialog
   ) {
     super(tournamentService, titleService);
@@ -59,7 +64,19 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
 
   next() {
     this.setLoadingPercent(10);
+    this.getAllParticipants();
     this.getYears();
+  }
+
+  getAllParticipants() {
+    this.subscriptions.push(this.resultsService.getAllParticipants(this.tournament.id.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.allParticipants = response.payload;
+        console.log(this.allParticipants);
+      } else {
+        console.error(response);
+      }
+    }));
   }
 
   /**
@@ -71,18 +88,6 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
         this.years = response.payload;
         this.yearSelected = this.years[0];
         this.setLoadingPercent(15);
-        this.getDivisions();
-      } else {
-        console.error(response);
-      }
-    }));
-  }
-
-  getDivisions() {
-    this.subscriptions.push(this.tournamentService.getAllDivisions(this.tournament.id.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.divisions = response.payload;
-        this.setLoadingPercent(30);
         this.getSeason();
       } else {
         console.error(response);
@@ -91,11 +96,22 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   }
 
   getSeason() {
-    const year = new Date().getFullYear();
-    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.id.toString(), year.toString()).subscribe(response => {
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.id.toString(), this.yearSelected.toString()).subscribe(response => {
       if (response.status === 200) {
         this.season = response.payload;
         this.setLoadingPercent(40);
+        this.getDivisions();
+      } else {
+        console.error(response);
+      }
+    }));
+  }
+
+  getDivisions() {
+    this.subscriptions.push(this.tournamentService.getAllDivisions(this.season).subscribe(response => {
+      if (response.status === 200) {
+        this.divisions = response.payload;
+        this.setLoadingPercent(30);
         this.getEvents();
       } else {
         console.error(response);
@@ -103,12 +119,16 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     }));
   }
 
+  
+
   getEvents() {
     this.subscriptions.push(this.tournamentService.getAllEvents(this.season).subscribe(response => {
       if (response.status === 200) {
         this.events = response.payload;
         this.setLoadingPercent(50);
-        this.events.forEach(event => {this.getAllGroups(event)});
+        this.events.forEach(event => {
+          this.getAllGroups(event)
+        });
       } else {
         console.error(response);
       }
@@ -182,7 +202,7 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     }
     this.cutParticipants.sort((a, b) => {
       return a.finalScore - b.finalScore;
-    })
+    });
     this.displayParticipants = this.displayParticipants.filter(x => this.cutParticipants.some(cut => +cut.memberId === +x.memberId) === false);
     this.dataSource = new MatTableDataSource(this.displayParticipants);
     this.cutDataSource = new MatTableDataSource(this.cutParticipants);
@@ -308,10 +328,7 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     this.dialogRef = this.dialog.open(HoleByHoleScoresComponent, { data: { participant, events: this.events }, minWidth: '100vw', minHeight: '100vh' })
   }
 
-  getDatasource() {
-    return this.dataSource;
-  }
-
+  
   getEventScore(participant: GroupParticipant, event: Event, index: number): any {
     const score = participant.roundTotalScores[index];
     if (score) {
@@ -338,6 +355,11 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     return eventParticipant;
   }
 
+  /**
+   * Calculate all strokes a player took for the hole event
+   * @param participant Group Participant
+   * @param event Event
+   */
   getTotalStrokes(participant: GroupParticipant, event: Event) {
     const eventParticipant = this.getEventParticipant(participant, event);
     if (eventParticipant) {
@@ -361,7 +383,7 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
           return false;
         }
     } else if (this.divisionSelected.name === 'C Division') {
-      if ((index + 1) <= 12 ) {
+      if ((index + 1) <= 13 ) {
         return true;
       } else {
         return false;
@@ -371,8 +393,16 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     }
   }
 
+  getDatasource() {
+    return this.dataSource;
+  }
+
   getCutDatasource() {
     return this.cutDataSource;
+  }
+
+  getSearchDatasource() {
+    return this.searchDataSource;
   }
 
   /**
@@ -388,8 +418,43 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   }
 
   onYearChange() {
-    alert('Past results comming soon!');
+    this.groupsFetched = 0;
+    this.scorecardsFetched = 0;
+    this.setLoadingPercent(15);
+    this.getDivisions();
+  }
+
+  /**
+   * Filter and show a list of matching participant (All Tournamnet Participants) by user entered text
+   * @param text User entered text
+   */
+  searchByPlayer(text: string) {
+    this.searchedParticipants = [];
+    if (text.length > 0) {
+      this.searchedParticipants = this.allParticipants.filter(x => x.fullName.toLowerCase().startsWith(text.toLowerCase()));
+    } else {
+      this.searchedParticipants = [];
+    }
+    this.searchDataSource = new MatTableDataSource(this.searchedParticipants);
+  }
+
+  /**
+   * When user clicks on a search result tournament participant record, setup the page to show those results, div/year combo
+   * @param participant 
+   */
+  onSearchedParticipantClick(participant: TournamentParticipant) {
+    this.searchedParticipants = [];
+    this.divisionSelected = this.divisions.find(x => x.name === participant.divisionName);
+    this.yearSelected = +participant.year;
+    this.onDivisionSelected();
   }
   
 
+}
+
+interface TournamentParticipant {
+  fullName: string,
+  divisionName: string,
+  year: number,
+  memberId: number
 }

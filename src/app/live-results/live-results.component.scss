@@ -37,9 +37,7 @@
 .clickable-rows:hover > div > div{
     font-weight:600!important;
 }
-.made-cut{
-    background-color:rgba(112, 207, 114, 0.3);
-}
+
 .table-container {
     width: 100%;
     overflow: auto;
@@ -58,7 +56,7 @@ th.mat-column-position, td.mat-column-position {
 
 .mat-table-sticky:first-child {
   border-right: 1px solid #e0e0e0;
-  min-width: 120px;
+  max-width: 100px;
   padding-left: 7px;
 }
 

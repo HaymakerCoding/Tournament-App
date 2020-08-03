@@ -1,3 +1,4 @@
+import { DivisionSponsor } from './DivisionSponsor';
 
 /**
  * Represent a tournament Division
@@ -7,7 +8,9 @@ export class Division {
 
   constructor(
       public id: number,
-      public tournamentId: number,
+      public competitionId: number,
+      public seasonId: number,
+      public num_events: number,
       public name: string,
       public type: string,
       public spots: number,
@@ -37,7 +40,8 @@ export class Division {
       public logo2link: string,
       public logo3link: string,
       public sponsorLink: string,
-      public adSetting: string
+      public adSetting: string,
+      public sponsor: DivisionSponsor
 
   ) {}
 

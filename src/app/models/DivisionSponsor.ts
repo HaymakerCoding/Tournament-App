@@ -1,9 +1,9 @@
 
 /**
- * Represent basic info for a course used in a tournament
+ * 
  * @author Malcolm Roy
  */
-export class TournamentSponsor {
+export class DivisionSponsor {
 
   constructor(
       public id: number,

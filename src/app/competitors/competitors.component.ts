@@ -8,6 +8,7 @@ import { Tournament } from '../models/Tournament';
 import { TournamentYearlyData } from '../models/TournamentYearlyData';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { Season } from '../models/Season';
 
 @Component({
   selector: 'app-competitors',
@@ -27,6 +28,7 @@ export class CompetitorsComponent implements OnInit, OnDestroy {
   loading: boolean;
   divSelected: Division;
   divisionId: number;
+  season: Season;
 
   constructor(
     private regService: RegistrationService,
@@ -60,11 +62,23 @@ export class CompetitorsComponent implements OnInit, OnDestroy {
       this.subscriptions.push(this.tournamentService.setTournament().subscribe(response => {
         this.tournament = response.payload;
         this.titleService.setTitle(this.tournament.name + ' Competitor List');
-        this.getYearlyData();
+        this.getSeason();
       }));
     } else {
-      this.getYearlyData();
+      this.getSeason();
     }
+  }
+
+  getSeason() {
+    const year = new Date().getFullYear();
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.season = response.payload;
+        this.getYearlyData();
+      } else {
+        console.error(response);
+      }
+    }));
   }
 
   filterMembers(div) {
@@ -73,9 +87,8 @@ export class CompetitorsComponent implements OnInit, OnDestroy {
       this.matchingRegistrations = allReg;
       this.matchingWaitRegistrations = this.waitingRegistrations;
     } else {
-      this.divSelected = div;
       this.matchingRegistrations = this.registrations.filter(reg => {
-        if (reg.divisionId === div.id && reg.status !== 'bailed') {
+        if (+reg.divisionId === +this.divSelected.id && reg.status !== 'bailed') {
           return reg;
         }
       });
@@ -135,15 +148,15 @@ export class CompetitorsComponent implements OnInit, OnDestroy {
    * chosen boolean starts false and true if selected by user
    */
   getDivisions() {
-    this.subscriptions.push(this.regService.getDivisions(this.tournament.id).subscribe(response => {
+    this.subscriptions.push(this.tournamentService.getAllDivisions(this.season).subscribe(response => {
       if (response.status === 200) {
         this.divisions = response.payload;
         this.divSelected = this.divisions.find(x => +x.id === +this.divisionId);
+        this.getRegistrations();
       } else {
         alert('Sorry, there was an error getting the division list');
         console.error(response);
       }
-      this.getRegistrations();
     }));
   }
 

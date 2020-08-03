@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Registration } from '../models/Registration';
+import { Season } from '../models/Season';
 
 @Injectable({
   providedIn: 'root'
@@ -27,14 +28,6 @@ export class RegistrationService {
     const headers = this.getHeaders();
     return this.http.post<any>('https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/registrations/add/index.php', {
       tournamentId, year, registrations}, { headers }).pipe(map(response => {
-      return response;
-    }));
-  }
-
-  getDivisions(tournamentId) {
-    const params = new HttpParams().set('tournamentId', tournamentId);
-    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/divisions/get-all/index.php', {
-      params }).pipe(map(response => {
       return response;
     }));
   }

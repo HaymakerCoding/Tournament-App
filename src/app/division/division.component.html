@@ -10,8 +10,8 @@
 
         <h1 class="text-center">{{ divSelected.name }}</h1>
         <div>
-          <a rel="noopener" target="_blank" [href]="getSponsorLink(divSelected.sponsorId)">
-            <img [src]="getSponsorLogo(divSelected.sponsorId)" [alt]="getSponsorName()"  class="mx-auto d-block mt-1 mb-0" style="width:100px;">
+          <a rel="noopener" target="_blank" [href]="divSelected.sponsor.website">
+            <img [src]="divSelected.sponsor.logo" [alt]="divSelected.sponsor.name"  class="mx-auto d-block mt-1 mb-0" style="width:100px;">
           </a>
         </div>
 
@@ -53,11 +53,11 @@
             </div>
             <div class="col-12 col-md-6 mt-2 text-center">
               <a rel="noopener" target="_blank" [href]="divSelected.sponsorLink">
-                <img [src]="divSelected.sponsorPic" [alt]="getSponsorName()" class="divSponsorImages mx-auto d-block">
+                <img [src]="divSelected.sponsorPic" [alt]="divSelected.sponsor.name" class="divSponsorImages mx-auto d-block">
               </a>
               <br>
-              <a rel="noopener" target="_blank" [href]="getSponsorAdLink(divSelected.adSetting)">
-                <img [src]="getSponsorAd(divSelected.adSetting)" [alt]="getSponsorName()" class="divSponsorImages mx-auto d-block">
+              <a rel="noopener" target="_blank" [href]="getSponsorAdLink(divSelected)">
+                <img [src]="getSponsorAd(divSelected)" [alt]="divSelected.sponsor.name" class="divSponsorImages mx-auto d-block">
               </a>
             </div>
 
@@ -106,8 +106,8 @@
         </table>
 
         <div>
-          <a rel="noopener" target="_blank" [href]="getSponsorLink(divSelected.sponsorId)">
-            <img [src]="getSponsorLogo(divSelected.sponsorId)" [alt]="getSponsorName()"  class="mx-auto d-block mt-3 mb-3" style="width:150px;">
+          <a rel="noopener" target="_blank" [href]="divSelected.sponsor.website">
+            <img [src]="divSelected.sponsor.logo" [alt]="divSelected.sponsor.name"  class="mx-auto d-block mt-3 mb-3" style="width:150px;">
           </a>
         </div>
 

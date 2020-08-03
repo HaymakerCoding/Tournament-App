@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { RegistrationService } from '../services/registration.service';
 import { Tournament } from '../models/Tournament';
 import { TournamentService } from '../services/tournament.service';
 import { Title } from '@angular/platform-browser';
 import { Division } from '../models/Division';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TournamentChamp } from '../models/TournamentChamp';
-import { TournamentSponsor } from '../models/TournamentSponsor';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Season } from '../models/Season';
+import { DivisionSponsor } from '../models/DivisionSponsor';
 
 @Component({
   selector: 'app-division',
@@ -20,17 +20,14 @@ export class DivisionComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   loading: boolean;
   tournament: Tournament;
-  divisions: Division[];
   divSelected: Division;
   years: number[];
   allChamps: TournamentChamp[];
   divisionId: number;
-  sponsor: TournamentSponsor;
-  allSponsors: TournamentSponsor[];
   onPhone: boolean;
+  season: Season;
 
   constructor(
-    private regService: RegistrationService,
     private tournamentService: TournamentService,
     private titleService: Title,
     private router: Router,
@@ -79,21 +76,48 @@ export class DivisionComponent implements OnInit, OnDestroy {
       this.subscriptions.push(this.tournamentService.setTournament().subscribe(response => {
         this.tournament = response.payload;
         this.titleService.setTitle(this.tournament.name + ' Divisions');
-        this.getYears();
+        this.getSeason();
       }));
     } else {
-      this.getYears();
+      this.getSeason();
     }
   }
 
-  getYears() {
-    this.subscriptions.push(this.tournamentService.getYears(this.tournament.id.toString()).subscribe(response => {
+  getSeason() {
+    const year = new Date().getFullYear();
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response => {
       if (response.status === 200) {
-        this.years = response.payload;
+        this.season = response.payload;
+        this.getDivision();
       } else {
         console.error(response);
       }
-      this.getDivisions();
+    }));
+  }
+
+  /**
+   * Get the division selected by the router param
+   */
+  getDivision() {
+    this.subscriptions.push(this.tournamentService.getDivision(this.divisionId.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.divSelected = response.payload;
+        this.getChampions();
+      } else {
+        alert('Sorry, there was an error getting the division list');
+        console.error(response);
+      }
+    }));
+  }
+
+  getChampions() {
+    this.subscriptions.push(this.tournamentService.getAllChampionsAllYears(this.tournament.id.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.allChamps = response.payload;
+        this.loading = false;
+      } else {
+        console.error(response);
+      }
     }));
   }
 
@@ -141,102 +165,28 @@ export class DivisionComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Initialize the division available to play.
-   * User can select these for sending with their registration
-   * chosen boolean starts false and true if selected by user
-   */
-  getDivisions() {
-    this.subscriptions.push(this.regService.getDivisions(this.tournament.id).subscribe(response => {
-      if (response.status === 200) {
-        this.divisions = response.payload;
-        this.divSelected = this.divisions.find(x => +x.id === +this.divisionId);
-      } else {
-        alert('Sorry, there was an error getting the division list');
-        console.error(response);
-      }
-      this.getChampions();
-    }));
-  }
-
-  getChampions() {
-    this.subscriptions.push(this.tournamentService.getAllChampionsAllYears(this.tournament.id.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.allChamps = response.payload;
-      } else {
-        console.error(response);
-      }
-      this.getAllSponsors();
-    }));
-  }
-
-  getAllSponsors() {
-    this.subscriptions.push(this.tournamentService.getAllSponsors().subscribe(response => {
-      if (response.status === 200) {
-        this.allSponsors = response.payload;
-      } else {
-        console.error(response);
-      }
-      this.getSponsor();
-    }));
-  }
-
-  /**
-   * Get the sponsor associated to this division
-   */
-  getSponsor() {
-    if (this.divSelected && this.divSelected.sponsorId) {
-      this.subscriptions.push(this.tournamentService.getDivisionSponsor(this.divSelected.sponsorId).subscribe(response => {
-        if (response.status === 200) {
-          this.sponsor = response.payload;
-        } else {
-          console.error(response);
-        }
-        this.loading = false;
-      }));
-    } else {
-      this.loading = false;
-    }
-  }
-
-  getSponsorName() {
-    return this.sponsor.name;
-  }
-
-  /**
-   * Get the sponsor Ad URL link depending on Ad setting. 0 means default ad, 1 current ad
-   * @param adSetting Ad setting flag
-   */
-  getSponsorAdLink(adSetting) {
-    if (adSetting === '0') {
-      return this.sponsor.website;
-    } else {
-      return this.sponsor.currentAdWebsite;
-    }
-  }
-
-  /**
    * Get the sponsor Ad (image URL) depending on Ad setting. 0 means default ad, 1 current ad
    * @param adSetting Ad setting flag
    */
-  getSponsorAd(adSetting) {
-    if (adSetting === '0') {
-      return this.sponsor.defaultAd;
+  getSponsorAd(division: Division) {
+    if (division.adSetting === '0') {
+      return division.sponsor.defaultAd;
     } else {
-      return this.sponsor.currentAd;
+      return division.sponsor.currentAd;
+    }
+  }
+
+  getSponsorAdLink(division: Division) {
+    if (division.adSetting === '0') {
+      return division.sponsor.website;
+    } else {
+      return division.sponsor.currentAdWebsite;
     }
   }
 
   formatDate(dateTime: string) {
     const bits = dateTime.split(' ');
     return bits[0];
-  }
-
-  getSponsorLink(sponsorId) {
-    return this.allSponsors.find(x => +x.id === +sponsorId).website;
-  }
-
-  getSponsorLogo(sponsorId) {
-    return this.allSponsors.find(x => +x.id === +sponsorId).logo;
   }
 
   getCourseLogo(courseId) {

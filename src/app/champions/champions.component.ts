@@ -6,6 +6,7 @@ import { TournamentChamp } from '../models/TournamentChamp';
 import { Tournament } from '../models/Tournament';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { Season } from '../models/Season';
 
 @Component({
   selector: 'app-champions',
@@ -22,6 +23,7 @@ export class ChampionsComponent implements OnInit, OnDestroy {
   loading: boolean;
   divisions: Division[];
   champions: TournamentChamp[];
+  season: Season;
 
   leftList: Division[] = [];
   centerList: Division[] = [];
@@ -44,11 +46,23 @@ export class ChampionsComponent implements OnInit, OnDestroy {
       this.subscriptions.push(this.tournamentService.setTournament().subscribe(response => {
         this.tournament = response.payload;
         this.titleService.setTitle(this.tournament.name);
-        this.getYears();
+        this.getSeason();
       }));
     } else {
-      this.getYears();
+      this.getSeason();
     }
+  }
+
+  getSeason() {
+    const year = new Date().getFullYear();
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.season = response.payload;
+        this.getYears();
+      } else {
+        console.error(response);
+      }
+    }));
   }
 
   ngOnDestroy() {
@@ -92,7 +106,7 @@ export class ChampionsComponent implements OnInit, OnDestroy {
   }
 
   getAllDivisions() {
-    this.subscriptions.push(this.tournamentService.getAllDivisions(this.tournament.id.toString()).subscribe(response => {
+    this.subscriptions.push(this.tournamentService.getAllDivisions(this.season).subscribe(response => {
       if (response.status === 200) {
         this.divisions = response.payload;
         this.initDivisionLists();

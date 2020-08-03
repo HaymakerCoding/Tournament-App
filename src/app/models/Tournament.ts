@@ -8,6 +8,7 @@ export class Tournament {
 
   constructor(
     public id: number,
+    public eventTypeId: number,
     public url: string,
     public name: string,
     public host: string,

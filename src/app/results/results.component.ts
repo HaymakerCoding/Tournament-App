@@ -39,12 +39,12 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
   groupsFetched = 0;
   scorecardsFetched = 0;
   columns = ['competitor', 'holes', 'round1', 'round2', 'round3', 'total'];
+  seasons: Season[];
 
   constructor(
     tournamentService: TournamentService,
     titleService: Title,
     private cmpcService: CmpcService,
-    private resultsService: ResultsService,
     private router: Router
     
   ) {
@@ -61,17 +61,18 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
 
   next() {
     this.setLoadingPercent(20);
-    this.getYears();
+    this.getSeasons();
   }
 
   /**
    * Get just a list of years that this tournament has data for
    */
-  getYears() {
-    this.subscriptions.push(this.tournamentService.getYears(this.tournament.id.toString()).subscribe(response => {
+  getSeasons() {
+    this.subscriptions.push(this.tournamentService.getAllSeasons(this.tournament.eventTypeId.toString()).subscribe(response => {
       if (response.status === 200) {
-        this.years = response.payload;
-        this.yearSelected = this.years[0];
+        this.seasons = response.payload;
+        this.season = this.seasons[0];
+        this.yearSelected = this.season.year;
         this.setLoadingPercent(40);
         this.getDivisions();
       } else {
@@ -89,7 +90,7 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     this.groupsFetched = 0;
     this.scorecardsFetched = 0;
     this.setLoadingPercent(20);
-    this.getResults();
+    this.getDivisions();
   }
 
   getLoadingPercent() {
@@ -100,7 +101,7 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
    * Get the divisions available for this tournament
    */
   getDivisions() {
-    this.subscriptions.push(this.tournamentService.getAllDivisions(this.tournament.id.toString()).subscribe(response => {
+    this.subscriptions.push(this.tournamentService.getAllDivisions(this.season).subscribe(response => {
       if (response.status === 200) {
         this.divisions = response.payload;
         this.getResults();
@@ -120,26 +121,6 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
       this.router.navigate(['/results/live'])
       //this.getSeason();
     }
-  }
-
-  /**
-   * Get the season for the tournament, from a year value provided
-   */
-  getSeason() {
-    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.id.toString(), this.yearSelected.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.season = response.payload;
-        if (this.season) {
-          this.setLoadingPercent(60);
-          this.getEvents();
-        } else {
-          this.noResults = true;
-          this.setLoadingPercent(100);
-        }
-      } else {
-        console.error(response);
-      }
-    }));
   }
 
   getEvents() {

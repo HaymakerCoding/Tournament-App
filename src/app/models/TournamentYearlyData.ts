@@ -1,5 +1,5 @@
 import { TournamentCourse } from './TournamentCourse';
-import { TournamentSponsor } from './TournamentSponsor';
+import { DivisionSponsor } from './DivisionSponsor';
 
 /**
  * Represent a tournament info that is specific to a year
@@ -13,7 +13,7 @@ export class TournamentYearlyData {
     public year: number,
     public date: any,
     public time: any,
-    public sponsors: TournamentSponsor[],
+    public sponsors: DivisionSponsor[],
     public courses: TournamentCourse[],
     public qualifying: QualifyingStatus
   ) { }

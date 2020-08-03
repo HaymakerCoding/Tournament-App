@@ -35,7 +35,7 @@ export class TournamentService {
     this.host = window.location.hostname.replace('www.', '');
     // IF running in dev set to city match play for testing
     if (this.host === 'localhost') {
-      this.host = 'ottawacitizenchampionship.golf';
+      this.host = 'ottawacitizenchampionship.golf'; //'dev.ottawasunscramble.golf';
     }
     console.log('Loading data for host: ' + this.host);
   }
@@ -101,9 +101,18 @@ export class TournamentService {
     }));
   }
 
-  getAllDivisions(tournamentId: string) {
-    const params = new HttpParams().set('tournamentId', tournamentId);
-    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/divisions/get-all/index.php',
+  getAllDivisions(season: Season) {
+    const params = new HttpParams().set('seasonId', season.id.toString());
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/season/division/get-all/index.php',
+      { params })
+      .pipe(map(response => {
+        return response;
+    }));
+  }
+
+  getDivision(id: string) {
+    const params = new HttpParams().set('id', id);
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/season/division/get/index.php',
       { params })
       .pipe(map(response => {
         return response;
@@ -265,12 +274,24 @@ export class TournamentService {
 
   /**
    * Get a current tournament season.
-   * @param tournamentId 
-   * @param year 
+   * @param eventTypeId Event Type ID base class ID for the event
+   * @param year 4 digit year
    */
-  getSeason(tournamentId: string, year: string) {
-    const params = new HttpParams().set('tournamentId', tournamentId).set('year', year);
+  getSeason(eventTypeId: string, year: string) {
+    const params = new HttpParams().set('eventTypeId', eventTypeId).set('year', year);
     return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/season/get/index.php',
+    { params }).pipe(map(response => {
+      return response;
+    }));
+  }
+
+  /**
+   * Get all seasons for an event type
+   * @param eventTypeId Event Type ID base class ID for the event
+   */
+  getAllSeasons(eventTypeId: string) {
+    const params = new HttpParams().set('eventTypeId', eventTypeId);
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/season/get-all/index.php',
     { params }).pipe(map(response => {
       return response;
     }));

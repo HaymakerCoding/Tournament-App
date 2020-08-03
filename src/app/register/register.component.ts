@@ -19,6 +19,7 @@ import { Router } from '@angular/router';
 import { MemberService } from '../services/member.service';
 import { BasicMember } from '../models/BasicMember';
 import { Title } from '@angular/platform-browser';
+import { Season } from '../models/Season';
 
 @Component({
   selector: 'app-register',
@@ -59,7 +60,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
       event.preventDefault();
       this.memberSearchBtn.click();
     }
-
   }
 
   constructor(
@@ -70,7 +70,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private router: Router,
     private snackbar: MatSnackBar,
-    private titleService: Title
+    private titleService: Title,
+    private season: Season
   ) { }
 
   ngOnInit() {
@@ -82,6 +83,68 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.userRegistered = false;
     this.loading = true;
     this.getTournament();
+  }
+
+  getSeason() {
+    const year = new Date().getFullYear();
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.season = response.payload;
+        this.getYearlyData();
+      } else {
+        console.error(response);
+      }
+    }));
+  }
+
+  /**
+   * First Step - Get ALL data for this tournament page. Fetch by host
+   */
+  getTournament() {
+    this.tournament = this.tournamentService.getTournament();
+    if (!this.tournament) {
+      this.subscriptions.push(this.tournamentService.setTournament().subscribe(response => {
+        this.tournament = response.payload;
+        this.titleService.setTitle(this.tournament.name + ' Registration');
+        this.getSeason();
+      }));
+    } else {
+      this.getSeason();
+    }
+  }
+
+  /**
+   * Get the data that can differ by year.
+   * NOTE for here we won't bother getting the sponsors/courses
+   */
+  getYearlyData() {
+    this.yearlyData = this.tournamentService.getYearlyData();
+    if (!this.yearlyData) {
+      this.subscriptions.push(this.tournamentService.setYearlyData().subscribe(response => {
+        this.yearlyData = response.payload;
+        this.getDivisions();
+      }));
+    } else {
+      this.getDivisions();
+    }
+  }
+
+  /**
+   * Initialize the division available to play.
+   * User can select these for sending with their registration
+   * chosen boolean starts false and true if selected by user
+   */
+  getDivisions() {
+    this.subscriptions.push(this.tournamentService.getAllDivisions(this.season).subscribe(response => {
+      if (response.status === 200) {
+        this.divisions = response.payload;
+        this.initDivisionLists();
+      } else {
+        alert('Sorry, there was an error getting the division list');
+        console.error(response);
+      }
+      this.checkLoggedIn();
+    }));
   }
 
   addBtn(btn: MatButton) {
@@ -123,57 +186,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
   setUserId() {
     this.userId = this.authService.getUserId();
-  }
-
-  /**
-   * Initialize the division available to play.
-   * User can select these for sending with their registration
-   * chosen boolean starts false and true if selected by user
-   */
-  getDivisions() {
-    this.subscriptions.push(this.regService.getDivisions(this.tournament.id).subscribe(response => {
-      if (response.status === 200) {
-        this.divisions = response.payload;
-        this.initDivisionLists();
-      } else {
-        alert('Sorry, there was an error getting the division list');
-        console.error(response);
-      }
-      this.checkLoggedIn();
-    }));
-
-  }
-
-  /**
-   * First Step - Get ALL data for this tournament page. Fetch by host
-   */
-  getTournament() {
-    this.tournament = this.tournamentService.getTournament();
-    if (!this.tournament) {
-      this.subscriptions.push(this.tournamentService.setTournament().subscribe(response => {
-        this.tournament = response.payload;
-        this.titleService.setTitle(this.tournament.name + ' Registration');
-        this.getYearlyData();
-      }));
-    } else {
-      this.getYearlyData();
-    }
-  }
-
-  /**
-   * Get the data that can differ by year.
-   * NOTE for here we won't bother getting the sponsors/courses
-   */
-  getYearlyData() {
-    this.yearlyData = this.tournamentService.getYearlyData();
-    if (!this.yearlyData) {
-      this.subscriptions.push(this.tournamentService.setYearlyData().subscribe(response => {
-        this.yearlyData = response.payload;
-        this.getDivisions();
-      }));
-    } else {
-      this.getDivisions();
-    }
   }
 
   /**

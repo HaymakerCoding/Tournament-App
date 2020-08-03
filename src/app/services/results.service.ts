@@ -23,4 +23,16 @@ export class ResultsService {
     );
   }
 
+  /**
+   * Get a list of all participants from all years of a tournament
+   */
+  getAllParticipants(tournamentId: string) {
+    const params = new HttpParams().set('tournamentId', tournamentId);
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/participants/index.php',
+      { params })
+      .pipe(map(response => {
+        return response;
+    }));
+  }
+
 }
