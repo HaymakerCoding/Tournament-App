@@ -11,6 +11,9 @@ import { Title } from '@angular/platform-browser';
 import { TournamentNewsService } from '../services/tournament-news.service';
 import { TournamentNewsItem } from '../models/TournamentNewsItem';
 import { NavService } from '../services/nav.service';
+import { Season } from '../models/Season';
+import { DivisionSponsor } from '../models/DivisionSponsor';
+import { TournamentCourse } from '../models/TournamentCourse';
 
 /**
  * Entry point for the tournament app SPA.
@@ -37,7 +40,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   userLoggedIn: boolean;
   private subscriptions: Subscription[] = [];
   tournament: Tournament;
-  yearlyData: TournamentYearlyData;
   loading: boolean;
   year: number;
   sponsorList: LinkableImage[] = [];
@@ -46,6 +48,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   newsItems: TournamentNewsItem[];
   courseWidth: number;
   sponsorWidth: number;
+  season: Season;
+  sponsors: DivisionSponsor[];
+  courses: TournamentCourse[];
 
   constructor(
     private tournamentService: TournamentService,
@@ -67,50 +72,58 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.initNavService();
   }
 
-  /**
-   * This nav bar service tracks user actions in nav for scrolling to in page elements
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+   /**
+   * First Step - Get ALL data for this tournament page. Fetch by host
    */
-  initNavService() {
-    this.subscriptions.push(this.navService.getState().subscribe(response => {
-      switch (response) {
-        case 1 : this.scrollTo(this.newsElement.nativeElement); break;
-        case 2 : this.scrollTo(this.competitorElement.nativeElement); break;
-        case 3 : this.scrollTo(this.prizingElement.nativeElement); break;
-        case 4 : this.scrollTo(this.rulesElement.nativeElement); break;
-        case 5 : this.scrollTo(this.contactElement.nativeElement); break;
-        case 6 : this.scrollTo(this.topElement.nativeElement); break;
-        default: console.error('no scroll route found');
+  getTournament() {
+    this.tournament = this.tournamentService.getTournament();
+    if (!this.tournament) {
+      this.subscriptions.push(this.tournamentService.setTournament().subscribe(response => {
+        this.tournament = response.payload;
+        this.titleService.setTitle(this.tournament.name);
+        this.getSeason();
+      }));
+    } else {
+      this.getSeason();
+    }
+  }
+
+  getSeason() {
+    const year = new Date().getFullYear();
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.season = response.payload;
+        this.getSponsors();
+      } else {
+        console.error(response);
       }
     }));
   }
 
-  /**
-   * Listen to screen size changes, for setting phone specific settings like nav background image
-   */
-  initBreakObserver() {
-    this.breakpointOberver.observe(
-      ['(max-width: 800px)']).subscribe(result => {
-        if (result.matches) {
-          this.onPhone = true;
-        } else {
-          this.onPhone = false;
-        }
-      });
+  getSponsors() {
+    this.subscriptions.push(this.tournamentService.getSeasonSponsors(this.season.id.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.sponsors = response.payload;
+        this.getCourses();
+      } else {
+        console.error(response);
+      }
+    }));
   }
 
-  /**
-   * Get the data that can differ by year. Such as courses/sponsors
-   */
-  getYearlyData() {
-    this.yearlyData = this.tournamentService.getYearlyData();
-    if (!this.yearlyData) {
-      this.subscriptions.push(this.tournamentService.setYearlyData().subscribe(response => {
-        this.yearlyData = response.payload;
+  getCourses() {
+    this.subscriptions.push(this.tournamentService.getSeasonCourses(this.season.id.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.courses = response.payload;
         this.initCourseAndSponsors();
-      }));
-    } else {
-      this.initCourseAndSponsors();
-    }
+      } else {
+        console.error(response);
+      }
+    }));
   }
 
   /**
@@ -119,11 +132,11 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   initCourseAndSponsors() {
     // seperate the courses and sponsors for the tournament into specifc lists
-    this.yearlyData.courses.forEach(x => {
+    this.courses.forEach(x => {
       const course = { id: x.courseId, name: x.fullName, link: null, pic: x.logo };
       this.courseList.push(course);
     });
-    this.yearlyData.sponsors.forEach(x => {
+    this.sponsors.forEach(x => {
       const sponsor = { id: x.id, name: x.name, link: x.website, pic: x.logo };
       this.sponsorList.push(sponsor);
     });
@@ -236,26 +249,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   }
 
-  /**
-   * First Step - Get ALL data for this tournament page. Fetch by host
-   */
-  getTournament() {
-    this.tournament = this.tournamentService.getTournament();
-    if (!this.tournament) {
-      this.subscriptions.push(this.tournamentService.setTournament().subscribe(response => {
-        this.tournament = response.payload;
-        this.titleService.setTitle(this.tournament.name);
-        this.getYearlyData();
-      }));
-    } else {
-      this.getYearlyData();
-    }
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-
   close() {
     this.dialogRef.close();
   }
@@ -263,6 +256,37 @@ export class HomeComponent implements OnInit, OnDestroy {
   scrollTo(element) {
     // element.scrollIntoView(true);
     element.scrollIntoView({ behavior: 'smooth', block: 'start'});
+  }
+
+  /**
+   * This nav bar service tracks user actions in nav for scrolling to in page elements
+   */
+  initNavService() {
+    this.subscriptions.push(this.navService.getState().subscribe(response => {
+      switch (response) {
+        case 1 : this.scrollTo(this.newsElement.nativeElement); break;
+        case 2 : this.scrollTo(this.competitorElement.nativeElement); break;
+        case 3 : this.scrollTo(this.prizingElement.nativeElement); break;
+        case 4 : this.scrollTo(this.rulesElement.nativeElement); break;
+        case 5 : this.scrollTo(this.contactElement.nativeElement); break;
+        case 6 : this.scrollTo(this.topElement.nativeElement); break;
+        default: console.error('no scroll route found');
+      }
+    }));
+  }
+
+  /**
+   * Listen to screen size changes, for setting phone specific settings like nav background image
+   */
+  initBreakObserver() {
+    this.breakpointOberver.observe(
+      ['(max-width: 800px)']).subscribe(result => {
+        if (result.matches) {
+          this.onPhone = true;
+        } else {
+          this.onPhone = false;
+        }
+      });
   }
 
 }

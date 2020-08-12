@@ -64,6 +64,7 @@ import { StQualifyingComponent } from './st-qualifying/st-qualifying.component';
 import { CommishCompetitorsComponent } from './commish-competitors/commish-competitors.component';
 import { DrawComponent } from './draw/draw.component';
 import { HoleByHoleScoresComponent } from './hole-by-hole-scores/hole-by-hole-scores.component';
+import { QualifiersComponent } from './qualifiers/qualifiers.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +99,8 @@ import { HoleByHoleScoresComponent } from './hole-by-hole-scores/hole-by-hole-sc
     StQualifyingComponent,
     CommishCompetitorsComponent,
     DrawComponent,
-    HoleByHoleScoresComponent
+    HoleByHoleScoresComponent,
+    QualifiersComponent
   ],
   imports: [
     BrowserModule,

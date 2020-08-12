@@ -5,7 +5,12 @@ import { Tournament } from '../models/Tournament';
 import { TournamentYearlyData } from '../models/TournamentYearlyData';
 import { Season } from '../models/Season';
 
-
+/**
+ * Because this tournament app is user focused and most the CRUD operations are done with a seperate App, we will use this tournament services for most the GET only actions need 
+ * for various data models. In the admin version of this app these services are split up more into their own dedicated service files.
+ * 
+ * @author Malcolm
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -35,7 +40,7 @@ export class TournamentService {
     this.host = window.location.hostname.replace('www.', '');
     // IF running in dev set to city match play for testing
     if (this.host === 'localhost') {
-      this.host = 'ottawacitizenchampionship.golf'; //'dev.ottawasunscramble.golf';
+      this.host = 'dev.ottawasunscramble.golf';
     }
     console.log('Loading data for host: ' + this.host);
   }
@@ -314,6 +319,30 @@ export class TournamentService {
     return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/courses/scorecard/get/index.php',
     { params }).pipe(map(response => {
       return response;
+    }));
+  }
+
+  /**
+   * Fetch the sponsors assigned to this season of the tournament
+   * @param seasonId Season PK
+   */
+  getSeasonSponsors(seasonId: string) {
+    const params = new HttpParams().set('seasonId', seasonId);
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/season/sponsor/get-all/index.php', { params })
+      .pipe(map(response => {
+        return response;
+    }));
+  }
+
+  /**
+   * Fetch all courses that are assigned to this season of the tournament
+   * @param seasonId Season PK
+   */
+  getSeasonCourses(seasonId: string) {
+    const params = new HttpParams().set('seasonId', seasonId);
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/season/course/get-all/index.php', { params })
+      .pipe(map(response => {
+        return response;
     }));
   }
 
