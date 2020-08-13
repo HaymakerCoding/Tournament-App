@@ -20,6 +20,7 @@ import { CmpcLiveComponent } from './cmpc-live/cmpc-live.component';
 import { CommishGuestRegComponent } from './commish-guest-reg/commish-guest-reg.component';
 import { StQualifyingComponent } from './st-qualifying/st-qualifying.component';
 import { DrawComponent } from './draw/draw.component';
+import { QualifiersComponent } from './qualifiers/qualifiers.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -43,6 +44,7 @@ const routes: Routes = [
   { path: 'commish-st-reg', component: RegisterComponent },
   { path: 'commish-guest-reg', component: CommishGuestRegComponent },
   { path: 'matches', component: DrawComponent },
+  { path: 'qualifiers', component: QualifiersComponent },
   { path: '**',
     redirectTo: 'home',
     pathMatch: 'full',

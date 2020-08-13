@@ -1,1 +1,23 @@
-<p>qualifiers works!</p>
+<div class="container pt-4 pb-4">
+
+    <div *ngIf="loadingPercent < 100">
+        <mat-progress-bar [value]="loadingPercent" color="primary" mode="determinate"></mat-progress-bar>
+        <div class="full-width text-center mt-2">Loading</div>
+    </div>
+    
+    <div *ngIf="loadingPercent === 100">
+        <h1 class="text-center">Qualifiers</h1>
+        <br>
+        <div *ngFor="let event of events" class="event-boxes p-3">
+            <h2>{{ event.name }}</h2>
+            <h3>{{ event.courseName }}</h3>
+            <img class="course-logos" [src]="event.courseLogo">
+            <h6>{{ event.eventDate | date }}</h6>
+            <button mat-raised-button color="primary">Competitors</button>
+            <button class="ml-2 mr-2" mat-raised-button color="primary">Tee Times</button>
+            <button mat-raised-button color="primary">Results</button>
+        </div>
+    </div>
+
+
+</div>

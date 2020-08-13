@@ -20,7 +20,8 @@ export class Event {
       public groups: Group[],
       public divisionParticipants: GroupParticipant[],
       public scorecardId: number,
-      public scorecard: Scorecard
+      public scorecard: Scorecard,
+      public courseLogo: string
 
   ) {}
 

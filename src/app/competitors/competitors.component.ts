@@ -24,7 +24,6 @@ export class CompetitorsComponent implements OnInit, OnDestroy {
   matchingRegistrations: RegistrationBasic[]; // for sort results by division selected
   matchingWaitRegistrations: RegistrationBasic[]; // for sort results by division selected for WAITING regitrants
   tournament: Tournament;
-  yearlyData: TournamentYearlyData;
   loading: boolean;
   divSelected: Division;
   divisionId: number;
@@ -74,7 +73,7 @@ export class CompetitorsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response => {
       if (response.status === 200) {
         this.season = response.payload;
-        this.getYearlyData();
+        this.getDivisions();
       } else {
         console.error(response);
       }
@@ -105,23 +104,6 @@ export class CompetitorsComponent implements OnInit, OnDestroy {
       return ( i + 1 ) + '. ' + reg.fullName + ' & ' + reg.partnerFullName;
     } else {
       return ( i + 1 ) + '. ' + reg.fullName;
-    }
-  }
-
-  /**
-   * Get the data that can differ by year.
-   * NOTE for here we won't bother getting the sponsors/courses
-   * Service should be a singleton and return existing data if any or fetch the data
-   */
-  getYearlyData() {
-    this.yearlyData = this.tournamentService.getYearlyData();
-    if (!this.yearlyData) {
-      this.subscriptions.push(this.tournamentService.setYearlyData().subscribe(response => {
-        this.yearlyData = response.payload;
-        this.getDivisions();
-      }));
-    } else {
-      this.getDivisions();
     }
   }
 
@@ -189,7 +171,7 @@ export class CompetitorsComponent implements OnInit, OnDestroy {
   }
 
   getRegistrations() {
-    this.subscriptions.push(this.regService.getAll(this.tournament.id.toString(), this.yearlyData.year.toString()).subscribe(response => {
+    this.subscriptions.push(this.regService.getAll(this.tournament.id.toString(), this.season.year.toString()).subscribe(response => {
       if (response.status === 200) {
         const fullReg: RegistrationBasic[] = response.payload;
         // seperate registered from waiting, 'waiting' status means no spots were available when they registered
