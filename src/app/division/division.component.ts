@@ -26,6 +26,7 @@ export class DivisionComponent implements OnInit, OnDestroy {
   divisionId: number;
   onPhone: boolean;
   season: Season;
+  seasons: Season[];
 
   constructor(
     private tournamentService: TournamentService,
@@ -88,6 +89,17 @@ export class DivisionComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response => {
       if (response.status === 200) {
         this.season = response.payload;
+        this.getAllSeasons();
+      } else {
+        console.error(response);
+      }
+    }));
+  }
+
+  getAllSeasons() {
+    this.subscriptions.push(this.tournamentService.getAllSeasons(this.tournament.eventTypeId.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.seasons = response.payload;
         this.getDivision();
       } else {
         console.error(response);

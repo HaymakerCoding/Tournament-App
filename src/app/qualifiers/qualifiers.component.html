@@ -8,15 +8,19 @@
     <div *ngIf="loadingPercent === 100">
         <h1 class="text-center">Qualifiers</h1>
         <br>
-        <div *ngFor="let event of events" class="event-boxes p-3">
+        <section *ngFor="let event of events" class="event-boxes p-3">
             <h2>{{ event.name }}</h2>
             <h3>{{ event.courseName }}</h3>
             <img class="course-logos" [src]="event.courseLogo">
-            <h6>{{ event.eventDate | date }}</h6>
-            <button mat-raised-button color="primary">Competitors</button>
-            <button class="ml-2 mr-2" mat-raised-button color="primary">Tee Times</button>
-            <button mat-raised-button color="primary">Results</button>
-        </div>
+            <br>
+            <time dateTime="{{ event.eventDate }}">{{ event.eventDate | date }}</time>
+            <br>
+            <div class="mt-2">
+                <button *ngIf="isUpcomingEvent(event) === true" [routerLink]="'/event-competitors/' + event.id" mat-raised-button color="primary">Competitors</button>
+                <button *ngIf="isUpcomingEvent(event) === true" [routerLink]="'/matches/' + event.id" class="ml-2 mr-2" mat-raised-button color="primary">Tee Times</button>
+                <button routerLink="/results" mat-raised-button color="primary">Results</button>
+            </div>
+        </section>
     </div>
 
 

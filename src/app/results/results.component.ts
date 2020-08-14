@@ -12,6 +12,7 @@ import { GroupParticipant } from '../models/GroupParticipant';
 import { Scorecard } from '../models/Scorecard';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { TournamentNewsItem } from '../models/TournamentNewsItem';
 
 /**
  * Show the results of matches for a tournament. Selectable by year and division.
@@ -143,7 +144,13 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
   }
 
   getAllGroups(event: Event) {
-    this.subscriptions.push(this.tournamentService.getGroups(event.id.toString(), this.tournament.id.toString()).subscribe(response => {
+    let type;
+    if (this.tournament.id === 1) {
+      type === 'pairs';
+    } else {
+      type = 'individuals';
+    }
+    this.subscriptions.push(this.tournamentService.getGroups(event.id.toString(), this.tournament.id.toString(), type).subscribe(response => {
       if (response.status === 200) {
         event.groups = response.payload;
         this.groupsFetched++;

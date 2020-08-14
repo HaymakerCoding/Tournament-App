@@ -120,7 +120,7 @@ export class DrawComponent implements OnInit, OnDestroy {
   }
 
   getGroups() {
-    this.subscriptions.push(this.tournamentService.getGroups(this.eventSelected.id.toString(), this.tournament.id.toString()).subscribe(response => {
+    this.subscriptions.push(this.tournamentService.getGroups(this.eventSelected.id.toString(), this.tournament.id.toString(), 'pairs').subscribe(response => {
       if (response.status === 200) {
         this.groups = response.payload;
         this.setLoadingPercent(100);

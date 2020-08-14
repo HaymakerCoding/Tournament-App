@@ -61,6 +61,9 @@
         <li class="nav-item">
           <a class="nav-link" (click)="toggleNav(hamBtn)" [routerLink]="'qualifiers'">Qualifiers</a>
         </li>
+        <li *ngIf="+tournament.id === 1" class="nav-item">
+          <a class="nav-link" (click)="toggleNav(hamBtn)" [routerLink]="'event/par-3'">Par-3 Championship</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" *ngIf="route === 'home' || route === '/home'" (click)="scrollToCompetitor(); toggleNav(hamBtn)">Champions</a>
         </li>

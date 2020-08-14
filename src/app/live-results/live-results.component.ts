@@ -98,7 +98,7 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   }
 
   getSeason() {
-    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.id.toString(), this.yearSelected.toString()).subscribe(response => {
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), this.yearSelected.toString()).subscribe(response => {
       if (response.status === 200) {
         this.season = response.payload;
         this.setLoadingPercent(40);
@@ -138,7 +138,13 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   }
 
   getAllGroups(event: Event) {
-    this.subscriptions.push(this.tournamentService.getGroups(event.id.toString(), this.tournament.id.toString()).subscribe(response => {
+    let type;
+    if (this.tournament.id === 1) {
+      type === 'pairs';
+    } else {
+      type = 'individuals';
+    }
+    this.subscriptions.push(this.tournamentService.getGroups(event.id.toString(), this.tournament.id.toString(), type).subscribe(response => {
       if (response.status === 200) {
         event.groups = response.payload;
         this.groupsFetched++;

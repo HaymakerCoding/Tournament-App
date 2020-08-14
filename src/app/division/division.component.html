@@ -97,9 +97,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let year of years">
-              <td>{{ year }}</td>
-              <td>{{ getChamp(divSelected.id, year) }}</td>
+            <tr *ngFor="let season of seasons">
+              <td>{{ season.year }}</td>
+              <td>{{ getChamp(divSelected.id, season.year) }}</td>
               <td>scoring</td>
             </tr>
           </tbody>
@@ -117,14 +117,14 @@
         <br>
         <section>
           <div class="row">
-            <div class="col-12 col-md-6 mt-5" *ngFor="let year of years">
+            <div class="col-12 col-md-6 mt-5" *ngFor="let season of seasons">
               <div class="yearCards" [style.borderColor]="tournament.navColor" >
-                <h3 class="yearLabels" [style.color]="tournament.navColor" >{{ year }}</h3>
+                <h3 class="yearLabels" [style.color]="tournament.navColor" >{{ season.year }}</h3>
                 <h4 class="text-center" style="font-weight: bold;">{{ divSelected.name}}</h4>
-                <h5 style="color:navy;" class="text-center">{{ getChamp(divSelected.id, year) }}</h5>
-                <img [style.borderColor]="tournament.navColor" [alt]="getChamp(divSelected.id, year)" *ngIf="getChampPic(divSelected.id, year)" class="img-fluid champPhotos" [src]="getChampPic(divSelected.id, year)">
-                <h5 style="color:navy;" class="text-center mt-4">{{ getRunnerUp(divSelected.id, year) }}</h5>
-                <img [style.borderColor]="tournament.navColor" [alt]="getRunnerUp(divSelected.id, year)" *ngIf="getRunnerUpPic(divSelected.id, year)" class="img-fluid runnerUpPhotos" [src]="getRunnerUpPic(divSelected.id, year)">
+                <h5 style="color:navy;" class="text-center">{{ getChamp(divSelected.id, season.year) }}</h5>
+                <img [style.borderColor]="tournament.navColor" [alt]="getChamp(divSelected.id, season.year)" *ngIf="getChampPic(divSelected.id, season.year)" class="img-fluid champPhotos" [src]="getChampPic(divSelected.id, season.year)">
+                <h5 style="color:navy;" class="text-center mt-4">{{ getRunnerUp(divSelected.id, season.year) }}</h5>
+                <img [style.borderColor]="tournament.navColor" [alt]="getRunnerUp(divSelected.id, season.year)" *ngIf="getRunnerUpPic(divSelected.id, season.year)" class="img-fluid runnerUpPhotos" [src]="getRunnerUpPic(divSelected.id, season.year)">
               </div>
             </div>
           </div>
