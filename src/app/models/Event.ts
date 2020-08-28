@@ -30,8 +30,9 @@ export class Event {
 }
 
 export enum Classification {
-  MAIN = 'Main',
-  QUALIFIER = 'Qualifier'
+  MAIN = 'main',
+  QUALIFIER = 'qualifier',
+  EXHIBITION = 'exhibition'
 }
 
 enum QualifyingRound {

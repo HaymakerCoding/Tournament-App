@@ -5,6 +5,7 @@ import { Tournament } from '../models/Tournament';
 import { TournamentYearlyData } from '../models/TournamentYearlyData';
 import { Season } from '../models/Season';
 import { Classification } from '../models/Event';
+import { ScoringType } from '../live-results/live-results.component';
 
 /**
  * Because this tournament app is user focused and most the CRUD operations are done with a seperate App, we will use this tournament services for most the GET only actions need 
@@ -270,6 +271,18 @@ export class TournamentService {
     }));
   }
 
+   /**
+   * Get all tournament events for a season that have happened or are happening. Not future events
+   * @param yearId Tournament Year ID
+   */
+  getAllCurrentEvents(season: Season) {
+    const params = new HttpParams().set('seasonId', season.id.toString())
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/event/get-all-current/index.php',
+    { params }).pipe(map(response => {
+      return response;
+    }));
+  }
+
   /**
    * Get all tournament events by a classfication type main or qualifier
    * @param yearId Tournament Year ID
@@ -365,6 +378,28 @@ export class TournamentService {
   getEventParticipants(eventId: string, type: string) {
     const params = new HttpParams().set('eventId', eventId).set('type', type)
     return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/event/participant/get-all/index.php',
+    { params }).pipe(map(response => {
+      return response;
+    }));
+  }
+
+  /**
+   * Get all participants in an event
+   */
+  getParticipants(eventId: string, type: string) {
+    const params = new HttpParams().set('eventId', eventId).set('type', type)
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/event/participant/get-all/index.php',
+    { params }).pipe(map(response => {
+      return response;
+    }));
+  }
+
+  /**
+   * Get all participants in ALL EVENTS
+   */
+  getTournamentParticipants(tournament: Tournament, type: ScoringType) {
+    const params = new HttpParams().set('eventTypeId', tournament.eventTypeId.toString()).set('type', type)
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/event/participant/get-all-for-tournament/index.php',
     { params }).pipe(map(response => {
       return response;
     }));

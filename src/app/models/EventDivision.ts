@@ -12,7 +12,7 @@ export class EventDivision {
       public competitionId: number,
       public divisionId: number,
       public eventId: number,
-      public classification: Classification
+      public name: string
 
   ) {}
 

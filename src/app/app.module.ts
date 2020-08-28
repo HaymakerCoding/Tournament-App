@@ -66,6 +66,9 @@ import { DrawComponent } from './draw/draw.component';
 import { HoleByHoleScoresComponent } from './hole-by-hole-scores/hole-by-hole-scores.component';
 import { QualifiersComponent } from './qualifiers/qualifiers.component';
 import { EventCompetitorsComponent } from './event-competitors/event-competitors.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import { HoleResultsTableComponent } from './hole-results-table/hole-results-table.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +105,8 @@ import { EventCompetitorsComponent } from './event-competitors/event-competitors
     DrawComponent,
     HoleByHoleScoresComponent,
     QualifiersComponent,
-    EventCompetitorsComponent
+    EventCompetitorsComponent,
+    HoleResultsTableComponent
   ],
   imports: [
     BrowserModule,
@@ -114,7 +118,7 @@ import { EventCompetitorsComponent } from './event-competitors/event-competitors
     MatDialogModule, MatTabsModule, MatSnackBarModule, MatRadioModule, MatCheckboxModule, MatSidenavModule,
     MatButtonModule, MatIconModule, MatInputModule, MatSelectModule, MatSliderModule, MatToolbarModule, MatMenuModule,
     MatCardModule, MatSlideToggleModule, MatListModule, MatTableModule, MatProgressSpinnerModule, MatExpansionModule,
-    MatDatepickerModule, MatTooltipModule, MatProgressBarModule, MatButtonToggleModule
+    MatDatepickerModule, MatTooltipModule, MatProgressBarModule, MatButtonToggleModule, ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     AuthService

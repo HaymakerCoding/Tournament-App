@@ -11,6 +11,11 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HoleByHoleScoresComponent } from '../hole-by-hole-scores/hole-by-hole-scores.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { ResultsService } from '../services/results.service';
+import { Team } from '../models/Team';
+import { Individual } from '../models/Individual';
+import { EventParticipant } from '../models/EventParticipant';
+import { EventDivision } from '../models/EventDivision';
+import { MatInput } from '@angular/material/input';
 
 /**
  * Show a leaderboard view of all players.
@@ -28,22 +33,25 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   years: number[];
   yearSelected: number;
   divisions: Division[];
-  validTournaments = [3]; // list of tournaments where live results are in place
-  divisionSelected: Division;
+  validTournaments = [3, 1]; // list of tournaments where live results are in place
+  divisionSelected: EventDivision;
   season: Season;
   events: Event[];
-  groupsFetched = 0;
-  scorecardsFetched = 0;
-  displayParticipants: GroupParticipant[] = [];
-  cutParticipants: GroupParticipant[] = [];
+  eventSelected: Event;
+  displayTeams: Team[] = [];
+  displayIndividuals: Individual[] = [];
+  cutParticipants: any[] = [];
   dialogRef: MatDialogRef<any>;
-  columns = ['competitor', 'holes', 'round1', 'round2', 'round3', 'total'];
+  columns: string[];
   dataSource: MatTableDataSource<any>;
   cutDataSource: MatTableDataSource<any>;
   searchDataSource: MatTableDataSource<any>;
   searchedParticipants: TournamentParticipant[];
-  allParticipants: TournamentParticipant[];
-  searchColumns = ['name', 'year', 'division'];
+  allParticipants: any[];
+  searchColumns = ['name', 'eventName', 'year', 'division'];
+  scoringType: ScoringType;
+  teams: Team[];
+  individuals: Individual[];
 
   constructor(
     tournamentService: TournamentService,
@@ -63,22 +71,27 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   }
 
   next() {
+    this.columns = this.tournament.id === 3 ? ['pos', 'competitor', 'holes', 'round1', 'round2', 'round3', 'total'] : ['pos', 'competitor',  'holes', 'total'];
     this.setLoadingPercent(10);
-    this.getAllParticipants();
+    this.setScoringType();
     this.getYears();
   }
 
-  /**
-   * Get all members set to participate in the tournament.
-   */
-  getAllParticipants() {
-    this.subscriptions.push(this.resultsService.getAllParticipants(this.tournament.id.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.allParticipants = response.payload;
-      } else {
-        console.error(response);
+  setScoringType() {
+    switch (+this.tournament.eventTypeId) {
+      case 1: {
+        this.scoringType= ScoringType.TEAM;
+        break;
       }
-    }));
+      case 3: {
+        this.scoringType = ScoringType.INDIVIDUAL;
+        break;
+      }
+      default: {
+        console.error('Error - scoring type not set for this event type');
+        break;
+      }
+    }
   }
 
   /**
@@ -102,18 +115,6 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
       if (response.status === 200) {
         this.season = response.payload;
         this.setLoadingPercent(40);
-        this.getDivisions();
-      } else {
-        console.error(response);
-      }
-    }));
-  }
-
-  getDivisions() {
-    this.subscriptions.push(this.tournamentService.getAllDivisions(this.season).subscribe(response => {
-      if (response.status === 200) {
-        this.divisions = response.payload;
-        this.setLoadingPercent(30);
         this.getEvents();
       } else {
         console.error(response);
@@ -121,60 +122,56 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     }));
   }
 
-  
-
+  /**
+   * Get all events for the season
+   */
   getEvents() {
-    this.subscriptions.push(this.tournamentService.getAllEvents(this.season).subscribe(response => {
+    this.subscriptions.push(this.tournamentService.getAllCurrentEvents(this.season).subscribe(response => {
       if (response.status === 200) {
         this.events = response.payload;
-        this.setLoadingPercent(50);
-        this.events.forEach(event => {
-          this.getAllGroups(event)
-        });
+        this.setLoadingPercent(80);
+        this.getAllTournamentParticipants();
       } else {
         console.error(response);
       }
     }));
   }
 
-  getAllGroups(event: Event) {
-    let type;
-    if (this.tournament.id === 1) {
-      type === 'pairs';
-    } else {
-      type = 'individuals';
-    }
-    this.subscriptions.push(this.tournamentService.getGroups(event.id.toString(), this.tournament.id.toString(), type).subscribe(response => {
+  getAllTournamentParticipants() {
+    this.subscriptions.push(this.tournamentService.getTournamentParticipants(this.tournament, this.scoringType).subscribe(response => {
       if (response.status === 200) {
-        event.groups = response.payload;
-        this.groupsFetched++;
-        if (this.groupsFetched === this.events.length) {
-          this.setLoadingPercent(80);
-          this.getScorecards();
-        }
+        this.allParticipants = response.payload;
+        this.setLoadingPercent(100);
       } else {
         console.error(response);
       }
     }));
   }
 
-  getScorecards() {
-    this.events.forEach(event => {
-      this.getScorecard(event);
-    });
+  getEventParticipants() {
+    console.log(this.eventSelected.divisionList);
+    this.subscriptions.push(this.tournamentService.getParticipants(this.eventSelected.id.toString(), this.scoringType).subscribe(response => {
+      if (response.status === 200) {
+        this.scoringType === ScoringType.TEAM ? this.teams = response.payload : this.individuals = response.payload;
+        console.log(this.teams);
+        if (this.divisionSelected) {
+          this.onDivisionChange();
+        }
+        this.setLoadingPercent(100);
+      } else {
+        console.error(response);
+      }
+    }));
   }
 
   /**
    * Get the scorecard for the event
    */
-  getScorecard(event: Event) {
-    this.subscriptions.push(this.tournamentService.getScorecard(event.scorecardId.toString()).subscribe(response => {
+  getScorecard() {
+    this.subscriptions.push(this.tournamentService.getScorecard(this.eventSelected.scorecardId.toString()).subscribe(response => {
       if (response.status === 200) {
-        event.scorecard = response.payload;
-        this.scorecardsFetched++;
-        if (this.scorecardsFetched === this.events.length) {
-          this.setLoadingPercent(100);
-        }
+        this.eventSelected.scorecard = response.payload;
+        this.getEventParticipants();
       } else {
         console.error(response);
       }
@@ -186,51 +183,57 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
    * We filter the participants shown by that division
    * After which we sort the scores and provide the arrays to the table data
    */
-  onDivisionSelected() {
+  onDivisionChange() {
     this.setLoadingPercent(20);
+    /*
     if (this.displayParticipants) {
       this.displayParticipants.forEach(x => {
         x.roundTotalScores = null;
       });
       this.displayParticipants = [];
     }
-    this.events.forEach(event => {
-      this.filterGroupsByDivision(event)
-    });
+    */
+    this.filterParticipantsByDivision(this.eventSelected);
     this.setFinalScore();
     this.sortScores();
-    let index = 0;
-    // seperate out those that didn't make the cut
-    this.cutParticipants = [];
-    for (let participant of this.displayParticipants) {
-      if (this.checkMadeCut(index) === false) {
-        this.cutParticipants.push(this.displayParticipants[index]);
+    this.setPos();
+
+    if (this.tournament.id === 3) {
+      // CITIZEN CUT LOGIC?
+      let index = 0;
+      // seperate out those that didn't make the cut
+      this.cutParticipants = [];
+      for (let participant of this.displayIndividuals) {
+        if (this.checkMadeCut(index) === false) {
+          this.cutParticipants.push(this.displayIndividuals[index]);
+        }
+        index++;
       }
-      index++;
+      this.cutParticipants.sort((a, b) => {
+        return a.finalScore - b.finalScore;
+      });
+      this.displayIndividuals = this.displayIndividuals.filter(x => this.cutParticipants.some(cut => +cut.memberId === +x.memberId) === false);
+      this.cutDataSource = new MatTableDataSource(this.cutParticipants);
     }
-    this.cutParticipants.sort((a, b) => {
-      return a.finalScore - b.finalScore;
-    });
-    this.displayParticipants = this.displayParticipants.filter(x => this.cutParticipants.some(cut => +cut.memberId === +x.memberId) === false);
-    this.dataSource = new MatTableDataSource(this.displayParticipants);
-    this.cutDataSource = new MatTableDataSource(this.cutParticipants);
+    this.dataSource = this.scoringType === ScoringType.TEAM ? new MatTableDataSource(this.displayTeams): new MatTableDataSource(this.displayIndividuals);
+    this.setLoadingPercent(100);
   }
 
-  filterGroupsByDivision(event: Event) {
-    event.groups.forEach(group => {
-      group.groupParticipants.forEach(participant => {
-        participant.divisions.forEach( division => {
-          if (+division.id === +this.divisionSelected.id && this.displayParticipants.some(x => +x.memberId === +participant.memberId) === false) {
-            this.displayParticipants.push(participant);
-          }
-        });
-      });
-    });
-    this.setCurrentScore(event);
+  getParticipants() {
+    return this.scoringType === ScoringType.TEAM ? this.displayTeams : this.displayIndividuals;
+  }
+
+  filterParticipantsByDivision(event: Event) {
+    if (this.scoringType === ScoringType.TEAM) {
+      this.displayTeams = this.teams.filter(team => +team.teamMembers[0].competitionId === +this.divisionSelected.competitionId);
+    } else {
+      this.displayIndividuals = this.individuals.filter(individual => +individual.competitionId === +this.divisionSelected.competitionId);
+    }
+    this.setScore(event);
   }
 
   setFinalScore() {
-    this.displayParticipants.forEach(participant => {
+    this.displayIndividuals.forEach(participant => {
       let total = 0;
       participant.roundTotalScores.forEach(x => {
         total += x;
@@ -239,7 +242,7 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
         //played all rounds
         participant.finalScore = total;
       } else {
-        if (participant.divisions[0].name === 'Professional') {
+        if (participant.division === 'Professional') {
           // professional only plays 2 rounds of 3
           participant.finalScore = total;
         } else {
@@ -252,7 +255,7 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   /**
    * Get the max hole completed by a participant
    */
-  getHoleComplete(participant: GroupParticipant): number {
+  getHolesComplete(participant: EventParticipant): number {
     let max = 0;
     const holeScores = participant.holeScores;
     if (holeScores) {
@@ -269,23 +272,48 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
    * Check and set each participants score.
    * Score is calculated by comparing total par of all holes complete against the players par total
    */
-  setCurrentScore(event: Event) {
-    this.displayParticipants.forEach(x => {
-      const eventParticipant = this.getEventParticipant(x, event);
-      if (eventParticipant) {
-        if (!x.roundTotalScores) {
-          x.roundTotalScores = [];
+  setScore(event: Event) {
+    this.displayIndividuals.forEach(x => {
+      x.score = this.getScore(x, this.getHolesComplete(x), event.scorecard);
+    });
+    this.displayTeams.forEach(x => {
+      x.score = this.getScore(x, this.getHolesComplete(x), event.scorecard);
+    });
+  }
+
+  /**
+   * Set all participants positions in the scoring by score
+   */
+  setPos() {
+    let index = 0;
+    let posNum = 1;
+    let currentTieScore;
+    let currentTiePos;
+    this.displayTeams.forEach(x => {
+      if (index !== 0) {
+        const aboveTeam = this.displayTeams[index - 1];
+        if (+aboveTeam.score === +x.score) {
+          currentTiePos = currentTiePos ? currentTiePos : posNum;
+          x.pos = 'T' + (currentTiePos);
+          aboveTeam.pos = 'T' + (currentTiePos);
+          posNum += 1;
+        } else {
+          currentTiePos = null;
+          posNum += 1;
+          x.pos = posNum;
         }
-        x.roundTotalScores.push(this.getScore(eventParticipant, this.getHoleComplete(eventParticipant), event.scorecard));
+      } else {
+        x.pos = posNum;
       }
+      index += 1;
     });
   }
 
   sortScores() {
-    this.displayParticipants.sort((a, b) => {
-        return a.finalScore - b.finalScore;
+    const list = this.scoringType === ScoringType.TEAM ? this.displayTeams : this.displayIndividuals;
+    list.sort((a, b) => {
+        return a.score - b.score;
     });
-    this.setLoadingPercent(100);
   }
 
   /**
@@ -294,7 +322,7 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
    * @param participant Grooup Participant
    * @param maxHoleComplete The Max hole the participant has played up to
    */
-  getScore(participant: GroupParticipant, maxHoleComplete: number, scorecard: Scorecard): number {
+  getScore(participant: EventParticipant, maxHoleComplete: number, scorecard: Scorecard): number {
     let targetPar = 0;
     let usersScore = 0;
     scorecard.scorecardHoles.forEach(hole => {
@@ -313,12 +341,11 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   /**
    * Get the max hole completed by a participant
    */
-  getTotalHolesComplete(participant: GroupParticipant): number {
+  getTotalHolesComplete(participant): number {
     let total = 0;
     this.events.forEach(event => {
-      const participantFound: GroupParticipant = this.getEventParticipant(participant, event);
-      if (participantFound && participantFound.holeScores) {
-        participantFound.holeScores.forEach(holeScore => {
+      if (participant && participant.holeScores) {
+        participant.holeScores.forEach(holeScore => {
           if (+holeScore.id) {
             total ++;
           }
@@ -333,12 +360,22 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
    * @param participant Group participant
    */
   showHoleByHole(participant) {
-    this.dialogRef = this.dialog.open(HoleByHoleScoresComponent, { data: { participant, events: this.events }, minWidth: '100vw', minHeight: '100vh' })
+    const events: Event[] = [];
+    events.push(this.eventSelected);
+    const individuals: Individual[] = [];
+    if (this.scoringType === ScoringType.INDIVIDUAL) {
+      individuals.push(participant);
+    }
+    const teams: Team[] = [];
+    if (this.scoringType === ScoringType.TEAM){
+      teams.push(participant);
+    }
+    this.dialogRef = this.dialog.open(HoleByHoleScoresComponent, { data: { teams, individuals, events, scoringType: this.scoringType }, minWidth: '100vw', minHeight: '100vh' })
   }
 
   
   getEventScore(participant: GroupParticipant, event: Event, index: number): any {
-    const score = participant.roundTotalScores[index];
+    const score = participant.score;
     if (score) {
       return score > 0 ? '+' + score : score === 0 ? 'Even' : score;
     } else {
@@ -347,32 +384,14 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   }
 
   /**
-   * Return a specific event participant that matches the display participant passed in
-   * @param participant Display Participant
-   * @param event 
-   */
-  getEventParticipant(participant: GroupParticipant, event: Event): GroupParticipant {
-    let eventParticipant: GroupParticipant;
-    event.groups.forEach(group => {
-      group.groupParticipants.forEach(p=> {
-        if (p.memberId === participant.memberId){
-          eventParticipant = p;
-        }
-      });
-    });
-    return eventParticipant;
-  }
-
-  /**
    * Calculate all strokes a player took for the hole event
    * @param participant Group Participant
    * @param event Event
    */
-  getTotalStrokes(participant: GroupParticipant, event: Event) {
-    const eventParticipant = this.getEventParticipant(participant, event);
-    if (eventParticipant) {
+  getTotalStrokes(participant, event: Event) {
+    if (participant && participant.holeScores) {
       let total = 0;
-      eventParticipant.holeScores.forEach(x => {
+      participant.holeScores.forEach(x => {
         total += +x.score;
       });
       return total;
@@ -426,10 +445,16 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   }
 
   onYearChange() {
-    this.groupsFetched = 0;
-    this.scorecardsFetched = 0;
     this.setLoadingPercent(15);
-    this.getDivisions();
+    this.eventSelected = null;
+    this.displayIndividuals = [];
+    this.displayTeams = [];
+    this.getEvents();
+  }
+
+  onEventChange() {
+    this.divisionSelected = null;
+    this.getScorecard();
   }
 
   /**
@@ -439,7 +464,11 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   searchByPlayer(text: string) {
     this.searchedParticipants = [];
     if (text.length > 0) {
-      this.searchedParticipants = this.allParticipants.filter(x => x.fullName.toLowerCase().startsWith(text.toLowerCase()));
+      if (this.scoringType === ScoringType.TEAM) {
+        this.searchedParticipants = this.allParticipants.filter(x => x.teamMembers[0].fullName.toLowerCase().startsWith(text.toLowerCase()));
+      } else {
+        this.searchedParticipants = this.allParticipants.filter(x => x.fullName.toLowerCase().startsWith(text.toLowerCase()));
+      }
     } else {
       this.searchedParticipants = [];
     }
@@ -450,11 +479,29 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
    * When user clicks on a search result tournament participant record, setup the page to show those results, div/year combo
    * @param participant 
    */
-  onSearchedParticipantClick(participant: TournamentParticipant) {
+  onSearchedParticipantClick(participant, input: MatInput) {
+    input.value = null;
     this.searchedParticipants = [];
-    this.divisionSelected = this.divisions.find(x => x.name === participant.divisionName);
+    this.eventSelected = this.events.find(x => +x.id === +participant.eventId);
     this.yearSelected = +participant.year;
-    this.onDivisionSelected();
+    const competitionId = this.scoringType === ScoringType.TEAM ? participant.teamMembers[0].competitionId : participant.competitionId;
+    this.divisionSelected = this.eventSelected.divisionList.find(x => +x.competitionId === +competitionId);
+    this.subscriptions.push(this.tournamentService.getScorecard(this.eventSelected.scorecardId.toString()).subscribe(response => {
+      if (response.status === 200) {
+        this.eventSelected.scorecard = response.payload;
+        this.getEventParticipants();
+      } else {
+        console.error(response);
+      }
+    }));
+  }
+
+  getParticipantNames(participant) {
+    return this.scoringType === ScoringType.TEAM ? participant.teamMembers[0].fullName + ' & ' + participant.teamMembers[1].fullName : participant.fullName;
+  }
+
+  getParticipantDivision(participant) {
+    return this.scoringType === ScoringType.TEAM ? participant.teamMembers[0].division : participant.division;
   }
   
 
@@ -466,3 +513,9 @@ interface TournamentParticipant {
   year: number,
   memberId: number
 }
+
+export enum ScoringType {
+  INDIVIDUAL = 'individual',
+  TEAM = 'team'
+}
+

@@ -1,0 +1,118 @@
+.dark-bkg > th{
+    color:white;
+    background-color:rgba(49,49,54,1);
+    min-width:25px;
+}
+.light-bkg > th{
+    background-color: #f2f4f7;
+    color:#107896;
+    min-width:25px;
+}
+.firstNum {
+    padding-left:10px;
+    padding-right:15px;
+    text-align: center;
+}
+.table-container {
+    width: 100%;
+    overflow: auto;
+  }
+table {
+  width: 800px;
+}
+td.mat-column-star {
+  width: 25px;
+  padding-right: 8px;
+}
+th.mat-column-position, td.mat-column-position {
+  padding-left: 8px;
+}
+.mat-table-sticky:first-child {
+  border-right: 1px solid #e0e0e0;
+  min-width: 150px;
+  padding-left: 7px;
+}
+.big-col{
+  min-width:60px!important;
+}
+.legend-labels{
+    font-size:12px;
+}
+.circle{
+    width:24px;
+    height:24px;
+    border:2px solid rgb(16, 121, 150, 55%);
+    border-radius:12px;
+    display: inline-block;
+}
+
+.double-circle{
+    position: relative;
+    width:34px;
+    height:34px;
+    border:2px solid rgb(16, 121, 150, 55%);
+    border-radius:17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.double-circle:after {
+    position: absolute;
+    content: '';
+    top:4px;
+    left:4px;
+    height: calc(100% - 8px);
+    border:2px solid rgb(16, 121, 150, 55%);
+    width: calc(100% - 8px);
+    border-radius: inherit;
+}
+.dark-circle{
+    width:24px;
+    height:24px;
+    border:2px solid rgb(16, 121, 150, 100%);
+    display: inline-block;
+    background-color: rgb(16, 121, 150, 75%);
+    color:white;
+    border-radius:12px;
+}
+.square {
+    width:24px;
+    height:24px;
+    border:2px solid rgb(16, 121, 150, 55%);
+    display: inline-block;
+}
+.double-square{
+    position: relative;
+    width:34px;
+    height:34px;
+    border:2px solid rgb(16, 121, 150, 55%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.double-square:after {
+    position: absolute;
+    content: '';
+    top:4px;
+    left:4px;
+    height: calc(100% - 8px);
+    border:2px solid rgb(16, 121, 150, 55%);
+    width: calc(100% - 8px);
+}
+
+.score-legend {
+    width:100%;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    padding:5px;
+}
+.score-legend label {
+    margin-left:4px;
+    margin-right:12px;
+    margin-top:8px;
+}
+.score-title {
+    font-size:12px;
+    color:rgb(150, 149, 149);
+}

@@ -43,7 +43,7 @@ export class QualifiersComponent extends TournamentBase implements OnInit {
         this.season = response.payload;
         this.setLoadingPercent(25);
         if (this.url.includes('/event/par-3')) {
-          this.getEvents(Classification.MAIN);
+          this.getEvents(Classification.EXHIBITION);
         } else {
           this.getEvents(Classification.QUALIFIER);
         }

@@ -7,6 +7,9 @@ import { Event } from '../models/Event';
 import { ActivatedRoute, Params } from '@angular/router';
 import { EventParticipant } from '../models/EventParticipant';
 import { TeamEventParticipant } from '../models/TeamEventParticipant';
+import { ScoringType } from '../live-results/live-results.component';
+import { Individual } from '../models/Individual';
+import { Team } from '../models/Team';
 
 @Component({
   selector: 'app-event-competitors',
@@ -17,8 +20,9 @@ export class EventCompetitorsComponent  extends TournamentBase implements OnInit
 
   season: Season;
   event: Event;
-  eventParticipants: EventParticipant[] = [];
-  teamEventParticipants: TeamEventParticipant[] = [];
+  individuals: Individual[] = [];
+  teams: Team[] = [];
+  scoringType: ScoringType;
 
   constructor(
     tournamentService: TournamentService,
@@ -37,7 +41,25 @@ export class EventCompetitorsComponent  extends TournamentBase implements OnInit
     }
   
     next() {
+      this.setScoringType();
       this.getId();
+    }
+
+    setScoringType() {
+      switch (+this.tournament.eventTypeId) {
+        case 1: {
+          this.scoringType= ScoringType.TEAM;
+          break;
+        }
+        case 3: {
+          this.scoringType = ScoringType.INDIVIDUAL;
+          break;
+        }
+        default: {
+          console.error('Error - scoring type not set for this event type');
+          break;
+        }
+      }
     }
 
     getId() {
@@ -72,18 +94,13 @@ export class EventCompetitorsComponent  extends TournamentBase implements OnInit
     }
 
     getEventCompetitors() {
-      this.subscriptions.push(this.tournamentService.getEventParticipants(this.event.id.toString(), 'individual').subscribe(response => {
+      this.subscriptions.push(this.tournamentService.getEventParticipants(this.event.id.toString(), this.scoringType).subscribe(response => {
         if (response.status === 200) {
-          this.eventParticipants = response.payload;
-          this.setLoadingPercent(60);
-          this.subscriptions.push(this.tournamentService.getEventParticipants(this.event.id.toString(), 'pair').subscribe(response2 => {
-            if (response2.status === 200) {
-              this.teamEventParticipants = response2.payload;
-              this.setLoadingPercent(100);
-            } else {
-              console.error(response2);
-            }
-          }));
+          if (this.scoringType === ScoringType.TEAM) {
+            this.teams = response.payload;
+          } else {
+            this.individuals = response.payload;
+          }
         } else {
           console.error(response);
         }
@@ -92,8 +109,8 @@ export class EventCompetitorsComponent  extends TournamentBase implements OnInit
 
     getDivParticipants(competitionId: number) {
       const participants = [];
-      this.teamEventParticipants.forEach(team => {
-        if (+team.eventParticipants[0].competitionId === +competitionId) {
+      this.teams.forEach(team => {
+        if (+team.teamMembers[0].competitionId === +competitionId) {
           participants.push(team);
         }
       });
