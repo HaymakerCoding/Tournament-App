@@ -16,6 +16,7 @@ import { Individual } from '../models/Individual';
 import { EventParticipant } from '../models/EventParticipant';
 import { EventDivision } from '../models/EventDivision';
 import { MatInput } from '@angular/material/input';
+import { RoundScores } from '../models/Team';
 
 /**
  * Show a leaderboard view of all players.
@@ -50,8 +51,9 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   allParticipants: any[];
   searchColumns = ['name', 'eventName', 'year', 'division'];
   scoringType: ScoringType;
-  teams: Team[];
-  individuals: Individual[];
+  rounds: Event[];
+  masterRounds: Event[];
+  eventsToFindParticipantsFor = 0;
 
   constructor(
     tournamentService: TournamentService,
@@ -148,16 +150,17 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     }));
   }
 
-  getEventParticipants() {
-    console.log(this.eventSelected.divisionList);
-    this.subscriptions.push(this.tournamentService.getParticipants(this.eventSelected.id.toString(), this.scoringType).subscribe(response => {
+  /**
+   * Get participants for first round
+   */
+  getEventParticipants(event: Event) {
+    this.subscriptions.push(this.tournamentService.getParticipantsByDivision(event.id.toString(), this.divisionSelected.competitionId.toString(), this.scoringType).subscribe(response => {
       if (response.status === 200) {
-        this.scoringType === ScoringType.TEAM ? this.teams = response.payload : this.individuals = response.payload;
-        console.log(this.teams);
-        if (this.divisionSelected) {
-          this.onDivisionChange();
+        this.scoringType === ScoringType.TEAM ? event.teams = response.payload : event.individuals = response.payload;
+        this.eventsToFindParticipantsFor -= 1;
+        if (this.eventsToFindParticipantsFor === 0) {
+          this.setupParticipants();
         }
-        this.setLoadingPercent(100);
       } else {
         console.error(response);
       }
@@ -167,11 +170,19 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   /**
    * Get the scorecard for the event
    */
-  getScorecard() {
-    this.subscriptions.push(this.tournamentService.getScorecard(this.eventSelected.scorecardId.toString()).subscribe(response => {
+  getScorecard(event: Event) {
+    this.subscriptions.push(this.tournamentService.getScorecard(event.scorecardId.toString()).subscribe(response => {
       if (response.status === 200) {
-        this.eventSelected.scorecard = response.payload;
-        this.getEventParticipants();
+        event.scorecard = response.payload;
+        let allScorecardsSet = true;
+        this.rounds.forEach(x => {
+          if (!x.scorecard) {
+            allScorecardsSet = false;
+          }
+        });
+        if (allScorecardsSet === true) {
+          this.setLoadingPercent(100);
+        }
       } else {
         console.error(response);
       }
@@ -184,19 +195,23 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
    * After which we sort the scores and provide the arrays to the table data
    */
   onDivisionChange() {
+    this.displayTeams = [];
+    this.displayIndividuals = [];
     this.setLoadingPercent(20);
-    /*
-    if (this.displayParticipants) {
-      this.displayParticipants.forEach(x => {
-        x.roundTotalScores = null;
-      });
-      this.displayParticipants = [];
-    }
-    */
-    this.filterParticipantsByDivision(this.eventSelected);
-    this.setFinalScore();
-    this.sortScores();
-    this.setPos();
+    this.loadingPercent = 20;
+    this.rounds = this.masterRounds.filter(round => round.divisionList.some(div => +div.competitionId === +this.divisionSelected.competitionId));
+    this.eventsToFindParticipantsFor = this.rounds.length;
+    this.rounds.forEach(round => {
+      this.getEventParticipants(round);
+    });
+    
+  }
+   
+  setupParticipants() {
+    this.rounds.forEach(round => {
+      this.setScore(round);
+    });
+    console.log(this.rounds);
 
     if (this.tournament.id === 3) {
       // CITIZEN CUT LOGIC?
@@ -215,24 +230,54 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
       this.displayIndividuals = this.displayIndividuals.filter(x => this.cutParticipants.some(cut => +cut.memberId === +x.memberId) === false);
       this.cutDataSource = new MatTableDataSource(this.cutParticipants);
     }
+
+    this.displayTeams = [];
+    const foundTeams: number[] = [];
+    this.rounds.forEach(round => {
+      round.teams.forEach(team => {
+        if (foundTeams.includes(+team.teamId) === false) {
+          this.displayTeams.push(team);
+          foundTeams.push(+team.teamId);
+
+        }
+      });
+    });
+    this.displayTeams.forEach(team => {
+      team.roundScores = this.getTeamRoundScores(team);
+    });
+    this.setTotalScore();
+    this.sortScores();
+    this.setPos();
     this.dataSource = this.scoringType === ScoringType.TEAM ? new MatTableDataSource(this.displayTeams): new MatTableDataSource(this.displayIndividuals);
     this.setLoadingPercent(100);
+  }
+
+  setTotalScore() {
+    this.displayTeams.forEach( team => {
+      team.totalScore = 0;
+      this.rounds.forEach(round => {
+        const roundScore = this.getRoundScore(team, round);
+        team.totalScore += +roundScore ? roundScore : 0;
+      });
+    });
+  }
+
+  getTeamRoundScores(team: Team) {
+    const roundScores: RoundScores[] = [];
+    this.rounds.forEach(round => {
+      const roundTeam = round.teams.find(x => +x.teamId === +team.teamId);
+      if (roundTeam && roundTeam.score) {
+        roundScores.push({ eventId: round.id, score: roundTeam.score });
+      }
+    });
+    return roundScores;
   }
 
   getParticipants() {
     return this.scoringType === ScoringType.TEAM ? this.displayTeams : this.displayIndividuals;
   }
 
-  filterParticipantsByDivision(event: Event) {
-    if (this.scoringType === ScoringType.TEAM) {
-      this.displayTeams = this.teams.filter(team => +team.teamMembers[0].competitionId === +this.divisionSelected.competitionId);
-    } else {
-      this.displayIndividuals = this.individuals.filter(individual => +individual.competitionId === +this.divisionSelected.competitionId);
-    }
-    this.setScore(event);
-  }
-
-  setFinalScore() {
+  setFinalScore(event: Event) {
     this.displayIndividuals.forEach(participant => {
       let total = 0;
       participant.roundTotalScores.forEach(x => {
@@ -253,32 +298,20 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   }
 
   /**
-   * Get the max hole completed by a participant
-   */
-  getHolesComplete(participant: EventParticipant): number {
-    let max = 0;
-    const holeScores = participant.holeScores;
-    if (holeScores) {
-      participant.holeScores.forEach(holeScore => {
-        if (+holeScore.hole > max) {
-          max = holeScore.hole;
-        }
-      });
-    }
-    return max;
-  }
-
-  /**
    * Check and set each participants score.
    * Score is calculated by comparing total par of all holes complete against the players par total
    */
   setScore(event: Event) {
-    this.displayIndividuals.forEach(x => {
-      x.score = this.getScore(x, this.getHolesComplete(x), event.scorecard);
-    });
-    this.displayTeams.forEach(x => {
-      x.score = this.getScore(x, this.getHolesComplete(x), event.scorecard);
-    });
+    if (event.individuals) {
+      event.individuals.forEach(x => {
+        x.score = this.getScore(x, event.scorecard);
+      });
+    }
+    if (event.teams) {
+      event.teams.forEach(x => {
+        x.score = this.getScore(x, event.scorecard);
+      });
+    }
   }
 
   /**
@@ -287,20 +320,21 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   setPos() {
     let index = 0;
     let posNum = 1;
-    let currentTieScore;
     let currentTiePos;
     this.displayTeams.forEach(x => {
       if (index !== 0) {
         const aboveTeam = this.displayTeams[index - 1];
-        if (+aboveTeam.score === +x.score) {
-          currentTiePos = currentTiePos ? currentTiePos : posNum;
-          x.pos = 'T' + (currentTiePos);
-          aboveTeam.pos = 'T' + (currentTiePos);
-          posNum += 1;
-        } else {
-          currentTiePos = null;
-          posNum += 1;
-          x.pos = posNum;
+        if (aboveTeam) {
+          if (+aboveTeam.totalScore === +x.totalScore) {
+            currentTiePos = currentTiePos ? currentTiePos : posNum;
+            x.pos = 'T' + (currentTiePos);
+            aboveTeam.pos = 'T' + (currentTiePos);
+            posNum += 1;
+          } else {
+            currentTiePos = null;
+            posNum += 1;
+            x.pos = posNum;
+          }
         }
       } else {
         x.pos = posNum;
@@ -310,9 +344,12 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   }
 
   sortScores() {
-    const list = this.scoringType === ScoringType.TEAM ? this.displayTeams : this.displayIndividuals;
+    const list = this.scoringType === ScoringType.TEAM ? this.displayTeams :this.displayIndividuals;
     list.sort((a, b) => {
-        return a.score - b.score;
+        if (a.roundScores.length === b.roundScores.length) {
+          return a.totalScore - b.totalScore;
+        }
+        return a.roundScores.length < b.roundScores.length ? 1 : -1;
     });
   }
 
@@ -322,18 +359,16 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
    * @param participant Grooup Participant
    * @param maxHoleComplete The Max hole the participant has played up to
    */
-  getScore(participant: EventParticipant, maxHoleComplete: number, scorecard: Scorecard): number {
+  getScore(participant: EventParticipant, scorecard: Scorecard): number {
     let targetPar = 0;
     let usersScore = 0;
     scorecard.scorecardHoles.forEach(hole => {
-      if (+hole.no <= +maxHoleComplete) {
+      if (participant.holeScores.some(x => +x.hole === +hole.no)) {
         targetPar += +hole.par;
       }
     });
     participant.holeScores.forEach(holeScore => {
-      if (+holeScore.hole <= +maxHoleComplete) {
-        usersScore += +holeScore.score;
-      }
+      usersScore += +holeScore.score;
     });
     return usersScore - targetPar;
   }
@@ -343,10 +378,11 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
    */
   getTotalHolesComplete(participant): number {
     let total = 0;
-    this.events.forEach(event => {
-      if (participant && participant.holeScores) {
-        participant.holeScores.forEach(holeScore => {
-          if (+holeScore.id) {
+    this.rounds.forEach(round => {
+      const team = round.teams.find(team => +team.teamId === +participant.teamId);
+      if (team && team.holeScores) {
+        team.holeScores.forEach(holeScore => {
+          if (holeScore.score) {
             total ++;
           }
         });
@@ -447,14 +483,20 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   onYearChange() {
     this.setLoadingPercent(15);
     this.eventSelected = null;
+    this.rounds = [];
     this.displayIndividuals = [];
     this.displayTeams = [];
     this.getEvents();
   }
 
   onEventChange() {
+    this.setLoadingPercent(100);
+    this.setupRounds();
     this.divisionSelected = null;
-    this.getScorecard();
+    this.rounds.forEach(round => {
+      this.getScorecard(round);
+    });
+    // this.getScorecard(this.eventSelected);
   }
 
   /**
@@ -489,7 +531,9 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     this.subscriptions.push(this.tournamentService.getScorecard(this.eventSelected.scorecardId.toString()).subscribe(response => {
       if (response.status === 200) {
         this.eventSelected.scorecard = response.payload;
-        this.getEventParticipants();
+        this.rounds.forEach(round => {
+          this.getEventParticipants(round);
+        });
       } else {
         console.error(response);
       }
@@ -504,6 +548,29 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     return this.scoringType === ScoringType.TEAM ? participant.teamMembers[0].division : participant.division;
   }
   
+  /**
+   * Find all the main events for the tournament season. Only those that have happend or are happnening so we can setup each as a 'round' of the tournament
+   */
+  setupRounds() {
+    this.rounds = [];
+    this.events.forEach(event => {
+      const dateParts = event.eventDate.split('-');
+      const today = new Date(new Date().toDateString());
+      const eventDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2].substr(0, 2));
+      if (event.classification === 'main' && eventDate <= today){
+        this.rounds.push(event);
+      }
+    });
+    if (this.rounds.length < 1) {
+      this.rounds.push(this.eventSelected);
+    }
+    this.masterRounds = this.rounds;
+  }
+
+  getRoundScore(participant, event: Event) {
+    let round = participant.roundScores.find(roundScore => +roundScore.eventId === +event.id);
+    return round && round.score ? round.score : null;
+  }
 
 }
 

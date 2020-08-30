@@ -25,8 +25,12 @@ export class HoleResultsTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeColumns();
+    this.sortScores();
   }
 
+  /**
+   * Setup the columns used in the mat table. Utitlize the scorecard holes as column names.
+   */
   initializeColumns() {
     const lastHole = this.event.scorecard.scorecardHoles[this.event.scorecard.scorecardHoles.length - 1].no;
     this.holeColumns.push('hole');
@@ -63,6 +67,13 @@ export class HoleResultsTableComponent implements OnInit {
         this.parColumns.push('parTotal');
         this.parColumns.push('parSpacer');
       }
+    });
+  }
+
+  sortScores() {
+    const list = this.scoringType === ScoringType.TEAM ? this.teams :this.individuals;
+    list.sort((a, b) => {
+      return a.totalScore - b.totalScore;
     });
   }
 
@@ -180,9 +191,10 @@ export class HoleResultsTableComponent implements OnInit {
     const par: number = +this.event.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
     return par - +score === -1;
   }
+  // double boggie OR more so 2 or more over par
   isDoubleBogie(score, hole) {
     const par: number = +this.event.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
-    return par - +score === -2;
+    return par - +score <= -2;
   }
 
 }

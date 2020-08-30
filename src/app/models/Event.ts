@@ -2,6 +2,8 @@ import { Group } from './Group';
 import { GroupParticipant } from './GroupParticipant';
 import { Scorecard } from './Scorecard';
 import { EventDivision } from './EventDivision';
+import { Team } from './Team';
+import { Individual } from './Individual';
 
 /**
  * An event. belongs to a season which belongs to an event type
@@ -23,7 +25,10 @@ export class Event {
       public scorecardId: number,
       public scorecard: Scorecard,
       public courseLogo: string,
-      public divisionList: EventDivision[]
+      public divisionList: EventDivision[],
+      public classification: Classification,
+      public teams: Team[],
+      public individuals: Individual[]
 
   ) {}
 

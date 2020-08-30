@@ -11,6 +11,7 @@
 
         <div *ngIf="validTournaments.includes(+tournament.id) === true">
             <h1 class="text-center">Results</h1>
+            
             <br>
             <mat-form-field appearance="outline">
                 <mat-label>Year</mat-label>
@@ -18,10 +19,11 @@
                     <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" style="width:350px; max-width: 90vw;">
                 <mat-label>Event</mat-label>
                 <mat-select (selectionChange)="onEventChange()" [(ngModel)]="eventSelected">
-                    <mat-option *ngFor="let event of events" [value]="event">{{ event.name }}</mat-option>
+                    <mat-option *ngFor="let event of events" [value]="event">{{ event.name }}
+                    </mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field *ngIf="eventSelected" appearance="outline">
@@ -33,7 +35,7 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline">
-                <mat-label>Search by Participant</mat-label>
+                <mat-label>Search by Player</mat-label>
                 <input matInput #searchParticipantInput (input)="searchByPlayer($event.target.value)">
             </mat-form-field>
             <br>
@@ -76,28 +78,32 @@
             <!--ALL TOURNAMENTS EXCEPT CITIZEN-->
             <div *ngIf="tournament.id !== 3 && dataSource && divisionSelected">
                 <h2>Leaderboard</h2>
+                <p>Rounds: {{ rounds.length }}</p>
                 <div class="row headings">
                     <div class="col-2">Pos</div>
-                    <div class="col-5">Competitor</div>
-                    <div class="col-2 text-center">Thru</div>
-                    <div class="col-3 text-center">Total</div>
+                    <div class="col-3">Competitor</div>
+                    <div class="col-1" *ngFor="let round of rounds; let i = index">{{ 'R' + (i+1) }}</div>
+                    <div class="col-1 text-center">Thru</div>
+                    <div class="col-2 text-center">Total</div>
                 </div>
                 <div *ngFor="let participant of getParticipants()">
                     <div class="row data-rows" (click)="showHoleByHole(participant)">
                         <div class="col-2">{{ participant.pos }}</div>
-                        <div class="col-5">
+                        <div class="col-3">
                             <div *ngIf="scoringType === 'individual'">{{ participant.fullName }}</div>
                             <div *ngIf="scoringType === 'team'">{{ participant.teamMembers[0].fullName }}</div>
                             <div *ngIf="scoringType === 'team'">{{ participant.teamMembers[1].fullName }}</div>
                         </div>
-                        <div class="col-2 text-center">{{ getHolesComplete(participant) }}</div>
-                        <div class="col-3 text-center">{{ participant.score === 0 ? 'Even' : participant.score > 0 ? '+' + participant.score : participant.score }}</div>
+                        <div class="col-1" *ngFor="let round of rounds; let i = index">{{ getRoundScore(participant, round) }}</div>
+                        <div class="col-1 text-center">{{ getTotalHolesComplete(participant) }}</div>
+                        <div class="col-2 text-center">{{ participant.totalScore === 0 ? 'Even' : participant.totalScore > 0 ? '+' + participant.totalScore : participant.totalScore }}</div>
                     </div>
                 </div>
                 <br>
                 <h2>Hole By Hole</h2>
-                <div class="table-container">
-                    <app-hole-results-table [scoringType]="scoringType" [teams]="teams" [individuals]="individuals" [event]="eventSelected"></app-hole-results-table>
+                <div *ngFor="let round of rounds" class="table-container">
+                    <h3>{{ round.name }}</h3>
+                    <app-hole-results-table  [scoringType]="scoringType" [teams]="round.teams" [individuals]="round.individuals" [event]="round"></app-hole-results-table>
                 </div>
             </div>
                 

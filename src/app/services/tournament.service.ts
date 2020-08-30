@@ -405,5 +405,13 @@ export class TournamentService {
     }));
   }
 
+  getParticipantsByDivision(eventId: string, competitionId: string, type: ScoringType) {
+    const params = new HttpParams().set('eventId', eventId).set('competitionId', competitionId).set('type', type);
+    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/event/participant/get-all-by-division/index.php',
+    { params }).pipe(map(response => {
+      return response;
+    }));
+  }
+
 
 }

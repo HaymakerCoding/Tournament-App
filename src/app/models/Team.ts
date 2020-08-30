@@ -24,12 +24,19 @@ export class Team extends EventParticipant   {
     public holeScores: HoleScore[],
     public score: number,
     public scoreId: number,
-    public pos: any
+    public pos: any,
+    public roundScores: RoundScores[],
+    public totalScore: number
   ) {
     super(
       holeScores, score, scoreId
     );
   }
 
+}
+
+export interface RoundScores {
+  eventId: number;
+  score: number;
 }
 

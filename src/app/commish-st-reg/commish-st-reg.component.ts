@@ -92,7 +92,7 @@ export class CommishStRegComponent extends TournamentBase {
         console.log(this.userReg);
         if (!this.userReg.id) {
           // initialize empty reg, this is just so we can use the object in creating the reg
-          const team = new Team(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+          const team = new Team(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
           this.userReg = new UserReg(null, team, null, this.tournamentYearlyData.id, null, null, null, null, null, null, null);
           this.userRegistered = false;
         } else {
@@ -154,7 +154,7 @@ export class CommishStRegComponent extends TournamentBase {
         if (response.status === 200) {
           this.userRegistered = false;
           this.userReg = null;
-          const team = new Team(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+          const team = new Team(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
           this.userReg = new UserReg(null, team, null, this.tournamentYearlyData.id, null, null, null, null, null, null, null);
         } else {
           console.error(response);
