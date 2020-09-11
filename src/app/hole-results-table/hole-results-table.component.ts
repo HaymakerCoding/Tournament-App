@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Event } from '../models/Event';
-import { ScoringType } from '../live-results/live-results.component';
+import { ScoringType, EventScore } from '../live-results/live-results.component';
 import { HoleScore } from '../models/HoleScore';
 import { Team } from '../models/Team';
 import { Individual } from '../models/Individual';
+import { Scorecard } from '../models/Scorecard';
 
 @Component({
   selector: 'app-hole-results-table',
@@ -12,10 +13,9 @@ import { Individual } from '../models/Individual';
 })
 export class HoleResultsTableComponent implements OnInit {
 
-  @Input() event: Event;
+  @Input() scorecard: Scorecard;
   @Input() scoringType: ScoringType;
-  @Input() teams: Team[];
-  @Input() individuals: Individual[];
+  @Input() eventScores: EventScore;
 
   holeColumns = [];
   parColumns = [];
@@ -32,9 +32,9 @@ export class HoleResultsTableComponent implements OnInit {
    * Setup the columns used in the mat table. Utitlize the scorecard holes as column names.
    */
   initializeColumns() {
-    const lastHole = this.event.scorecard.scorecardHoles[this.event.scorecard.scorecardHoles.length - 1].no;
+    const lastHole = this.scorecard.scorecardHoles[this.scorecard.scorecardHoles.length - 1].no;
     this.holeColumns.push('hole');
-    this.event.scorecard.scorecardHoles.forEach(hole => {
+    this.scorecard.scorecardHoles.forEach(hole => {
       this.holeColumns.push('h'+hole.no);
       if (+hole.no === 9) {
         this.holeColumns.push('front');
@@ -49,7 +49,7 @@ export class HoleResultsTableComponent implements OnInit {
     });
     this.parColumns.push('par');
     
-    this.event.scorecard.scorecardHoles.forEach(hole => {
+    this.scorecard.scorecardHoles.forEach(hole => {
       this.parColumns.push('p'+hole.no);
       this.columns.push(hole.no.toString());
       if (+hole.no === 9) {
@@ -71,14 +71,13 @@ export class HoleResultsTableComponent implements OnInit {
   }
 
   sortScores() {
-    const list = this.scoringType === ScoringType.TEAM ? this.teams :this.individuals;
-    list.sort((a, b) => {
-      return a.totalScore - b.totalScore;
+    this.eventScores.scores.sort((a, b) => {
+      return a.total - b.total;
     });
   }
 
-  getDatasource(event: Event) {
-    return this.scoringType === ScoringType.TEAM ? this.teams : this.individuals;
+  getDatasource() {
+    return this.eventScores.scores;
   }
 
   /**
@@ -90,9 +89,9 @@ export class HoleResultsTableComponent implements OnInit {
     return holeScore && holeScore.id ? holeScore.score : null;
   }
 
-  getFrontParTotal(event: Event) {
+  getFrontParTotal() {
     let total = 0;
-    event.scorecard.scorecardHoles.forEach(hole => {
+    this.scorecard.scorecardHoles.forEach(hole => {
       if (+hole.no < 10) {
         total += +hole.par;
       }
@@ -100,9 +99,9 @@ export class HoleResultsTableComponent implements OnInit {
     return total;
   }
 
-  getBackParTotal(event: Event) {
+  getBackParTotal() {
     let total = 0;
-    event.scorecard.scorecardHoles.forEach(hole => {
+    this.scorecard.scorecardHoles.forEach(hole => {
       if (+hole.no >= 10) {
         total += +hole.par;
       }
@@ -142,9 +141,9 @@ export class HoleResultsTableComponent implements OnInit {
    * Return par total for the event scorecard
    * @param event Event played
    */
-  getParTotal(event: Event) {
+  getParTotal() {
     let total = 0;
-    event.scorecard.scorecardHoles.forEach(scorecardHole => {
+    this.scorecard.scorecardHoles.forEach(scorecardHole => {
       total += +scorecardHole.par;
     });
     return total;
@@ -168,7 +167,7 @@ export class HoleResultsTableComponent implements OnInit {
     participant.holeScores.forEach(holeScore => {
       if (holeScore.score) {
         score += +holeScore.score;
-        target += +this.event.scorecard.scorecardHoles.find(x => +x.no === +holeScore.hole).par;
+        target += +this.scorecard.scorecardHoles.find(x => +x.no === +holeScore.hole).par;
       }
     });
     const finalScore: number = +score - +target;
@@ -176,24 +175,24 @@ export class HoleResultsTableComponent implements OnInit {
   }
 
   isBirdie(score, hole) {
-    const par: number = +this.event.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
+    const par: number = +this.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
     return par - +score === 1;
   }
   isEagle(score, hole) {
-    const par: number = +this.event.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
+    const par: number = +this.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
     return par - +score === 2;
   }
   isAlbatross(score, hole) {
-    const par: number = +this.event.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
+    const par: number = +this.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
     return par - +score === 3 && score && score !== 0;
   }
   isBogie(score, hole) {
-    const par: number = +this.event.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
+    const par: number = +this.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
     return par - +score === -1;
   }
   // double boggie OR more so 2 or more over par
   isDoubleBogie(score, hole) {
-    const par: number = +this.event.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
+    const par: number = +this.scorecard.scorecardHoles.find(x => +x.no === +hole).par;
     return par - +score <= -2;
   }
 

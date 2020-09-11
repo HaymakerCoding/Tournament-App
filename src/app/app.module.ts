@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 
@@ -69,6 +69,8 @@ import { EventCompetitorsComponent } from './event-competitors/event-competitors
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { HoleResultsTableComponent } from './hole-results-table/hole-results-table.component';
+import { ErrorPageComponent } from './error-page/error-page.component';
+import { ErrorInterceptor } from './error.interceptor';
 
 @NgModule({
   declarations: [
@@ -106,7 +108,8 @@ import { HoleResultsTableComponent } from './hole-results-table/hole-results-tab
     HoleByHoleScoresComponent,
     QualifiersComponent,
     EventCompetitorsComponent,
-    HoleResultsTableComponent
+    HoleResultsTableComponent,
+    ErrorPageComponent
   ],
   imports: [
     BrowserModule,
@@ -121,6 +124,7 @@ import { HoleResultsTableComponent } from './hole-results-table/hole-results-tab
     MatDatepickerModule, MatTooltipModule, MatProgressBarModule, MatButtonToggleModule, ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     AuthService
   ],
   entryComponents: [LoginComponent, HoleByHoleScoresComponent ],

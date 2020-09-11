@@ -1,9 +1,9 @@
-<table mat-table [dataSource]="getDatasource(event)" class="full-width mat-elevation-z4">
+<table mat-table [dataSource]="getDatasource()" class="full-width mat-elevation-z4">
 
     <ng-container sticky [matColumnDef]="'hole'">
         <th sticky mat-header-cell *matHeaderCellDef>Hole</th> 
     </ng-container>
-    <ng-container *ngFor="let hole of event.scorecard.scorecardHoles" [matColumnDef]="'h'+hole.no">
+    <ng-container *ngFor="let hole of scorecard.scorecardHoles" [matColumnDef]="'h'+hole.no">
         <th class="firstNum" mat-header-cell *matHeaderCellDef>{{ hole.no }}</th>    
     </ng-container>
     <ng-container [matColumnDef]="'front'">
@@ -22,25 +22,25 @@
         <th class="text-center big-col" mat-header-cell *matHeaderCellDef>Score</th> 
     </ng-container>
     <ng-container [matColumnDef]="'parTotal'">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getParTotal(event) }}</th> 
+        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getParTotal() }}</th> 
     </ng-container>
     <ng-container [matColumnDef]="'frontTotal'">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getFrontParTotal(event) }}</th> 
+        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getFrontParTotal() }}</th> 
     </ng-container>
     <ng-container [matColumnDef]="'backTotal'">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getBackParTotal(event) }}</th> 
+        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getBackParTotal() }}</th> 
     </ng-container>
     <ng-container [matColumnDef]="'parSpacer'">
         <th class="text-center" mat-header-cell *matHeaderCellDef></th> 
     </ng-container>
-    <ng-container *ngFor="let hole of event.scorecard.scorecardHoles" [matColumnDef]="'p'+hole.no">
+    <ng-container *ngFor="let hole of scorecard.scorecardHoles" [matColumnDef]="'p'+hole.no">
         <th class="firstNum" mat-header-cell *matHeaderCellDef>{{ hole.par }}</th>    
     </ng-container>
     <div *ngFor="let column of columns">
         <ng-container *ngIf="column === 'name'" sticky [matColumnDef]="column">
-            <td mat-cell *matCellDef="let participant">
+            <td mat-cell *matCellDef="let participant; let i = index">
                 <div *ngIf="scoringType === 'individual'">{{ participant.fullName }}</div>
-                <div *ngIf="scoringType === 'team'">{{ participant.teamMembers[0].fullName }}</div>
+                <div *ngIf="scoringType === 'team'">{{ (i+1)+'. ' + participant.teamMembers[0].fullName }}</div>
                 <div *ngIf="scoringType === 'team'">{{ participant.teamMembers[1].fullName }}</div>
             </td>
         </ng-container>

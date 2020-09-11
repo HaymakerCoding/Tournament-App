@@ -22,6 +22,7 @@ import { StQualifyingComponent } from './st-qualifying/st-qualifying.component';
 import { DrawComponent } from './draw/draw.component';
 import { QualifiersComponent } from './qualifiers/qualifiers.component';
 import { EventCompetitorsComponent } from './event-competitors/event-competitors.component';
+import { ErrorPageComponent } from './error-page/error-page.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -49,6 +50,7 @@ const routes: Routes = [
   { path: 'qualifiers', component: QualifiersComponent },
   { path: 'event/par-3', component: QualifiersComponent },
   { path: 'event-competitors/:id', component: EventCompetitorsComponent },
+  { path: 'error', component: ErrorPageComponent },
   { path: '**',
     redirectTo: 'home',
     pathMatch: 'full',

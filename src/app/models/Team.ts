@@ -37,6 +37,6 @@ export class Team extends EventParticipant   {
 
 export interface RoundScores {
   eventId: number;
-  score: number;
+  score: string;
 }
 

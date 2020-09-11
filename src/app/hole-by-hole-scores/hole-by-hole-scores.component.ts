@@ -4,7 +4,7 @@ import { Event } from '../models/Event';
 import { HoleScore } from '../models/HoleScore';
 import { Team } from '../models/Team';
 import { Individual } from '../models/Individual';
-import { ScoringType } from '../live-results/live-results.component';
+import { ScoringType, EventScore } from '../live-results/live-results.component';
 import { Scorecard } from '../models/Scorecard';
 
 /**
@@ -21,10 +21,8 @@ import { Scorecard } from '../models/Scorecard';
 })
 export class HoleByHoleScoresComponent implements OnInit {
 
-  events: Event[];
-  event: Event;
-  teams: Team[];
-  individuals: Individual[];
+  rounds: Event[];
+  eventScores: EventScore[];
   scoringType: ScoringType;
   participant: any;
   loading: boolean;
@@ -35,13 +33,18 @@ export class HoleByHoleScoresComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.events = this.data.events;
-    this.event = this.events[0];
-    this.teams = this.data.teams;
-    this.individuals = this.data.individuals;
+    this.rounds = this.data.events;
     this.scoringType = this.data.scoringType;
-    
+    this.eventScores = this.data.eventScores;
     this.loading = false;
+  }
+
+  getEventScorecard(event: EventScore) {
+    return this.rounds.find(x => +x.id === +event.eventId).scorecard;
+  }
+
+  getEvent(event: EventScore) {
+    return this.rounds.find(x => +x.id === +event.eventId);
   }
 
   
