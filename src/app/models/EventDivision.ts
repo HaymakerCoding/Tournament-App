@@ -12,7 +12,8 @@ export class EventDivision {
       public competitionId: number,
       public divisionId: number,
       public eventId: number,
-      public name: string
+      public name: string,
+      public cutLine: number
 
   ) {}
 

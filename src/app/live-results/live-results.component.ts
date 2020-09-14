@@ -6,18 +6,16 @@ import { Division } from '../models/Division';
 import { Season } from '../models/Season';
 import { Event } from '../models/Event';
 import { GroupParticipant } from '../models/GroupParticipant';
-import { Scorecard } from '../models/Scorecard';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HoleByHoleScoresComponent } from '../hole-by-hole-scores/hole-by-hole-scores.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { ResultsService } from '../services/results.service';
-import { Team } from '../models/Team';
-import { Individual } from '../models/Individual';
 import { EventDivision } from '../models/EventDivision';
 import { MatInput } from '@angular/material/input';
-import { RoundScores } from '../models/Team';
 import { ParticipantService } from '../services/participant.service';
 import { HoleScore } from '../models/HoleScore';
+import { Router } from '@angular/router';
+import { EventService } from '../services/event.service';
 
 /**
  * Show a leaderboard view of all players.
@@ -52,13 +50,16 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   rounds: Event[];
   masterRounds: Event[];
   results: Results;
+  path: string;
 
   constructor(
     tournamentService: TournamentService,
     titleService: Title,
     private resultsService: ResultsService,
     private participantService: ParticipantService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router,
+    private eventService: EventService
   ) {
     super(tournamentService, titleService);
    }
@@ -72,6 +73,7 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
   }
 
   next() {
+    this.path = this.router.url;
     this.columns = this.tournament.id === 3 ? ['pos', 'competitor', 'holes', 'round1', 'round2', 'round3', 'total'] : ['pos', 'competitor',  'holes', 'total'];
     this.setLoadingPercent(10);
     this.setScoringType();
@@ -113,13 +115,9 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
 
   getSeason() {
     this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), this.yearSelected.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.season = response.payload;
-        this.setLoadingPercent(40);
-        this.getEvents();
-      } else {
-        console.error(response);
-      }
+      this.season = response.payload;
+      this.setLoadingPercent(40);
+      this.getEvents();
     }));
   }
 
@@ -127,14 +125,10 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
    * Get all events for the season
    */
   getEvents() {
-    this.subscriptions.push(this.tournamentService.getAllCurrentEvents(this.season).subscribe(response => {
-      if (response.status === 200) {
-        this.events = response.payload;
-        this.setLoadingPercent(80);
-        this.getAllTournamentParticipants();
-      } else {
-        console.error(response);
-      }
+    this.subscriptions.push(this.eventService.getAllEvents(this.season, true).subscribe(response => {
+      this.events = response.payload;
+      this.setLoadingPercent(80);
+      this.getAllTournamentParticipants();
     }));
   }
 
@@ -221,6 +215,7 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
    * After which we sort the scores and provide the arrays to the table data
    */
   onDivisionChange() {
+    console.log(this.divisionSelected);
     this.setLoadingPercent(20);
     this.loadingPercent = 20;
     this.rounds = this.masterRounds.filter(round => round.divisionList.some(div => +div.competitionId === +this.divisionSelected.competitionId));
@@ -375,7 +370,9 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     this.setLoadingPercent(15);
     this.eventSelected = null;
     this.rounds = [];
-    this.getEvents();
+    this.divisionSelected = null;
+    this.masterRounds = [];
+    this.getSeason();
   }
 
   onEventChange() {
@@ -383,6 +380,10 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
     this.setupRounds();
     this.divisionSelected = null;
     this.setLoadingPercent(100);
+    if (this.eventSelected.divisionList.length === 1) {
+      this.divisionSelected = this.eventSelected.divisionList[0];
+      this.onDivisionChange();
+    }
   }
 
   /**
@@ -436,17 +437,27 @@ export class LiveResultsComponent extends TournamentBase implements OnInit {
    */
   setupRounds() {
     this.rounds = [];
-    this.events.forEach(event => {
-      const today = new Date(new Date().toDateString());
-      const dateParts = event.eventDate.split('-');
-      const eventDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2].substr(0, 2));
-      if (event.classification === 'main' && eventDate <= today){
-        this.rounds.push(event);
+    if (this.eventSelected.classification === 'main') {
+      this.events.forEach(event => {
+        const today = new Date(new Date(this.eventSelected.eventDate).setHours(0,0,0,0));
+        console.log(today);
+        let eventDate = event.eventDate;
+        if (!(eventDate instanceof Date )) {
+          const dateParts = eventDate.split('-');
+          eventDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2].substr(0, 2));
+          console.log(eventDate);
+        }
+        if (event.classification === 'main' && eventDate <= today){
+          this.rounds.push(event);
+        }
+      });
+      if (this.rounds.some(round => round.id === this.eventSelected.id) === false) {
+        this.rounds.push(this.eventSelected);
       }
-    });
-    if (this.rounds.length < 1) {
+    } else {
       this.rounds.push(this.eventSelected);
     }
+    console.log(this.rounds);
     this.masterRounds = this.rounds;
   }
 

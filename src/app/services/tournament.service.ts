@@ -271,18 +271,6 @@ export class TournamentService {
     }));
   }
 
-   /**
-   * Get all tournament events for a season that have happened or are happening. Not future events
-   * @param yearId Tournament Year ID
-   */
-  getAllCurrentEvents(season: Season) {
-    const params = new HttpParams().set('seasonId', season.id.toString())
-    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/event/get-all-current/index.php',
-    { params }).pipe(map(response => {
-      return response;
-    }));
-  }
-
   /**
    * Get all tournament events by a classfication type main or qualifier
    * @param yearId Tournament Year ID
