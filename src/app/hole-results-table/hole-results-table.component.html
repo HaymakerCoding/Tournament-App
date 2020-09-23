@@ -1,103 +1,126 @@
-<table mat-table [dataSource]="getDatasource()" class="full-width mat-elevation-z4">
+<div class="table-container">
+    <table mat-table [dataSource]="getDatasource()" class="full-width mat-elevation-z4">
 
-    <ng-container sticky [matColumnDef]="'hole'">
-        <th sticky mat-header-cell *matHeaderCellDef>Hole</th> 
-    </ng-container>
-    <ng-container *ngFor="let hole of scorecard.scorecardHoles" [matColumnDef]="'h'+hole.no">
-        <th class="firstNum" mat-header-cell *matHeaderCellDef>{{ hole.no }}</th>    
-    </ng-container>
-    <ng-container [matColumnDef]="'front'">
-        <th class="text-center big-col" mat-header-cell *matHeaderCellDef>Front</th> 
-    </ng-container>
-    <ng-container [matColumnDef]="'back'">
-        <th class="text-center big-col" mat-header-cell *matHeaderCellDef>Back</th> 
-    </ng-container>
-    <ng-container sticky [matColumnDef]="'par'">
-        <th mat-header-cell *matHeaderCellDef>Par</th> 
-    </ng-container>
-    <ng-container [matColumnDef]="'total'">
-        <th class="text-center big-col" mat-header-cell *matHeaderCellDef>Total</th> 
-    </ng-container>
-    <ng-container [matColumnDef]="'finalScore'">
-        <th class="text-center big-col" mat-header-cell *matHeaderCellDef>Score</th> 
-    </ng-container>
-    <ng-container [matColumnDef]="'parTotal'">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getParTotal() }}</th> 
-    </ng-container>
-    <ng-container [matColumnDef]="'frontTotal'">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getFrontParTotal() }}</th> 
-    </ng-container>
-    <ng-container [matColumnDef]="'backTotal'">
-        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getBackParTotal() }}</th> 
-    </ng-container>
-    <ng-container [matColumnDef]="'parSpacer'">
-        <th class="text-center" mat-header-cell *matHeaderCellDef></th> 
-    </ng-container>
-    <ng-container *ngFor="let hole of scorecard.scorecardHoles" [matColumnDef]="'p'+hole.no">
-        <th class="firstNum" mat-header-cell *matHeaderCellDef>{{ hole.par }}</th>    
-    </ng-container>
-    <div *ngFor="let column of columns">
-        <ng-container *ngIf="column === 'name'" sticky [matColumnDef]="column">
-            <td mat-cell *matCellDef="let participant; let i = index">
-                <div *ngIf="scoringType === 'individual'">{{ participant.fullName }}</div>
-                <div *ngIf="scoringType === 'team'">{{ (i+1)+'. ' + participant.teamMembers[0].fullName }}</div>
-                <div *ngIf="scoringType === 'team'">{{ participant.teamMembers[1].fullName }}</div>
-            </td>
+        <ng-container sticky [matColumnDef]="'hole'">
+            <th sticky mat-header-cell *matHeaderCellDef>Hole</th> 
         </ng-container>
-        <ng-container *ngIf="column === 'frontTotalP'" [matColumnDef]="column">
-            <td class="text-center" mat-cell *matCellDef="let participant">
-                {{ getPlayerFrontTotal(participant) }}
-            </td>
+        <ng-container *ngFor="let hole of scorecard.scorecardHoles" [matColumnDef]="'h'+hole.no">
+            <th class="firstNum" mat-header-cell *matHeaderCellDef>{{ hole.no }}</th>    
         </ng-container>
-        <ng-container *ngIf="column === 'backTotalP'" [matColumnDef]="column">
-            <td class="text-center" mat-cell *matCellDef="let participant">
-                {{ getPlayerBackTotal(participant) }}
-            </td>
+        <ng-container [matColumnDef]="'front'">
+            <th class="text-center big-col" mat-header-cell *matHeaderCellDef>Front</th> 
         </ng-container>
-        <ng-container *ngIf="column === 'playerTotal'" [matColumnDef]="column">
-            <td class="text-center" mat-cell *matCellDef="let participant">
-                {{ getFinalScore(participant) }}
-            </td>
+        <ng-container [matColumnDef]="'back'">
+            <th class="text-center big-col" mat-header-cell *matHeaderCellDef>Back</th> 
         </ng-container>
-        <ng-container *ngIf="column === 'scoreToPar'" [matColumnDef]="column">
-            <td class="text-center" mat-cell *matCellDef="let participant">
-                {{ getScoreToPar(participant) }}
-            </td>
+        <ng-container sticky [matColumnDef]="'par'">
+            <th mat-header-cell *matHeaderCellDef>Par</th> 
         </ng-container>
-        <ng-container *ngIf="column !== 'name' && column !== 'frontTotalP' && column !== 'backTotalP' && column !== 'playerTotal' && column !== 'scoreToPar'"  [matColumnDef]="column">
-            <td [class.firstNum]="column === 'name'" class="text-center" mat-cell *matCellDef="let participant">
-                <div [class.circle]="isBirdie(getHoleScore(participant, column), column)"
-                [class.double-circle]="isEagle(getHoleScore(participant, column), column)"
-                [class.dark-circle]="isAlbatross(getHoleScore(participant, column), column)"
-                [class.square]="isBogie(getHoleScore(participant, column), column)"
-                [class.double-square]="isDoubleBogie(getHoleScore(participant, column), column)">
-                    {{ getHoleScore(participant, column) }}
-                </div>
-            </td>
+        <ng-container [matColumnDef]="'total'">
+            <th class="text-center big-col" mat-header-cell *matHeaderCellDef>Total</th> 
         </ng-container>
-    </div>
+        <ng-container [matColumnDef]="'finalScore'">
+            <th class="text-center big-col" mat-header-cell *matHeaderCellDef>Score</th> 
+        </ng-container>
+        <ng-container [matColumnDef]="'parTotal'">
+            <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getParTotal() }}</th> 
+        </ng-container>
+        <ng-container [matColumnDef]="'frontTotal'">
+            <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getFrontParTotal() }}</th> 
+        </ng-container>
+        <ng-container [matColumnDef]="'backTotal'">
+            <th class="text-center" mat-header-cell *matHeaderCellDef>{{ getBackParTotal() }}</th> 
+        </ng-container>
+        <ng-container [matColumnDef]="'parSpacer'">
+            <th class="text-center" mat-header-cell *matHeaderCellDef></th> 
+        </ng-container>
+        <ng-container *ngFor="let hole of scorecard.scorecardHoles" [matColumnDef]="'p'+hole.no">
+            <th class="firstNum" mat-header-cell *matHeaderCellDef>{{ hole.par }}</th>    
+        </ng-container>
+        <div *ngFor="let column of columns">
+            <ng-container *ngIf="column === 'name'" sticky [matColumnDef]="column">
+                <td mat-cell *matCellDef="let participant; let i = index">
+                    <div *ngIf="scoringType === 'individual'">{{ participant.fullName }}</div>
+                    <div *ngIf="scoringType === 'team'">{{ participant.teamMembers[0].fullName }}</div>
+                    <div *ngIf="scoringType === 'team'">{{ participant.teamMembers[1].fullName }}</div>
+                </td>
+            </ng-container>
+            <ng-container *ngIf="column === 'frontTotalP'" [matColumnDef]="column">
+                <td class="text-center" mat-cell *matCellDef="let participant">
+                    {{ getPlayerFrontTotal(participant) }}
+                </td>
+            </ng-container>
+            <ng-container *ngIf="column === 'backTotalP'" [matColumnDef]="column">
+                <td class="text-center" mat-cell *matCellDef="let participant">
+                    {{ getPlayerBackTotal(participant) }}
+                </td>
+            </ng-container>
+            <ng-container *ngIf="column === 'playerTotal'" [matColumnDef]="column">
+                <td class="text-center" mat-cell *matCellDef="let participant">
+                    {{ getFinalScore(participant) }}
+                </td>
+            </ng-container>
+            <ng-container *ngIf="column === 'scoreToPar'" [matColumnDef]="column">
+                <td class="text-center" mat-cell *matCellDef="let participant">
+                    {{ getScoreToPar(participant) }}
+                </td>
+            </ng-container>
+            <ng-container *ngIf="column !== 'name' && column !== 'frontTotalP' && column !== 'backTotalP' && column !== 'playerTotal' && column !== 'scoreToPar'"  [matColumnDef]="column">
+                <td [class.firstNum]="column === 'name'" class="text-center" mat-cell *matCellDef="let participant">
+                    <div [class.circle]="isBirdie(getHoleScore(participant, column), column)"
+                    [class.double-circle]="isEagle(getHoleScore(participant, column), column)"
+                    [class.dark-circle]="isAlbatross(getHoleScore(participant, column), column)"
+                    [class.square]="isBogie(getHoleScore(participant, column), column)"
+                    [class.double-square]="isDoubleBogie(getHoleScore(participant, column), column)">
+                        {{ getHoleScore(participant, column) }}
+                    </div>
+                </td>
+            </ng-container>
+        </div>
 
-    <tr class="dark-bkg" mat-header-row *matHeaderRowDef="holeColumns"></tr>
-    <tr class="light-bkg" mat-header-row *matHeaderRowDef="parColumns"></tr>
-    <tr mat-row *matRowDef="let participant; columns: columns;"></tr>
-    
-</table>
+        <tr class="dark-bkg" mat-header-row *matHeaderRowDef="holeColumns"></tr>
+        <tr class="light-bkg" mat-header-row *matHeaderRowDef="parColumns"></tr>
+        <tr mat-row *matRowDef="let participant; columns: columns;"></tr>
+        
+    </table>
+</div>
+
 <h6 class="mt-3 score-title">Score Legend</h6>
 <legend class="score-legend">
-    <div class="circle"></div>
-    <label class="legend-labels">Birdie</label>
+    <div class="row">
+        <div class="col-2">
+            <div class="legend-pics">
+                <div class="circle"></div>
+            </div>
+            <label class="legend-labels">Birdie</label>
+        </div>
+        <div class="col-2">
+            <div class="legend-pics">
+                <span style="display:inline-block;">
+                    <div class="double-circle"></div>
+                </span>
+            </div>
+            <label class="legend-labels">Eagle</label>
+        </div>
+        <div class="col-2">
+            <div class="legend-pics">
+                <div class="dark-circle"></div>
+            </div>
+            <label class="legend-labels">Albatross</label>
+        </div>
+        <div class="col-2">
+            <div class="legend-pics">
+                <div class="square"></div>
+            </div>
+            <label class="legend-labels">Bogie</label>
+        </div>
+        <div class="col-2">
+            <div class="legend-pics">
+                <div class="double-square"></div>
+            </div>
+            <label class="legend-labels">D. Bogie +</label>
+        </div>
+    </div>
 
-    <span style="display:inline-block;">
-        <div class="double-circle"></div>
-    </span>
-    <label class="legend-labels">Eagle</label>
     
-    <div class="dark-circle"></div>
-    <label class="legend-labels">Albatross</label>
-
-    <div class="square"></div>
-    <label class="legend-labels">Bogie</label>
-
-    <div class="double-square"></div>
-    <label class="legend-labels">Double Bogie +</label>
 </legend>

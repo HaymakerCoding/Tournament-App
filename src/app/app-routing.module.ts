@@ -23,6 +23,7 @@ import { DrawComponent } from './draw/draw.component';
 import { QualifiersComponent } from './qualifiers/qualifiers.component';
 import { EventCompetitorsComponent } from './event-competitors/event-competitors.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
+import { PastResultsComponent } from './past-results/past-results.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -40,6 +41,7 @@ const routes: Routes = [
   { path: 'subscribe', component: SubscribeComponent },
   { path: 'faq', component: FaqComponent },
   { path: 'results', component: ResultsComponent },
+  { path: 'results/past', component: PastResultsComponent },
   { path: 'results/live', component: LiveResultsComponent },
   { path: 'results/cmpc-live', component: CmpcLiveComponent },
   { path: 'st-qualifying', component: StQualifyingComponent },

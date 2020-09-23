@@ -23,7 +23,7 @@
       <mat-menu #scoringMenu>
         <a rel="noopener" target="_blank" href="https://scoring.clubeg.golf" mat-menu-item>Scoring App</a>
         <a routerLink="{{ +tournament.id === 2 ? '/results/cmpc-live' : '/results/live' }}" mat-menu-item>Live Results</a>
-        <a routerLink="/results" mat-menu-item>Results</a>
+        <a routerLink="/results/past" mat-menu-item>Past Results</a>
         <a *ngIf="tournament.id.toString() === '2'" mat-menu-item rel="noopener" target="_blank" href="https://drive.google.com/open?id=1oeDSIm2IoW2leIJhaWrSl5j58Fv-nw4k3O3JixW7Jws">
           Match-ups
         </a>

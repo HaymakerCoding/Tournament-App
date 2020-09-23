@@ -71,6 +71,7 @@ import { environment } from '../environments/environment';
 import { HoleResultsTableComponent } from './hole-results-table/hole-results-table.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
 import { ErrorInterceptor } from './error.interceptor';
+import { PastResultsComponent } from './past-results/past-results.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +110,8 @@ import { ErrorInterceptor } from './error.interceptor';
     QualifiersComponent,
     EventCompetitorsComponent,
     HoleResultsTableComponent,
-    ErrorPageComponent
+    ErrorPageComponent,
+    PastResultsComponent
   ],
   imports: [
     BrowserModule,
