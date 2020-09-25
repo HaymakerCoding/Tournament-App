@@ -4,14 +4,12 @@
 <div class="innerContainer" *ngIf="loading === false">
 
   <div class="yearSelector mt-4 text-center">
-      <mat-select [style.borderColor]="tournament.navColor" style="max-width:80px; height:34px; padding:4px; background-color:white; padding-left:7px; padding-bottom:7px; margin: auto; display:block; border:1px solid; border-radius:6px;"
-        [value]="selectedYear" (selectionChange)="yearChanged($event.value)">
-        <mat-option [value]="year" *ngFor="let year of years">
-          {{ year }}
-        </mat-option>
-      </mat-select>
-      <br>
-      <a rel="noopener" *ngIf="+tournament.id === 2" target="_blank" href="https://www.clubeg.golf/Tournaments/tournaments.php?name=matchplaychampionships.html">History</a>
+    <mat-select [style.borderColor]="tournament.navColor" style="max-width:80px; height:34px; padding:4px; background-color:white; padding-left:7px; padding-bottom:7px; margin: auto; display:block; border:1px solid; border-radius:6px;"
+      [(ngModel)]="seasonSelected" (selectionChange)="onSeasonChanged()">
+      <mat-option [value]="season" *ngFor="let season of seasons">{{ season.year }}</mat-option>
+    </mat-select>
+    <br>
+    <a rel="noopener" *ngIf="+tournament.id === 2" target="_blank" href="https://www.clubeg.golf/Tournaments/tournaments.php?name=matchplaychampionships.html">History</a>
   </div>
 
   <div class="row">

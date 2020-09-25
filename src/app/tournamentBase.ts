@@ -2,7 +2,7 @@ import { TournamentService } from "./services/tournament.service";
 import { Title } from "@angular/platform-browser";
 import { Subscription } from "rxjs";
 import { Tournament } from "./models/Tournament";
-import { OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 
 /**
  * Base class for most tournament pages.
@@ -10,6 +10,9 @@ import { OnDestroy, OnInit } from "@angular/core";
  * 
  * @author Malcolm Roy
  */
+@Component({
+  template: ''
+})
 export abstract class TournamentBase implements OnInit, OnDestroy {
 
   tournament: Tournament;

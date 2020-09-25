@@ -16,6 +16,7 @@ import { ParticipantService } from '../services/participant.service';
 import { HoleScore } from '../models/HoleScore';
 import { Router } from '@angular/router';
 import { EventService } from '../services/event.service';
+import { ScoringType } from '../models/ScoringType';
 
 @Component({
   selector: 'app-past-results',
@@ -24,12 +25,10 @@ import { EventService } from '../services/event.service';
 })
 export class PastResultsComponent extends TournamentBase implements OnInit {
 
-  years: number[];
-  yearSelected: number;
+  seasons: Season[];
+  seasonSelected: Season;
   divisions: Division[];
-  validTournaments = [3, 1]; // list of tournaments where live results are in place
   divisionSelected: EventDivision;
-  season: Season;
   events: Event[];
   eventSelected: Event;
   cutParticipants: any[] = [];
@@ -71,7 +70,7 @@ export class PastResultsComponent extends TournamentBase implements OnInit {
     this.columns = this.tournament.id === 3 ? ['pos', 'competitor', 'holes', 'round1', 'round2', 'round3', 'total'] : ['pos', 'competitor',  'holes', 'total'];
     this.setLoadingPercent(10);
     this.setScoringType();
-    this.getYears();
+    this.getSeasons();
   }
 
   setScoringType() {
@@ -81,6 +80,10 @@ export class PastResultsComponent extends TournamentBase implements OnInit {
         break;
       }
       case 3: {
+        this.scoringType = ScoringType.INDIVIDUAL;
+        break;
+      }
+      case 6: {
         this.scoringType = ScoringType.INDIVIDUAL;
         break;
       }
@@ -94,23 +97,11 @@ export class PastResultsComponent extends TournamentBase implements OnInit {
   /**
    * Get just a list of years that this tournament has data for
    */
-  getYears() {
-    this.subscriptions.push(this.tournamentService.getYears(this.tournament.id.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.years = response.payload;
-        this.yearSelected = this.years[0];
-        this.setLoadingPercent(15);
-        this.getSeason();
-      } else {
-        console.error(response);
-      }
-    }));
-  }
-
-  getSeason() {
-    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), this.yearSelected.toString()).subscribe(response => {
-      this.season = response.payload;
-      this.setLoadingPercent(40);
+  getSeasons() {
+    this.subscriptions.push(this.tournamentService.getAllSeasons(this.tournament.eventTypeId.toString()).subscribe(response => {
+      this.seasons = response.payload;
+      this.seasonSelected = this.seasons[0];
+      this.setLoadingPercent(15);
       this.getEvents();
     }));
   }
@@ -119,45 +110,35 @@ export class PastResultsComponent extends TournamentBase implements OnInit {
    * Get all events for the season
    */
   getEvents() {
-    this.subscriptions.push(this.eventService.getAllEvents(this.season, true).subscribe(response => {
+    this.subscriptions.push(this.eventService.getAllEvents(this.seasonSelected, true).subscribe(response => {
       this.events = response.payload;
-      this.setLoadingPercent(80);
+      this.setLoadingPercent(100);
       this.getAllTournamentParticipants();
     }));
   }
 
-  /*
-
   /**
-   * Fetch all participants in the tournament season
+   * Fetch all participants in the tournament season. Used for search 
    */
   getAllTournamentParticipants() {
     if (this.scoringType === ScoringType.TEAM) {
-      this.getAllTeamsInSeason();
+      this.getEventTeams();
     } else {
-      this.getAllIndividualsInSeason();
+      this.getEventIndividuals();
     }
   }
 
-  getAllTeamsInSeason() {
-    this.subscriptions.push(this.participantService.getTeamsBySeason(this.season.id.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.allParticipants = response.payload;
-        this.setLoadingPercent(100);
-      } else {
-        console.error(response);
-      }
+  getEventTeams() {
+    this.subscriptions.push(this.participantService.getTeamsByEvent(this.eventSelected.id.toString()).subscribe(response => {
+      this.allParticipants = response.payload;
+      this.setLoadingPercent(100);
     }));
   }
 
-  getAllIndividualsInSeason() {
-    this.subscriptions.push(this.participantService.getIndividualsBySeason(this.season.id.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.allParticipants = response.payload;
-        this.setLoadingPercent(100);
-      } else {
-        console.error(response);
-      }
+  getEventIndividuals() {
+    this.subscriptions.push(this.participantService.getEventParticipants(this.eventSelected.id.toString()).subscribe(response => {
+      this.allParticipants = response.payload;
+      this.setLoadingPercent(100);
     }));
   }
 
@@ -185,6 +166,7 @@ export class PastResultsComponent extends TournamentBase implements OnInit {
 
   /**
    * Get the scores for current selected rounds of events.
+   * Returns a results object with condensed player list (participants) as well as each rounds specific lists (EventScores)
    */
   getScores() {
     const eventIds: string[] = [];
@@ -192,12 +174,9 @@ export class PastResultsComponent extends TournamentBase implements OnInit {
       eventIds.push(round.id.toString());
     }
     this.subscriptions.push(this.resultsService.getScores(eventIds, this.scoringType, this.divisionSelected.competitionId.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.results = response.payload;
-        this.setupParticipants();
-      } else {
-        console.error(response);
-      }
+      this.results = response.payload;
+      this.setPos();
+      this.setLoadingPercent(100);
     }));
   }
 
@@ -207,7 +186,6 @@ export class PastResultsComponent extends TournamentBase implements OnInit {
    * After which we sort the scores and provide the arrays to the table data
    */
   onDivisionChange() {
-    console.log(this.divisionSelected);
     this.setLoadingPercent(20);
     this.loadingPercent = 20;
     this.rounds = this.masterRounds.filter(round => round.divisionList.some(div => +div.competitionId === +this.divisionSelected.competitionId));
@@ -224,13 +202,7 @@ export class PastResultsComponent extends TournamentBase implements OnInit {
     });
     this.rounds.forEach(round => {
       this.getScorecard(round);
-    });
-    
-  }
-   
-  setupParticipants() {
-    this.setPos();
-    this.setLoadingPercent(100);
+    }); 
   }
 
   /**
@@ -354,7 +326,7 @@ export class PastResultsComponent extends TournamentBase implements OnInit {
     this.rounds = [];
     this.divisionSelected = null;
     this.masterRounds = [];
-    this.getSeason();
+    this.getEvents();
   }
 
   onEventChange() {
@@ -391,11 +363,10 @@ export class PastResultsComponent extends TournamentBase implements OnInit {
    * @param participant 
    */
   onSearchedParticipantClick(participant, input: MatInput) {
-    console.log(this.allParticipants);
     input.value = null;
     this.searchedParticipants = [];
     this.eventSelected = this.events.find(x => +x.id === +participant.eventId);
-    this.yearSelected = +participant.year;
+    this.seasonSelected = this.seasons.find(x => +x.year === +participant.year);
     const competitionId = this.scoringType === ScoringType.TEAM ? participant.teamMembers[0].competitionId : participant.competitionId;
     this.divisionSelected = this.eventSelected.divisionList.find(x => +x.competitionId === +competitionId);
     this.subscriptions.push(this.tournamentService.getScorecard(this.eventSelected.scorecardId.toString()).subscribe(response => {
@@ -508,8 +479,5 @@ interface Score {
   holesComplete: number
 }
 
-export enum ScoringType {
-  INDIVIDUAL = 'individual',
-  TEAM = 'team'
-}
+
 

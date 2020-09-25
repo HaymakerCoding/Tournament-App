@@ -22,9 +22,13 @@ export class ParticipantService {
   getTeamsByEvent(eventId: string) {
     const params = new HttpParams().set('eventId', eventId);
     return this.http.get<any>(this._ApiBaseUrl + 'teams',
-    { params }).pipe(map(response => {
-      return response;
-    }));
+    { params });
+  }
+  
+  getEventParticipants(eventId: string) {
+    const params = new HttpParams().set('eventId', eventId);
+    return this.http.get<any>(this._ApiBaseUrl + 'event-participants',
+    { params });
   }
 
   /**

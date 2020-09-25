@@ -16,7 +16,7 @@ export class Team extends EventParticipant   {
     public captainMemberId: number,
     public captainPic: string,
     public members: BasicMember[],
-
+    public participantId: number,
     public teamId: number,
     public teamParticipantId: number,
     public groupParticipantId: number,
@@ -29,7 +29,7 @@ export class Team extends EventParticipant   {
     public totalScore: number
   ) {
     super(
-      holeScores, score, scoreId
+      participantId
     );
   }
 

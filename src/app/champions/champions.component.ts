@@ -8,6 +8,11 @@ import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Season } from '../models/Season';
 
+/**
+ * Champions page. Shows all champions assigned to divisions in a tournament season.
+ * 
+ * @author Malcolm Roy
+ */
 @Component({
   selector: 'app-champions',
   templateUrl: './champions.component.html',
@@ -16,15 +21,12 @@ import { Season } from '../models/Season';
 export class ChampionsComponent implements OnInit, OnDestroy {
 
   @Input() tournament: Tournament;
-
   subscriptions: Subscription[] = [];
-  years: number[];
-  selectedYear: number;
+  seasons: Season[];
+  seasonSelected: Season;
   loading: boolean;
   divisions: Division[];
   champions: TournamentChamp[];
-  season: Season;
-
   leftList: Division[] = [];
   centerList: Division[] = [];
   rightList: Division[] = [];
@@ -40,35 +42,26 @@ export class ChampionsComponent implements OnInit, OnDestroy {
     this.getTournament();
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
   getTournament() {
     this.tournament = this.tournamentService.getTournament();
     if (!this.tournament) {
       this.subscriptions.push(this.tournamentService.setTournament().subscribe(response => {
         this.tournament = response.payload;
         this.titleService.setTitle(this.tournament.name);
-        this.getSeason();
+        this.getSeasons();
       }));
     } else {
-      this.getSeason();
+      this.getSeasons();
     }
   }
 
-  getSeason() {
-    const year = new Date().getFullYear();
-    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.season = response.payload;
-        this.getYears();
-      } else {
-        console.error(response);
-      }
-    }));
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-
+  /**
+   * Seperate divisions into 3 list. Just for specific view layout
+   */
   initDivisionLists() {
     const firstPoint = this.divisions.length * 0.33;
     const secondPoint = this.divisions.length * 0.66;
@@ -85,45 +78,33 @@ export class ChampionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getYears() {
-    this.subscriptions.push(this.tournamentService.getYears(this.tournament.id.toString()).subscribe(response => {
-      if (response.status === 200) {
-        this.years = response.payload;
-        if (this.years[0]) {
-          const date = new Date();
-          const month = date.getMonth();
-          if (month <= 5 && this.years[1]) { // Show the previous year up until July, note Javascript month starts at 0 for Jan
-            this.selectedYear = this.years[1];
-          } else {
-            this.selectedYear = this.years[0];
-          }
-        }
-      } else {
-        console.error(response);
+  /**
+   * Get all seasons for the tournament
+   */
+  getSeasons() {
+    this.subscriptions.push(this.tournamentService.getAllSeasons(this.tournament.eventTypeId.toString()).subscribe(response => {
+      this.seasons = response.payload;
+      let year = new Date().getFullYear();
+      const month = new Date().getMonth();
+      if (month <= 5) { // Show the previous year up until July, note Javascript month starts at 0 for Jan
+        year = year - 1;
       }
+      this.seasonSelected = this.seasons.find(season => +season.year === +year);
       this.getAllDivisions();
     }));
   }
 
   getAllDivisions() {
-    this.subscriptions.push(this.tournamentService.getAllDivisions(this.season).subscribe(response => {
-      if (response.status === 200) {
-        this.divisions = response.payload;
-        this.initDivisionLists();
-      } else {
-        console.error(response);
-      }
+    this.subscriptions.push(this.tournamentService.getAllDivisions(this.seasonSelected).subscribe(response => {
+      this.divisions = response.payload;
+      this.initDivisionLists();
       this.getChampions();
     }));
   }
 
   getChampions() {
-    this.subscriptions.push(this.tournamentService.getAllChampions(this.tournament.id, this.selectedYear).subscribe(response => {
-      if (response.status === 200) {
-        this.champions = response.payload;
-      } else {
-        console.error(response);
-      }
+    this.subscriptions.push(this.tournamentService.getAllChampions(this.tournament.id, this.seasonSelected.year).subscribe(response => {
+      this.champions = response.payload;
       this.loading = false;
     }));
   }
@@ -142,10 +123,15 @@ export class ChampionsComponent implements OnInit, OnDestroy {
     return champ ? champ.pic : null;
   }
 
-  yearChanged(year) {
-    this.selectedYear = year;
+  /**
+   * User changed season, dump lists and start back at fetching divisions for the season
+   */
+  onSeasonChanged() {
+    this.leftList = [];
+    this.centerList = [];
+    this.rightList = [];
     this.loading = true;
-    this.getChampions();
+    this.getAllDivisions();
 
   }
 

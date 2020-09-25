@@ -27,12 +27,16 @@
                     <td>{{ group.teeTime }}</td>
                     <td>
                         <div *ngFor="let participant of group.groupParticipants">
-                            <div>{{ participant.fullName  }}</div>
+                            <div *ngIf="scoringType === 'individual'">{{ getParticipantProperty(participant, 1, 'fullName') }}</div>
+                            <div *ngIf="scoringType === 'team'">{{ getParticipantProperty(participant, 0, 'fullName') }}</div>
+                            <div *ngIf="scoringType === 'team'">{{ getParticipantProperty(participant, 1, 'fullName') }}</div>
                         </div>
                     </td>
                     <td>
                         <div *ngFor="let participant of group.groupParticipants">
-                            <div *ngFor="let div of participant.divisions">{{ div.name }}</div>
+                            <div *ngIf="scoringType === 'individual'">{{ getParticipantProperty(participant, null, 'division') }}</div>
+                            <div *ngIf="scoringType === 'team'">{{ getParticipantProperty(participant, 0, 'division') }}</div>
+                            <div *ngIf="scoringType === 'team'">{{ getParticipantProperty(participant, 1, 'division') }}</div>
                         </div>
                     </td>
                 </tr>

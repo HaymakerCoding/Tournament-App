@@ -5,9 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { Season } from '../models/Season';
 import { Event } from '../models/Event';
 import { ActivatedRoute, Params } from '@angular/router';
-import { EventParticipant } from '../models/EventParticipant';
-import { TeamEventParticipant } from '../models/TeamEventParticipant';
-import { ScoringType } from '../live-results/live-results.component';
+import { ScoringType } from '../models/ScoringType';
 import { Individual } from '../models/Individual';
 import { Team } from '../models/Team';
 
@@ -25,8 +23,8 @@ export class EventCompetitorsComponent  extends TournamentBase implements OnInit
   scoringType: ScoringType;
 
   constructor(
-    tournamentService: TournamentService,
-    titleService: Title,
+    protected tournamentService: TournamentService,
+    protected titleService: Title,
     private activatedRoute: ActivatedRoute
     ) { 
       super(tournamentService, titleService);

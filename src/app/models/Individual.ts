@@ -9,7 +9,8 @@ import { EventParticipant } from './EventParticipant';
 export class Individual extends EventParticipant {
 
   constructor(
-    public participantId: number, 
+    
+    public participantId: number,
     public individualId: number,
     public fullName: string,
     public memberId: number,
@@ -22,7 +23,7 @@ export class Individual extends EventParticipant {
     public roundTotalScores: number[], //each round seperated total
     
   ) {
-    super(holeScores, score, scoreId);
+    super(participantId);
   }
 
 }

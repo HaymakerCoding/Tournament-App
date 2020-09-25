@@ -52,7 +52,7 @@ export class DivisionsComponent implements OnInit, OnDestroy {
 
   getSeason() {
     const year = new Date().getFullYear();
-    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.id.toString(), year.toString()).subscribe(response =>{
+    this.subscriptions.push(this.tournamentService.getSeason(this.tournament.eventTypeId.toString(), year.toString()).subscribe(response =>{
       if (response.status === 200) {
         this.season = response.payload;
         this.getDivisions();

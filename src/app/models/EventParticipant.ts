@@ -8,9 +8,7 @@ import { Individual } from './Individual';
 export abstract class EventParticipant {
 
   constructor(
-    public holeScores: HoleScore[],
-    public score: number,
-    public scoreId: number
+    public participantId: number
   ) {
     
   }

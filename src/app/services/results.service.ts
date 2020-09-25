@@ -2,16 +2,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { ScoringType } from '../live-results/live-results.component';
+import { ScoringType } from '../models/ScoringType';
+import { Service } from './Service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsService {
+export class ResultsService extends Service {
 
-  private _ApiBaseUrl = 'https://api.clubeg.golf/';
-  
-  constructor(private http: HttpClient) { }
+  constructor(protected http: HttpClient) {
+    super(http)
+   }
 
   /**
    * Get all matches for the City Match Play Championship that are running in any event today

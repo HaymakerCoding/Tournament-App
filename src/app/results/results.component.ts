@@ -13,6 +13,7 @@ import { Scorecard } from '../models/Scorecard';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { TournamentNewsItem } from '../models/TournamentNewsItem';
+import { EventService } from '../services/event.service';
 
 /**
  * Show the results of matches for a tournament. Selectable by year and division.
@@ -46,7 +47,8 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     tournamentService: TournamentService,
     titleService: Title,
     private cmpcService: CmpcService,
-    private router: Router
+    private router: Router,
+    private eventService: EventService
     
   ) {
     super(tournamentService, titleService);
@@ -150,7 +152,7 @@ export class ResultsComponent extends TournamentBase implements OnInit, OnDestro
     } else {
       type = 'individuals';
     }
-    this.subscriptions.push(this.tournamentService.getGroups(event.id.toString(), this.tournament.id.toString(), type).subscribe(response => {
+    this.subscriptions.push(this.eventService.getGroups(event.id.toString()).subscribe(response => {
       if (response.status === 200) {
         event.groups = response.payload;
         this.groupsFetched++;

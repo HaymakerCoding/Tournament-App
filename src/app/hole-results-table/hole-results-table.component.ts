@@ -1,10 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Event } from '../models/Event';
-import { ScoringType, EventScore } from '../live-results/live-results.component';
+import { ScoringType } from '../models/ScoringType';
 import { HoleScore } from '../models/HoleScore';
-import { Team } from '../models/Team';
-import { Individual } from '../models/Individual';
 import { Scorecard } from '../models/Scorecard';
+import { EventScore } from '../past-results/past-results.component';
+
 
 @Component({
   selector: 'app-hole-results-table',

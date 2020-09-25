@@ -5,10 +5,12 @@ import { Tournament } from '../models/Tournament';
 import { TournamentYearlyData } from '../models/TournamentYearlyData';
 import { Season } from '../models/Season';
 import { Classification } from '../models/Event';
-import { ScoringType } from '../live-results/live-results.component';
+import { Service } from './Service';
+import { ScoringType } from '../models/ScoringType';
+
 
 /**
- * Because this tournament app is user focused and most the CRUD operations are done with a seperate App, we will use this tournament services for most the GET only actions need 
+ * Because this tournament app is user focused and most the CRUD operations are done with a seperate App, we will use this tournament services for most the GET only actions needed
  * for various data models. In the admin version of this app these services are split up more into their own dedicated service files.
  * 
  * @author Malcolm
@@ -16,13 +18,14 @@ import { ScoringType } from '../live-results/live-results.component';
 @Injectable({
   providedIn: 'root'
 })
-export class TournamentService {
+export class TournamentService extends Service {
 
   private tournament: Tournament;
   private host: string;
   private yearlyData: TournamentYearlyData;
 
-  constructor(public http: HttpClient) {
+  constructor(protected http: HttpClient) {
+    super(http)
     this.setHost();
   }
 
@@ -42,7 +45,7 @@ export class TournamentService {
     this.host = window.location.hostname.replace('www.', '');
     // IF running in dev set to city match play for testing
     if (this.host === 'localhost') {
-      this.host = 'dev.ottawasunscramble.golf';
+      this.host = 'clubeg.golf';
     }
     console.log('Loading data for host: ' + this.host);
   }
@@ -53,7 +56,7 @@ export class TournamentService {
    */
   setTournament() {
     const params = new HttpParams().set('host', this.host);
-    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/tournaments/get-by-host/index.php', {
+    return this.http.get<any>(this._ApiBaseUrl + 'tournament', {
       params }).pipe(map(response => {
       if (response.status === 200) {
         this.tournament = response.payload;
@@ -311,14 +314,6 @@ export class TournamentService {
   getAllSeasons(eventTypeId: string) {
     const params = new HttpParams().set('eventTypeId', eventTypeId);
     return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/season/get-all/index.php',
-    { params }).pipe(map(response => {
-      return response;
-    }));
-  }
-
-  getGroups(eventId: string, tournamentId: string, type: string) {
-    const params = new HttpParams().set('eventId', eventId).set('tournamentId', tournamentId).set('type', type);
-    return this.http.get<any>('https://clubeg.golf/common/api_REST/v1/clubeg/event/group/get-all/index.php',
     { params }).pipe(map(response => {
       return response;
     }));

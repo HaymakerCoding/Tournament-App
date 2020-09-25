@@ -1,11 +1,8 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import { Event } from '../models/Event';
-import { HoleScore } from '../models/HoleScore';
-import { Team } from '../models/Team';
-import { Individual } from '../models/Individual';
-import { ScoringType, EventScore } from '../live-results/live-results.component';
-import { Scorecard } from '../models/Scorecard';
+import { EventScore } from '../past-results/past-results.component';
+import { ScoringType } from '../models/ScoringType';
 
 /**
  * Hole by hole scores for each event passed in, for the participant passed in.
@@ -46,8 +43,6 @@ export class HoleByHoleScoresComponent implements OnInit {
   getEvent(event: EventScore) {
     return this.rounds.find(x => +x.id === +event.eventId);
   }
-
-  
 
   close() {
     this.dialogRef.close();

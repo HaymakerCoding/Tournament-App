@@ -7,15 +7,15 @@
 
     <div *ngIf="loadingPercent === 100">
 
-        <p *ngIf="validTournaments.includes(+tournament.id) === false">Sorry no live results available for this tournament yet. Try back soon!</p>
+        <p *ngIf="!scoringType">Sorry no live results available for this tournament yet. Try back soon!</p>
 
-        <div *ngIf="validTournaments.includes(+tournament.id) === true">
+        <div *ngIf="scoringType">
             <h1 class="text-center">Past Results</h1>
             <br>
             <mat-form-field appearance="outline">
                 <mat-label>Year</mat-label>
-                <mat-select (selectionChange)="onYearChange()" [(ngModel)]="yearSelected">
-                    <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+                <mat-select (selectionChange)="onYearChange()" [(ngModel)]="seasonSelected">
+                    <mat-option *ngFor="let season of seasons" [value]="season">{{ season.year }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline" style="width:350px; max-width: 90vw;">
@@ -90,6 +90,7 @@
                         <div class="col-2">{{ participant.pos }}</div>
                         <div class="col-3">
                             <div *ngFor="let member of participant.members">{{ member.fullName }}</div>
+                            <div *ngIf="scoringType === 'individual'">{{ participant.fullName }}</div>
                         </div>
                         <div class="col-1" *ngFor="let round of rounds; let i = index">{{ getRoundScoreText(participant, round)  }}</div>
                         <div class="col-2 text-center">{{ participant.holesComplete }}</div>
